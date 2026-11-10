@@ -116,25 +116,6 @@ python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages\Com
 
 Сравнение путей идёт через `os.path.normcase(os.path.abspath(...))`, а не через `Path.resolve()`. На Windows `resolve()` вызывает `nt._getfinalpathname`; профилирование каталога показало 58 826 таких вызовов и 1.77 с только на них. Хвост пути при этом сохраняет исходный регистр: `relative_to` на Windows регистронезависим, поэтому возвращаемый путь совпадает с реальным именем каталога.
 
-## Измеренный эффект
-
-Тот же установленный MSFS 2020, 234 самолёта:
-
-| Показатель | 1.1.0 | с индексом |
-|---|---|---|
-| `OK` | 56 | **174** |
-| `SUPPORTED_PARTIAL` | 166 | **48** |
-| Требуют подтверждения состава | 170 | **52** |
-| Доступно для сборки геометрии | 226 | 226 |
-| Заблокировано | 8 | 8 |
-| Время скана | 2.2 с | 3.1 с |
-
-Перешли в полный состав **118** пакетов из 122 предсказанных. Число доступных для сборки геометрии не изменилось: индекс не создаёт исходники, он снимает необходимость подтверждать частичный состав там, где полный состав фактически есть.
-
-Из 48 оставшихся частичных **44** — базовый самолёт действительно не установлен, **4** — база установлена, но объявленного XML в ней нет (`Asobo_Pitts_S1_Reno_Livery_Xbox_Aviators`, `Asobo_Pitts_S1_Reno_LiveryAviators`, `Microsoft_Volocity_Livery_Aviators`, `Microsoft_Volocity_Livery_Xbox_Aviators`). Последние четыре закрываются явным выбором моделей (Приоритет 3), а не автоматической подстановкой.
-
-Ливрея `RSP_R44_EC-NIK` индекс **не** спас: базовый самолёт `r44` не установлен вообще, в каталоге есть только сама ливрея.
-
 ## Границы
 
 - Индекс не скачивает и не восстанавливает отсутствующие пакеты.
@@ -143,3 +124,11 @@ python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages\Com
 - Исходные пакеты открываются только для чтения; кэш пишется в профиль пользователя.
 
 Дальше: [Package Diagnosis](Package-Diagnosis) · [CLI Reference](CLI-Reference) · [Architecture](Architecture) · [Textures and Materials](Textures-and-Materials)
+
+---
+
+## English version
+
+The package index is a no-`bpy` cache built from selected MSFS roots. It maps aircraft names to folders, packages to roots and livery `base_container` declarations to their installed bases. Configuration mtimes and the index version invalidate stale records.
+
+When a relative VFS path does not exist in the livery, the resolver tries the indexed aircraft or base package. The origin is preserved in diagnostics. If two packages can own the same resource, the index reports ambiguity and the user must choose; an inaccessible package does not abort the scan.

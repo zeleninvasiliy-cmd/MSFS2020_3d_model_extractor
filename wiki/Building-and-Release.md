@@ -32,7 +32,7 @@ powershell -ExecutionPolicy Bypass -File .\release\build_release.ps1 -Python C:\
 1. Читает версию из `VERSION`.
 2. PyInstaller `--onedir`: оконный `MSFSBuilder` из `msfs_builder_gui.py` и консольный `MSFSBuilderCLI` из `release/cli_entry.py`.
 3. Объединяет поставки: оба executable используют общий `_internal`.
-4. Копирует `VERSION`, документацию (`release/docs/*`, `TECHNICAL_GUIDE.md`, `USER_GUIDE.md`, `GUI_GUIDE.md`, аудиты) и лицензии Python/Tk/PyInstaller.
+4. Копирует `VERSION`, два пользовательских руководства (`USER_GUIDE.md`, `USER_GUIDE_EN.md`) и лицензионные файлы Python/Tk/PyInstaller.
 5. Смоук-тесты: `MSFSBuilderCLI.exe --help` и `MSFSBuilder.exe --self-test`.
 6. Компилирует установщик Inno Setup с `/DAppVersion` из `VERSION`.
 7. Создаёт portable ZIP и `SHA256SUMS.txt`.
@@ -83,8 +83,21 @@ powershell -File .\release\verify_installer.ps1
 
 ## Публикация
 
-Установщик и portable ZIP загружаются как файлы **GitHub Release**, а не в историю исходников. К тегу версии прикладываются `Setup.exe`, `Portable.zip` и `SHA256SUMS.txt`. Инструкция: [GITHUB_UPLOAD_RU](../GITHUB_UPLOAD_RU.md).
+Установщик и portable ZIP загружаются как файлы **GitHub Release**, а не в историю исходников. К тегу версии прикладываются `Setup.exe`, `Portable.zip` и `SHA256SUMS.txt`. Исходные документы и wiki остаются в основном репозитории.
 
 Установщик не подписан цифровым сертификатом. Для публичного распространения следует подписать `.exe` и установщик доверенным сертификатом и проверить чистую Windows VM с выбранной версией Blender. Лицензия распространения исходников пока не выбрана: [LICENSE_NOTICE](../LICENSE_NOTICE.md).
 
 Дальше: [Architecture](Architecture) · [Testing](Testing) · [Getting Started](Getting-Started)
+
+---
+
+## English version
+
+A release build is made on Windows with Python 3.13 x64 and Inno Setup 7:
+
+1. Create a virtual environment and install `release/build_requirements.txt`.
+2. Run `release/build_release.ps1` with the build Python and optional `-ISCC`.
+3. The script freezes the GUI and CLI, copies the two user guides and license notices, runs CLI/GUI smoke tests, builds Setup and Portable packages, and writes `SHA256SUMS.txt`.
+4. Upload only the Setup, Portable ZIP and checksum file to the GitHub Release.
+
+Blender and MSFS packages are never bundled. A portable build must keep both executables and the shared `_internal` directory together. The installer is per-user and does not delete projects or settings.

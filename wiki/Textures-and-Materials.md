@@ -103,4 +103,12 @@ python .\scripts\msfs_universal.py find-textures .\blend\02_textured_strip_auto_
 
 Worker пишет на меш `msfs_source_role` и `msfs_pipeline_source`, на новые материалы — `msfs_source_path`. По этому признаку материал сопоставляется с определением из нужного glTF. Для старых checkpoint без признака используется сопоставление по имени файла, что неоднозначно при одинаковых basename двух моделей.
 
-Дальше: [Rule Editors](Rule-Editors) · [Reports and Audit](Reports-and-Audit) · [Build Modes](Build-Modes) · [Troubleshooting](Troubleshooting)
+Дальше: [Rule Editors](Rule-Editors) · [Build Modes](Build-Modes) · [Troubleshooting](Troubleshooting)
+
+---
+
+## English version
+
+The texture stage reads material assignments from the selected glTF and resolves PBR maps through the package resolver. The table reports missing, substituted, duplicated and unreadable images. Texture replacements are keyed by the original map basename.
+
+The worker handles common DDS/PNG maps, alpha modes, glass materials and normal-map conversion. When a normal map cannot be decoded safely, the report asks for manual review instead of silently producing a blank image. The original package remains untouched.

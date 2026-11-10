@@ -72,3 +72,16 @@ MSFS упаковывает индексы в draw ranges внутри `extras.A
 - Не влияют на доступность пакета — причины недоступности описаны в [Package Diagnosis](Package-Diagnosis), и смена skinning там не поможет.
 
 Дальше: [MSFS glTF Format](MSFS-glTF-Format) · [Object Organization](Object-Organization) · [Troubleshooting](Troubleshooting)
+
+---
+
+## English version
+
+Build modes are deliberately independent so a user can compare results:
+
+- `geometry` imports the selected exterior/interior glTF files and writes a numbered Blender file.
+- `textures` reads a geometry checkpoint and attaches the selected PBR maps.
+- `final` creates the final report and saves the completed variant.
+- `all` runs the stages in order.
+
+`draw_mode` selects automatic MSFS primitive handling or an explicit mode. `split_by_skin` separates skinned parts, `split_spatial` cuts by object bounds, `mirror_objects` creates a reflected copy, and `placements` uses only the anchor translation while preserving the part rotation and scale. DDS normal decoding is reported when it is ambiguous. Re-running a mode creates the next sequence number instead of overwriting a checkpoint.

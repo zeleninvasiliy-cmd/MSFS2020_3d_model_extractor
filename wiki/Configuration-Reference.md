@@ -145,3 +145,11 @@ GUI формирует этот JSON автоматически; обычном�
 `missing_fallback_dirs` — ожидаемый шум, а не обязательно ошибка: MSFS объединяет пакеты через VFS, поэтому `texture.cfg` часто ссылается на папки вне локального пакета.
 
 Дальше: [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Build Modes](Build-Modes) · [Textures and Materials](Textures-and-Materials) · [Object Organization](Object-Organization)
+
+---
+
+## English version
+
+The build configuration is JSON and is validated before Blender starts. Required fields are the source package and an output directory outside the source package. The GUI writes the normal project configuration; users should prefer the graphical editors for model selection, object exclusions, split/mirror/placement rules, collection overrides, pivots and texture replacements.
+
+Relative paths are resolved from the configuration file. Unknown keys and invalid rule shapes are rejected. The `validate` CLI command runs the same validator used by the GUI, so a configuration accepted in the editor is the one the worker receives.

@@ -1,6 +1,6 @@
 # Model Selection
 
-Мастер выбора состава моделей. Открывается автоматически, когда самолёт помечен `◐ нужен выбор моделей`, и вручную кнопкой **«Выбрать модели...»** на шаге 2 «Параметры проекта». Закрывает [Приоритет 3](../docs/COMPATIBILITY_ROADMAP.md) плана совместимости.
+Мастер выбора состава моделей. Открывается автоматически, когда самолёт помечен `◐ нужен выбор моделей`, и вручную кнопкой **«Выбрать модели...»** на шаге 2 «Параметры проекта». Это штатная часть версии 1.2.0.
 
 ## Зачем он нужен
 
@@ -67,26 +67,6 @@ python scripts/msfs_universal.py models "C:\...\Airplanes\Test" --root "D:\Commu
 
 Команда всегда делает глубокую проверку: BIN и неподдерживаемые возможности видны сразу. На установленном MSFS 2020 один вызов занимает около 0.6 с.
 
-## Измеренный результат
-
-Та же установка MSFS 2020, 234 самолёта, 52 записи с пометкой «нужен выбор моделей»:
-
-| Показатель | Значение |
-|---|---|
-| Записей, требующих выбора | 52 |
-| Обе роли имеют пригодных кандидатов | 8 |
-| Только экстерьер (база не установлена) | 44 |
-| Ни одного пригодного кандидата | 0 |
-| Базовый пакет просканирован | 4 |
-
-Восемь записей с обеими ролями: `Asobo_Pitts_S1_Reno`, `Asobo_Pitts_S1_Reno_LiveryAviators`, `Asobo_Pitts_S1_Reno_Livery_Xbox_Aviators`, `Microsoft_Volocity`, `Microsoft_Volocity_Livery_Aviators`, `Microsoft_Volocity_Livery_Xbox_Aviators`, `microsoft-aircraft-a320neo`, `microsoft_a310_300`.
-
-Четыре ливреи Pitts/Volocity были `SUPPORTED_PARTIAL` без интерьера: объявленный `S1_Interior.xml` / `Volocity_Interior.xml` в базовом пакете отсутствует, но `S1_Interior_LOD01.gltf` (56 171 вершина, 278 865 треугольников) и `Volocity_Interior_LOD01.gltf` (145 141 вершина, 169 321 треугольник) в нём есть. Мастер предлагает их с пометкой «роль по имени файла» — назначение подтверждает пользователь.
-
-`microsoft-aircraft-a320neo` показывает 14 пригодных кандидатов экстерьера: это тот случай, где выбор действительно нужен, а не формальность.
-
-44 записи с одним экстерьером — базовый самолёт не установлен. Программа называет это прямо и не выдумывает интерьер.
-
 ## Чего мастер не делает
 
 - Не определяет интерьер по имени вместо пользователя.
@@ -94,4 +74,12 @@ python scripts/msfs_universal.py models "C:\...\Airplanes\Test" --root "D:\Commu
 - Не восстанавливает отсутствующие исходники и не расшифровывает пакеты.
 - Не доказывает правильность формы: визуальная приёмка остаётся за пользователем в Blender.
 
-Дальше: [Package Diagnosis](Package-Diagnosis) · [Package Index](Package-Index) · [GUI Workflow](GUI-Workflow) · [Configuration Reference](Configuration-Reference) · [Roadmap Assessment](Roadmap-Assessment)
+Дальше: [Package Diagnosis](Package-Diagnosis) · [Package Index](Package-Index) · [GUI Workflow](GUI-Workflow) · [Configuration Reference](Configuration-Reference)
+
+---
+
+## English version
+
+The model wizard is part of the 1.2.0 workflow. It opens for a partial package or from the project settings. Exterior and interior are separate lists with LOD number, vertex count, triangle count, role source, origin and availability.
+
+Only roles declared by configuration are preselected. A filename-based role is a hint and requires explicit confirmation. The confirmed list is stored in the project `models` field and partial variants keep the `_partial` suffix.

@@ -269,7 +269,7 @@ class BuilderApp(tk.Tk):
     def open_help(self):
         guide = Path(sys.executable).parent / "docs" / "USER_MANUAL_RU.html" if getattr(sys, "frozen", False) else ROOT / "release" / "docs" / "USER_MANUAL_RU.html"
         if not guide.is_file():
-            guide = ROOT / "GUI_GUIDE.md"
+            guide = ROOT / "USER_GUIDE.md"
         try:
             os.startfile(str(guide))
         except OSError as exc:

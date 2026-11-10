@@ -15,7 +15,7 @@
 | `⚠ LIVERY_ONLY` | есть `aircraft.cfg` и карты, но нет `model` | укажите базовый самолёт или добавьте корень, где он лежит |
 | `⚠ MISSING_MODEL_CFG` / `INVALID_MODEL_CFG` | нет cfg или нет секции `[models]` | подробная проверка предложит найденные LOD glTF; подтвердите назначение вручную |
 | `⚠ MISSING_BUFFER` | рядом с glTF нет BIN | восстановите пакет; один glTF без BIN собрать нельзя |
-| `⚠ UNSUPPORTED_GLTF_FEATURE` | GLB, несколько buffers, data URI, sparse, Draco, не треугольники | выберите другой LOD или другой вариант; поддержка этих форматов — Приоритет 4 |
+| `⚠ UNSUPPORTED_GLTF_FEATURE` | GLB, несколько buffers, data URI, sparse, Draco, не треугольники | выберите другой LOD или отложите пакет до отдельного адаптера |
 | `⚠ UNREADABLE_GLTF` | JSON повреждён или недоступен | проверьте права и целостность пакета |
 | `⚠ UNRESOLVED_ALIAS` | `base_container` указывает на отсутствующий пакет | установите базовый самолёт либо добавьте его корень в «Дополнительные корни» |
 | `⚠ SCAN_FAILED` | структура пакета отличается от ожидаемой | откройте детали, укажите папку конкретного самолёта |
@@ -117,3 +117,11 @@
 Версия программы и Blender, имя и версия пакета, режимы сборки, код причины из диагностики, текст ошибки из «Журнала», точные имена объектов и шаги воспроизведения. Присылать весь пакет самолёта не нужно.
 
 Дальше: [Known Issues](Known-Issues) · [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Package Diagnosis](Package-Diagnosis) · [Package Index](Package-Index) · [Build Modes](Build-Modes)
+
+---
+
+## English version
+
+Use this order: diagnose the package, verify the selected geometry, then investigate textures.
+
+If the aircraft is absent, set the MSFS/package root and rescan. If it is partial, inspect the base package and confirm models in the wizard. If geometry is displaced, compare another mode and use a placement/mirror rule. If a texture is missing, search installed package roots and inspect the map table. A missing original glTF/BIN cannot be fixed by changing a build mode. Keep the detailed Journal log and the failed checkpoint when reporting a reproducible problem.

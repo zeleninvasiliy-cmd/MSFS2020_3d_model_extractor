@@ -136,3 +136,11 @@
 **Без графического редактора** остаются расширенные ключи `converted_normal_dir`, `normal_decode`, `repair_skin_roots`, `pose_position` и `profile`. Движок их поддерживает, GUI сохраняет при круговой загрузке, но задаются они в JSON. Замена конкретной нормали через таблицу карт покрывает большинство случаев, ради которых раньше требовался `converted_normal_dir`.
 
 Дальше: [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Object Organization](Object-Organization) · [Textures and Materials](Textures-and-Materials) · [Known Issues](Known-Issues)
+
+---
+
+## English version
+
+The GUI is a thin, responsive wrapper around the CLI. **Files** contains New, Open, Save, Save As, Close, Delete and Exit. A project must be open before build controls are enabled.
+
+The project wizard selects an aircraft and general settings. The Geometry tab selects the build mode, object composition and editing rules; the Textures tab selects a geometry checkpoint, map replacements and texture search. The Journal tab contains detailed logs. After a successful stage, **Open in Blender** and **Show in Explorer** open the selected result. Back/Next buttons move between steps only when the minimum required fields are present.

@@ -82,3 +82,11 @@
 - Игровые ресурсы в тестах не используются: все фикстуры синтетические.
 
 Дальше: [GUI Workflow](GUI-Workflow) · [Object Organization](Object-Organization) · [Configuration Reference](Configuration-Reference) · [Textures and Materials](Textures-and-Materials) · [CLI Reference](CLI-Reference) · [Known Issues](Known-Issues)
+
+---
+
+## English version
+
+The graphical rule editor covers skin split, spatial split, mirror, placement, collection override and pivot preservation. Object and joint choices come from the actual glTF/checkpoint, and the form calls the shared CLI validator before saving.
+
+The texture table is on the Textures tab. It shows map state and material, searches installed packages for candidates and stores replacements by the original glTF map name. Rules are applied in the saved order. No direct JSON editing is required for these operations.

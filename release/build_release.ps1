@@ -43,14 +43,11 @@ Copy-Item -LiteralPath (Join-Path $packageRoot 'VERSION') -Destination $appRoot 
 $docRoot = Join-Path $appRoot 'docs'
 New-Item -ItemType Directory -Path $docRoot -Force | Out-Null
 Copy-Item -Path (Join-Path $PSScriptRoot 'docs\*') -Destination $docRoot -Recurse -Force
-Copy-Item -LiteralPath (Join-Path $packageRoot 'TECHNICAL_GUIDE.md'),(Join-Path $packageRoot 'USER_GUIDE.md') -Destination $docRoot -Force
-Copy-Item -LiteralPath (Join-Path $packageRoot 'GUI_GUIDE.md') -Destination $docRoot -Force
-foreach ($audit in @('RELEASE_AUDIT.md', 'WORKER_AUDIT.md')) {
-    $auditPath = Join-Path $packageRoot $audit
-    if (Test-Path -LiteralPath $auditPath) {
-        Copy-Item -LiteralPath $auditPath -Destination $docRoot -Force
-    }
-}
+# The repository keeps one canonical user guide per language.  Remove stale
+# Markdown files from a reused dist directory before copying the current pair.
+Get-ChildItem -LiteralPath $docRoot -Filter '*.md' -File -ErrorAction SilentlyContinue |
+    Remove-Item -Force
+Copy-Item -LiteralPath (Join-Path $packageRoot 'USER_GUIDE.md'),(Join-Path $packageRoot 'USER_GUIDE_EN.md') -Destination $docRoot -Force
 $licenseRoot = Join-Path $appRoot 'licenses'
 New-Item -ItemType Directory -Path $licenseRoot -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $packageRoot 'LICENSE') -Destination (Join-Path $licenseRoot 'Project-LICENSE') -Force

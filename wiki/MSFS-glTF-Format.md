@@ -104,4 +104,12 @@ Resolver (`inspect_gltf`) проверяет документ **до** сбор�
 намеренное разделение: понятное ограничение не должно превращаться в аварию
 worker.
 
-Дальше: [Build Modes](Build-Modes) · [Package Diagnosis](Package-Diagnosis) · [Reports and Audit](Reports-and-Audit)
+Дальше: [Build Modes](Build-Modes) · [Package Diagnosis](Package-Diagnosis) · [Textures and Materials](Textures-and-Materials)
+
+---
+
+## English version
+
+The adapter reads the glTF JSON and its available buffers, maps MSFS attributes and creates Blender meshes and materials. It validates primitive modes, indices, accessors, winding and node transforms before creating the scene.
+
+Supported resources depend on the installed package and the current adapter. Missing buffers, unsupported extensions and malformed containers are reported before Blender. The program does not silently replace a failed primitive with an approximate mesh. See [Known Issues](Known-Issues) for the current limits.

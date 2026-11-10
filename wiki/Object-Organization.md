@@ -134,4 +134,12 @@ UV перестраиваются: координата U инвертирует
 
 Выбрать объекты, кости и границы в [редакторе правил](Rule-Editors), подтвердить источник mirror, проверить положение деталей в Blender и сообщить имена проблемных объектов для следующего правила. Имена и кости подставляются из фактических данных, но автомата, который объявляет визуальную правильность, нет: просмотр модели остаётся за пользователем.
 
-Дальше: [Rule Editors](Rule-Editors) · [Build Modes](Build-Modes) · [Reports and Audit](Reports-and-Audit) · [Known Issues](Known-Issues)
+Дальше: [Rule Editors](Rule-Editors) · [Build Modes](Build-Modes) · [Known Issues](Known-Issues)
+
+---
+
+## English version
+
+Objects are kept as separate Blender objects and grouped into meaningful collections so the user can inspect and exclude them. The object tree is read from the actual checkpoint, not guessed from a hard-coded aircraft profile.
+
+Use the graphical object list to include or exclude a group or an individual object. Use split rules for joints or spatial bounds, mirror rules for symmetric parts, placement rules for anchor translation, and collection overrides for scene organization. These operations are validated before Blender runs.

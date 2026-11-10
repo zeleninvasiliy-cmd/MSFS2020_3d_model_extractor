@@ -129,7 +129,7 @@ python .\scripts\msfs_universal.py build .\examples\config.myplane.json --stage 
 | `--output` | путь, **обязательный** | — |
 | `--blender` | путь | `blender` из PATH |
 
-Отказывает, если файл `--output` уже существует. Печатает `summary`. Поля: [Reports and Audit](Reports-and-Audit).
+Отказывает, если файл `--output` уже существует. Печатает структурированный `summary`; основные коды описаны на странице [Package Diagnosis](Package-Diagnosis).
 
 ### `objects`
 
@@ -201,4 +201,16 @@ GUI останавливает операцию деревом процессо�
 blender -b --factory-startup --python-exit-code 1 --python msfs_universal_worker.py -- <spec>
 ```
 
-Дальше: [Rule Editors](Rule-Editors) · [Package Index](Package-Index) · [Configuration Reference](Configuration-Reference) · [Build Modes](Build-Modes) · [Reports and Audit](Reports-and-Audit)
+Дальше: [Rule Editors](Rule-Editors) · [Package Index](Package-Index) · [Configuration Reference](Configuration-Reference) · [Build Modes](Build-Modes) · [Troubleshooting](Troubleshooting)
+
+---
+
+## English version
+
+Run the source CLI with:
+
+```powershell
+python .\scripts\msfs_universal.py <command> [arguments]
+```
+
+The important commands are `inventory`, `catalog`, `index`, `models`, `find-textures`, `build`, `audit`, `objects`, `validate` and `bones`. Machine-readable commands print JSON to stdout; diagnostics and failures use a non-zero exit code. `inventory --deep` validates glTF containers and buffers, while `index` resolves livery inheritance. `build --stage geometry|textures|final|all` writes numbered checkpoints into the project output folder. The installed package accepts the same arguments through `MSFSBuilderCLI.exe`.

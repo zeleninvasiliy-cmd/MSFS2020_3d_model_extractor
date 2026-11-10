@@ -95,3 +95,11 @@ python .\scripts\msfs_universal.py build .\examples\config.myplane.json --stage 
 - принимает решение по ливрее и общим fallback-картам.
 
 Дальше: [GUI Workflow](GUI-Workflow) · [Build Modes](Build-Modes) · [Troubleshooting](Troubleshooting)
+
+---
+
+## English version
+
+Requirements are Windows 10/11 x64, Blender 5.x installed separately, and locally available MSFS package files. Python is only required for a source checkout; the packaged EXE already includes its runtime.
+
+Create a project from **Files → New project**, choose a workspace and an aircraft source, then select Blender and the output folder. Run the deep package check for an unfamiliar mod. Build geometry first, inspect it in Blender, and only then add textures. Results are stored under the project's `blend` directory and never inside the MSFS package.
