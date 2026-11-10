@@ -26,7 +26,13 @@ INDEX_VERSION = 2
 def _key(path):
     # Path.resolve() hits _getfinalpathname on Windows for every call; the
     # catalog rebases thousands of paths, so compare normalized strings instead.
-    return os.path.normcase(os.path.abspath(os.fspath(path)))
+    value = os.path.normcase(os.path.abspath(os.fspath(path)))
+    # A Windows runner may expose %TEMP% through an 8.3 alias (for example
+    # RUNNER~1) while Path.resolve() returns the long spelling.  Canonicalize
+    # only such paths; normal MSFS paths keep the fast string-only path.
+    if os.name == "nt" and any("~" in part for part in Path(value).parts):
+        value = os.path.normcase(os.path.realpath(value))
+    return value
 
 
 def _signature(package):

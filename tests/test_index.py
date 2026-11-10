@@ -30,7 +30,19 @@ def aircraft(root, package, name, base=None, content_type="AIRCRAFT"):
     return folder
 
 
-class IndexTests(unittest.TestCase):
+class _PathAssertions:
+    def assert_path_equal(self, actual, expected):
+        """Compare Windows paths by filesystem identity, not 8.3 spelling."""
+        self.assertIsNotNone(actual)
+        try:
+            same = os.path.samefile(os.fspath(actual), os.fspath(expected))
+        except OSError:
+            same = os.path.normcase(os.path.abspath(os.fspath(actual))) == os.path.normcase(
+                os.path.abspath(os.fspath(expected)))
+        self.assertTrue(same, f"{actual!s} != {expected!s}")
+
+
+class IndexTests(_PathAssertions, unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
@@ -38,15 +50,6 @@ class IndexTests(unittest.TestCase):
 
     def build(self, **kwargs):
         return PackageIndex.build([self.root], **kwargs)
-
-    def assert_path_equal(self, actual, expected):
-        """Compare Windows paths by filesystem identity, not 8.3 spelling."""
-        try:
-            same = os.path.samefile(os.fspath(actual), os.fspath(expected))
-        except OSError:
-            same = os.path.normcase(os.path.abspath(os.fspath(actual))) == os.path.normcase(
-                os.path.abspath(os.fspath(expected)))
-        self.assertTrue(same, f"{actual!s} != {expected!s}")
 
     def test_module_does_not_need_blender(self):
         source = (SCRIPTS / "package_index.py").read_text(encoding="utf-8")
@@ -216,7 +219,7 @@ class IndexTests(unittest.TestCase):
         self.assert_path_equal(index.base_aircraft(livery)[0], folder)
 
 
-class ResolverIndexTests(unittest.TestCase):
+class ResolverIndexTests(_PathAssertions, unittest.TestCase):
     """A livery inherits the base aircraft's models through the index."""
 
     def setUp(self):
