@@ -1,0 +1,61 @@
+{
+  "version": "1.2.0",
+  "purpose": "Long-running maintenance plan for unattended repository work",
+  "working_branch": "main",
+  "checkpoint_policy": {
+    "commit_after_each_stage": true,
+    "tag_patch_releases_after_verified_changes": true,
+    "never_force_push": true,
+    "never_delete_user_aircraft_or_projects": true,
+    "required_checks": [
+      "python -m unittest discover -s tests -p test_*.py -q",
+      "python msfs_builder_gui.py --self-test",
+      "compileall",
+      "git diff --check",
+      "GitHub Actions Windows regression"
+    ]
+  },
+  "stages": [
+    {
+      "id": "G0",
+      "name": "GitHub and documentation hygiene",
+      "status": "in_progress",
+      "deliverables": ["initialized GitHub Wiki", "bilingual current documentation", "clean release contents"]
+    },
+    {
+      "id": "A",
+      "name": "Compatibility audit",
+      "status": "planned",
+      "deliverables": ["package and glTF coverage matrix", "reproducible synthetic fixtures", "prioritized blockers"]
+    },
+    {
+      "id": "B",
+      "name": "Resolver and format compatibility",
+      "status": "planned",
+      "deliverables": ["safe package inheritance", "clear unsupported-format diagnostics", "no silent geometry guesses"]
+    },
+    {
+      "id": "C",
+      "name": "GUI workflow and editors",
+      "status": "planned",
+      "deliverables": ["project-gated workflow", "graphical rules", "recoverable checkpoints", "clear errors"]
+    },
+    {
+      "id": "D",
+      "name": "Release and portability",
+      "status": "planned",
+      "deliverables": ["repeatable Setup/Portable build", "checksums", "release verification", "bilingual user package"]
+    }
+  ],
+  "blocked_policy": {
+    "attempt_limit": 3,
+    "after_limit": "record blocker and evidence, stop guessing, continue independent tasks",
+    "user_data_policy": "do not request or upload MSFS aircraft or personal project files"
+  },
+  "resume": {
+    "read_first": ["AUTONOMY_PLAN.json", "WORK_STATE.json", "VERSION", "git log -5"],
+    "update_after": ["each stage", "each discovered blocker", "each release build"],
+    "network_loss": "keep local commit and resume from origin/main after reconnecting",
+    "usage_limit": "leave a clean commit, test result and next_step before stopping"
+  }
+}
