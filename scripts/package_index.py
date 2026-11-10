@@ -173,6 +173,16 @@ class PackageIndex:
             record = self.packages.get(_key(parent))
             if record is not None:
                 return Path(record["path"])
+        # ``Path.parents`` can preserve a different spelling on Windows when
+        # the caller used an 8.3 alias while the index was built from the long
+        # spelling.  The indexed aircraft records are already canonicalized,
+        # so use them as a final containment fallback.
+        wanted = _key(folder)
+        for record in self.packages.values():
+            for item in record.get("aircraft", []):
+                aircraft_path = _key(item.get("path", ""))
+                if wanted == aircraft_path or wanted.startswith(aircraft_path + os.sep):
+                    return Path(record["path"])
         return None
 
     def base_aircraft(self, folder):
@@ -230,12 +240,23 @@ class PackageIndex:
         own_package = self.package_of(owner)
         if own_package is None:
             return None, None, []
+        package_path = Path(os.path.normpath(os.fspath(own_package)))
         try:
-            # relative_to is case-insensitive on Windows, so the tail keeps its
-            # original spelling and the returned path matches the real folder.
-            tail = target.relative_to(Path(os.path.normpath(os.fspath(own_package))))
+            # Keep the original spelling where possible so the result follows
+            # the real package tree on case-sensitive filesystems.
+            tail = target.relative_to(package_path)
         except ValueError:
-            return None, None, []
+            # pathlib's Windows relative_to behaviour differs between Python
+            # versions when one side came through an 8.3 alias.  relpath is
+            # explicitly case-insensitive on Windows and gives us the same
+            # package-relative tail without guessing an aircraft path.
+            try:
+                relative = os.path.relpath(os.fspath(target), os.fspath(package_path))
+            except ValueError:
+                return None, None, []
+            if relative == os.pardir or relative.startswith(os.pardir + os.sep):
+                return None, None, []
+            tail = Path(relative)
         packages = []
         for base in self.base_aircraft(owner):
             package = self.package_of(base)
