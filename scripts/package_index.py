@@ -17,10 +17,11 @@ from pathlib import Path
 from package_resolver import by_case, find_aircraft, package_manifest
 
 
-# Version 2 includes the per-aircraft configuration files in the cache
+# Version 3 includes the per-aircraft configuration files and canonical path
+# keys that are stable across Windows 8.3 aliases.
 # signature.  The index stores ``base_container`` from aircraft.cfg, so an
 # in-place cfg edit must invalidate an otherwise unchanged package folder.
-INDEX_VERSION = 2
+INDEX_VERSION = 3
 
 
 def _key(path):
@@ -106,7 +107,7 @@ class PackageIndex:
                     package = folder
                 grouped.setdefault(package, []).append(folder)
         for package, folders in grouped.items():
-            key = str(package).casefold()
+            key = _key(package)
             signature = _signature(package)
             previous = cached.get(key)
             if previous and previous.get("signature") == signature:

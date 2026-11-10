@@ -61,7 +61,7 @@ class IndexTests(_PathAssertions, unittest.TestCase):
         self.assertEqual(len(index.aircraft_folders("test_plane")), 1)
         self.assert_path_equal(index.aircraft_folders("test_plane")[0], folder)
         self.assert_path_equal(index.package_of(folder), self.root / "test-base")
-        self.assertEqual(index.packages[str(self.root / "test-base").casefold()]["content_type"], "AIRCRAFT")
+        self.assertEqual(index.packages[index_module._key(self.root / "test-base")]["content_type"], "AIRCRAFT")
 
     def test_name_lookup_is_case_insensitive(self):
         folder = aircraft(self.root, "test-base", "Test_Plane")
@@ -298,8 +298,10 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         first = aircraft(self.root, "package-one", "Plane_One", base="Plane_Two")
         second = aircraft(self.root, "package-two", "Plane_Two", base="Plane_One")
         index = PackageIndex.build([self.root])
-        self.assertEqual(index.base_aircraft(first), [second])
-        self.assertEqual(index.base_aircraft(second), [first])
+        self.assertEqual(len(index.base_aircraft(first)), 1)
+        self.assert_path_equal(index.base_aircraft(first)[0], second)
+        self.assertEqual(len(index.base_aircraft(second)), 1)
+        self.assert_path_equal(index.base_aircraft(second)[0], first)
         self.assertIsNone(index.rebase(first / ".." / "Plane_Two" / "absent.xml", first)[0])
 
     def test_model_from_cfg_returns_rebased_path_for_the_build(self):
