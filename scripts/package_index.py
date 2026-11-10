@@ -250,15 +250,14 @@ class PackageIndex:
             # handling.  This is important on Windows when the temporary root
             # is exposed as ``RUNNER~1`` but the indexed package uses the long
             # ``runneradmin`` spelling.
+            tail = None
             try:
                 canonical_target = Path(os.path.realpath(os.fspath(target)))
                 canonical_package = Path(os.path.realpath(os.fspath(package_path)))
                 tail = canonical_target.relative_to(canonical_package)
             except ValueError:
-                tail = None
-            if tail is not None:
                 pass
-            else:
+            if tail is None:
                 # pathlib's Windows relative_to behaviour differs between
                 # Python versions when one side came through an 8.3 alias.
                 # relpath is explicitly case-insensitive on Windows and gives
