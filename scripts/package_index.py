@@ -246,17 +246,31 @@ class PackageIndex:
             # the real package tree on case-sensitive filesystems.
             tail = target.relative_to(package_path)
         except ValueError:
-            # pathlib's Windows relative_to behaviour differs between Python
-            # versions when one side came through an 8.3 alias.  relpath is
-            # explicitly case-insensitive on Windows and gives us the same
-            # package-relative tail without guessing an aircraft path.
+            # Normalize both sides before falling back to string-relative
+            # handling.  This is important on Windows when the temporary root
+            # is exposed as ``RUNNER~1`` but the indexed package uses the long
+            # ``runneradmin`` spelling.
             try:
-                relative = os.path.relpath(os.fspath(target), os.fspath(package_path))
+                canonical_target = Path(os.path.realpath(os.fspath(target)))
+                canonical_package = Path(os.path.realpath(os.fspath(package_path)))
+                tail = canonical_target.relative_to(canonical_package)
             except ValueError:
-                return None, None, []
-            if relative == os.pardir or relative.startswith(os.pardir + os.sep):
-                return None, None, []
-            tail = Path(relative)
+                tail = None
+            if tail is not None:
+                pass
+            else:
+                # pathlib's Windows relative_to behaviour differs between
+                # Python versions when one side came through an 8.3 alias.
+                # relpath is explicitly case-insensitive on Windows and gives
+                # us the same package-relative tail without guessing an
+                # aircraft path.
+                try:
+                    relative = os.path.relpath(os.fspath(target), os.fspath(package_path))
+                except ValueError:
+                    return None, None, []
+                if relative == os.pardir or relative.startswith(os.pardir + os.sep):
+                    return None, None, []
+                tail = Path(relative)
         packages = []
         for base in self.base_aircraft(owner):
             package = self.package_of(base)
