@@ -1,0 +1,31 @@
+{
+  "source": "C:/path/to/unpacked/aircraft",
+  "aircraft": "AircraftFolderName",
+  "blender": "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe",
+  "output_dir": "../../work/UNIVERSAL_BUILD_01",
+  "build_variant": "strip_auto",
+  "build_sequence": null,
+  "profile": "generic",
+  "models": [
+    {"path": "model/Exterior_LOD00.gltf", "role": "exterior"},
+    {"path": "model/Interior_LOD00.gltf", "role": "interior"}
+  ],
+  "livery": "base",
+  "skinning": "strip",
+  "draw_mode": "auto",
+  "filter_runtime": true,
+  "exclude_objects": [],
+  "collection_overrides": {},
+  "extra_texture_dirs": [],
+  "converted_normal_dir": null,
+  "texture_overrides": {},
+  "normal_decode": "auto",
+  "hybrid_bake_objects": [],
+  "repair_skin_roots": false,
+  "pose_position": "REST",
+  "manual_keep_pivots": [],
+  "mirror_objects": [],
+  "split_by_skin": [],
+  "split_spatial": [],
+  "placements": {}
+}

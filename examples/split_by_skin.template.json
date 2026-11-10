@@ -1,0 +1,20 @@
+[
+  {
+    "object": "WING_MESH",
+    "source_node": "WING_MESH",
+    "parts": [
+      {
+        "name": "AILERON_LEFT",
+        "bones": ["AILERON_LEFT_BONE"],
+        "collection": "01_EXTERIOR/03_TAIL_AND_CONTROL_SURFACES",
+        "pivot": "AILERON_LEFT_PIVOT"
+      },
+      {
+        "name": "AILERON_RIGHT",
+        "bones": ["AILERON_RIGHT_BONE"],
+        "collection": "01_EXTERIOR/03_TAIL_AND_CONTROL_SURFACES",
+        "pivot": "AILERON_RIGHT_PIVOT"
+      }
+    ]
+  }
+]

@@ -1,0 +1,38 @@
+# User projects, simulator assets and personal configuration
+/sources/
+/projects/
+/work/
+/exports/
+/settings.json
+/inventory.json
+*.blend
+*.blend1
+*.gltf
+*.glb
+*.bin
+*.dds
+*.pck
+*.fsarchive
+*.log
+*.plan.json
+# Python and packaging output
+__pycache__/
+*.py[cod]
+.venv*/
+.pytest_cache/
+/release/build/
+/release/dist/
+/release/output/
+/release/smoke-data-*/
+/release/install-smoke*/
+*.spec
+*.exe
+*.zip
+# Editors and local credentials
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
