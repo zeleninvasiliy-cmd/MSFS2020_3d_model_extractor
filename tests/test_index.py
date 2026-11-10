@@ -39,6 +39,15 @@ class IndexTests(unittest.TestCase):
     def build(self, **kwargs):
         return PackageIndex.build([self.root], **kwargs)
 
+    def assert_path_equal(self, actual, expected):
+        """Compare Windows paths by filesystem identity, not 8.3 spelling."""
+        try:
+            same = os.path.samefile(os.fspath(actual), os.fspath(expected))
+        except OSError:
+            same = os.path.normcase(os.path.abspath(os.fspath(actual))) == os.path.normcase(
+                os.path.abspath(os.fspath(expected)))
+        self.assertTrue(same, f"{actual!s} != {expected!s}")
+
     def test_module_does_not_need_blender(self):
         source = (SCRIPTS / "package_index.py").read_text(encoding="utf-8")
         self.assertNotIn("import bpy", source)
@@ -46,14 +55,16 @@ class IndexTests(unittest.TestCase):
     def test_indexes_aircraft_and_package(self):
         folder = aircraft(self.root, "test-base", "Test_Plane")
         index = self.build()
-        self.assertEqual(index.aircraft_folders("test_plane"), [folder])
-        self.assertEqual(index.package_of(folder), self.root / "test-base")
+        self.assertEqual(len(index.aircraft_folders("test_plane")), 1)
+        self.assert_path_equal(index.aircraft_folders("test_plane")[0], folder)
+        self.assert_path_equal(index.package_of(folder), self.root / "test-base")
         self.assertEqual(index.packages[str(self.root / "test-base").casefold()]["content_type"], "AIRCRAFT")
 
     def test_name_lookup_is_case_insensitive(self):
         folder = aircraft(self.root, "test-base", "Test_Plane")
         index = self.build()
-        self.assertEqual(index.aircraft_folders("TEST_PLANE"), [folder])
+        self.assertEqual(len(index.aircraft_folders("TEST_PLANE")), 1)
+        self.assert_path_equal(index.aircraft_folders("TEST_PLANE")[0], folder)
 
     def test_describe_marks_installed_and_absent_bases(self):
         aircraft(self.root, "test-base", "Test_Plane")
@@ -80,7 +91,7 @@ class IndexTests(unittest.TestCase):
         index = self.build()
         target = livery / "model" / ".." / ".." / "Test_Plane" / "model" / "int.xml"
         path, origin, candidates = index.rebase(target, livery)
-        self.assertEqual(path, base / "model" / "int.xml")
+        self.assert_path_equal(path, base / "model" / "int.xml")
         self.assertEqual(origin, "aircraft_index")
         self.assertEqual(candidates, [])
 
@@ -93,14 +104,14 @@ class IndexTests(unittest.TestCase):
         index = self.build()
         target = livery / "model" / ".." / ".." / ".." / ".." / "texture" / "Gauges"
         path, origin, _ = index.rebase(target, livery)
-        self.assertEqual(path, package_texture)
+        self.assert_path_equal(path, package_texture)
         self.assertEqual(origin, "base_package")
 
     def test_existing_path_is_returned_without_origin(self):
         folder = aircraft(self.root, "test-base", "Test_Plane")
         index = self.build()
         path, origin, candidates = index.rebase(folder / "model", folder)
-        self.assertEqual(path, folder / "model")
+        self.assert_path_equal(path, folder / "model")
         self.assertIsNone(origin)
         self.assertEqual(candidates, [])
 
@@ -131,7 +142,7 @@ class IndexTests(unittest.TestCase):
         (folder / "model" / "int.xml").write_text("<ModelInfo/>", encoding="utf-8")
         index = self.build()
         path, origin, _ = index.rebase(folder / ".." / "Test_Plane" / "model" / "int.xml", folder)
-        self.assertEqual(path, folder / "model" / "int.xml")
+        self.assert_path_equal(path, folder / "model" / "int.xml")
         self.assertIsNone(origin)
 
     def test_cache_reuses_unchanged_packages(self):
@@ -201,7 +212,8 @@ class IndexTests(unittest.TestCase):
         (livery / "aircraft.cfg").write_text('[VARIATION]\nbase_container = "..\\Test_Plane" ; comment\n',
                                              encoding="utf-8")
         index = self.build()
-        self.assertEqual(index.base_aircraft(livery), [folder])
+        self.assertEqual(len(index.base_aircraft(livery)), 1)
+        self.assert_path_equal(index.base_aircraft(livery)[0], folder)
 
 
 class ResolverIndexTests(unittest.TestCase):
@@ -239,7 +251,7 @@ class ResolverIndexTests(unittest.TestCase):
         roles = {m["role"]: m for m in result["best_models"]}
         self.assertEqual(set(roles), {"exterior", "interior"})
         self.assertEqual(roles["interior"]["origin"], "aircraft_index")
-        self.assertEqual(Path(roles["interior"]["path"]), base / "model" / "int_LOD00.gltf")
+        self.assert_path_equal(Path(roles["interior"]["path"]), base / "model" / "int_LOD00.gltf")
 
     def test_without_index_the_same_livery_is_partial(self):
         _, livery = self.base_and_livery()
@@ -292,7 +304,7 @@ class ResolverIndexTests(unittest.TestCase):
         index = PackageIndex.build([self.root])
         models = resolver.model_from_cfg(livery / "model", index=index, aircraft=livery)
         interior = next(m for m in models if m["role"] == "interior")
-        self.assertEqual(Path(interior["path"]), base / "model" / "int_LOD00.gltf")
+        self.assert_path_equal(Path(interior["path"]), base / "model" / "int_LOD00.gltf")
         self.assertEqual(interior["origin"], "aircraft_index")
 
     def test_texture_fallback_resolves_through_base_package(self):
@@ -306,7 +318,7 @@ class ResolverIndexTests(unittest.TestCase):
         entry = next(d for d in result["dependencies"] if d["kind"] == "texture_fallback")
         self.assertTrue(entry["resolved"])
         self.assertEqual(entry["origin"], "base_package")
-        self.assertEqual(Path(entry["path"]), gauges)
+        self.assert_path_equal(Path(entry["path"]), gauges)
 
 
 if __name__ == "__main__":
