@@ -6,6 +6,8 @@ The model wizard is part of the 1.2.1 workflow. It opens for a partial package o
 
 Only roles declared by configuration are preselected. A filename-based role is a hint and requires explicit confirmation. The confirmed list is stored in the project `models` field and partial variants keep the `_partial` suffix.
 
+When an installed base is missing a model file declared by a livery, the wizard calls out the missing role and file, then labels usable base-package candidates as substitutes. The user chooses explicitly; the program never assumes that a similarly named LOD is equivalent.
+
 ---
 
 Мастер выбора состава моделей. Открывается автоматически, когда самолёт помечен `◐ нужен выбор моделей`, и вручную кнопкой **«Выбрать модели...»** на шаге 2 «Параметры проекта». Это штатная часть версии 1.2.1.
@@ -19,6 +21,8 @@ Only roles declared by configuration are preselected. A filename-based role is a
 - ливрея объявляет `interior=...\Int.xml`, а установленный базовый пакет этого XML не содержит — но сам glTF интерьера в нём есть под другим именем LOD.
 
 Раньше третий случай заканчивался частичной сборкой без интерьера. Теперь мастер сканирует базовый пакет и предлагает найденный файл, **не приписывая ему роль молча**.
+
+Если установленная база не содержит model-файл, на который ссылается ливрея, окно отдельно показывает отсутствующую роль и имя файла. Подходящие glTF базы остаются неподтверждёнными кандидатами. Выберите замену вручную: программа сохранит её в составе проекта, но не будет утверждать, что геометрия совпадает с отсутствующей ссылкой.
 
 ## Что показывает окно
 
@@ -71,7 +75,7 @@ python scripts/msfs_universal.py models "C:\...\SimObjects\Airplanes\Asobo_Pitts
 python scripts/msfs_universal.py models "C:\...\Airplanes\Test" --root "D:\Community"
 ```
 
-Печатает JSON: `aircraft`, `path`, `reason_code`, `reason`, `action`, `partial`, `base_aircraft` (`name`, `path`, `scanned`), `roles.exterior[]`, `roles.interior[]`, `default_models`, `missing_resources`. У каждого кандидата: `path`, `name`, `role`, `role_source`, `lod`, `variant`, `origin`, `declared`, `default`, `available`, `vertices`, `triangles`, `missing_buffers`, `unsupported`, `read_error`, `status`.
+Печатает JSON: `aircraft`, `path`, `reason_code`, `reason`, `action`, `partial`, `base_aircraft` (`name`, `path`, `scanned`), `roles.exterior[]`, `roles.interior[]`, `default_models`, `source_gaps`, `missing_resources`. `source_gaps` сообщает об отсутствующих внешних model-ссылках и их `problem_code`. У каждого кандидата: `path`, `name`, `role`, `role_source`, `lod`, `variant`, `origin`, `declared`, `default`, `available`, `vertices`, `triangles`, `missing_buffers`, `unsupported`, `read_error`, `status`.
 
 Команда всегда делает глубокую проверку: BIN и неподдерживаемые возможности видны сразу. На установленном MSFS 2020 один вызов занимает около 0.6 с.
 

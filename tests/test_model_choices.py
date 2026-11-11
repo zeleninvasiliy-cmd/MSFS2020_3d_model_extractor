@@ -159,6 +159,12 @@ class ModelChoicesTests(unittest.TestCase):
         # The composition stays unconfirmed until the user assigns the role.
         self.assertFalse(interior[0]["default"])
         self.assertEqual([m["role"] for m in choices["default_models"]], ["exterior"])
+        self.assertEqual(len(choices["source_gaps"]), 1)
+        gap = choices["source_gaps"][0]
+        self.assertEqual((gap["kind"], gap["role"], gap["problem_code"]),
+                         ("model", "interior", "declared_model_file_missing"))
+        self.assertEqual(Path(gap["path"]).name, "int.xml")
+        self.assertEqual(gap["detail"], "базовый самолёт установлен, но объявленный файл в нём отсутствует")
 
     def test_complete_package_does_not_scan_the_base(self):
         base = aircraft(self.root, "test-base", "Test_Plane")

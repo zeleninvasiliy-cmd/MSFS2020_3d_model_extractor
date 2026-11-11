@@ -1196,6 +1196,16 @@ class BuilderApp(tk.Tk):
         if base:
             headline.append(f"Базовый самолёт: {base.get('name')} — "
                             f"{'просканирован, его модели предложены ниже' if base.get('scanned') else 'установлен'}.")
+        for gap in data.get("source_gaps", []):
+            if gap.get("problem_code") == "declared_model_file_missing":
+                role = {"exterior": "экстерьера", "interior": "интерьера"}.get(
+                    gap.get("role"), gap.get("role", "модели"))
+                headline.append(f"В пакете отсутствует объявленный model-файл {role}: {Path(gap.get('path') or '').name}. "
+                                "Если подходящая модель базы есть ниже, отметьте её вручную; программа сохранит выбор в проект.")
+            elif gap.get("problem_code") == "base_aircraft_missing":
+                role = {"exterior": "экстерьера", "interior": "интерьера"}.get(
+                    gap.get("role"), gap.get("role", "модели"))
+                headline.append(f"Для роли {role} отсутствует базовый самолёт. Установите базовый пакет или выберите другой источник.")
         self.model_headline.configure(text="\n".join(line for line in headline if line))
         for role, tree in self.model_trees.items():
             tree.delete(*tree.get_children())
@@ -1260,6 +1270,13 @@ class BuilderApp(tk.Tk):
                  f"Роль: {self.MODEL_ROLE_TITLES.get(entry['role'], entry['role'])} "
                  f"(определена по: {entry.get('role_source', 'неизвестно')}). "
                  f"Model-вариант: {entry.get('variant') or '—'}."]
+        substitute = next((gap for gap in self.model_data.get("source_gaps", [])
+                           if gap.get("role") == entry.get("role")
+                           and gap.get("problem_code") == "declared_model_file_missing"), None)
+        if substitute:
+            expected = Path(substitute.get("path") or "").name
+            lines.append(f"Кандидат заменяет отсутствующую ссылку {expected} для этой роли. "
+                         "Проверьте, что его геометрия подходит.")
         if entry.get("missing_buffers"):
             lines.append("Отсутствуют буферы: " + "; ".join(entry["missing_buffers"]))
         if entry.get("unsupported"):

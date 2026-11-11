@@ -395,6 +395,24 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertEqual([e["name"] for e in self.app.chosen_models()], ["ext_LOD00.gltf"])
         self.assertIn("интерьер: 0", self.app.model_summary.cget("text"))
 
+    def test_wizard_explains_substitute_for_missing_declared_model_file(self):
+        exterior = self.choice("ext_LOD00.gltf", "exterior")
+        interior = self.choice("int_LOD01.gltf", "interior", role_source="имя файла",
+                               origin="base_package", declared=False, default=False)
+        data = self.payload([exterior], [interior])
+        data["source_gaps"] = [{"kind": "model", "role": "interior",
+                                "path": "C:/base/model/int.xml",
+                                "problem_code": "declared_model_file_missing",
+                                "detail": "declared file is absent"}]
+        self.model_window(data)
+        headline = self.app.model_headline.cget("text")
+        self.assertIn("отсутствует объявленный model-файл интерьера: int.xml", headline)
+        tree = self.app.model_trees["interior"]
+        row = tree.get_children()[0]
+        tree.selection_set(row)
+        self.app.on_model_row_selected(type("Event", (), {"widget": tree})())
+        self.assertIn("заменяет отсутствующую ссылку int.xml", self.app.model_detail.get("1.0", "end"))
+
     def test_unavailable_row_cannot_be_checked(self):
         broken = self.choice("ext_LOD00.gltf", "exterior", available=False, default=False,
                              status="MISSING_BUFFER", missing_buffers=["C:/synthetic/ext_LOD00.bin"])

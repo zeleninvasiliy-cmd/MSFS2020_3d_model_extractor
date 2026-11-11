@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/release-pipeline",
+  "working_branch": "codex/gui-model-source-recovery",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -100,26 +100,28 @@
     {
       "id": "M8",
       "name": "Resolver diagnostics and gated release automation",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "shared package-index history-stub policy",
         "stable machine-readable dependency causes",
         "path-free blocker impact counts",
         "Windows release workflow guarded by VERSION and main ancestry"
       ],
-      "result": "Removed four false DA62 inheritance ambiguities caused by a shadowed fs-base-history stub. Deep local scan: 233 aircraft, 226 geometry-buildable, 48 partial; 0 ambiguous links; 89 missing-base causes (45 base links plus 44 model references), 4 declared model files absent from installed bases, 60 optional texture fallbacks. Added problem_code to new resolver dependencies while retaining text fallback for older catalog JSON. 170 tests, GUI self-test and compileall pass. Release workflow syntax has been reviewed statically; actionlint/YAML parser are unavailable in this environment.",
+      "result": "Removed four false DA62 inheritance ambiguities caused by a shadowed fs-base-history stub. Deep local scan: 233 aircraft, 226 geometry-buildable, 48 partial; 0 ambiguous links; 89 missing-base causes (45 base links plus 44 model references), 4 declared model files absent from installed bases, 60 optional texture fallbacks. Added problem_code to new resolver dependencies while retaining text fallback for older catalog JSON. 170 tests, GUI self-test and compileall pass. Release workflow syntax has been reviewed statically; actionlint/YAML parser are unavailable in this environment. Committed as d4218ff and pushed to origin/codex/release-pipeline; PR/release remains blocked by GitHub integration 403.",
       "next": "Commit/push this stage, then take a GUI workflow stage around reviewing candidate models for the four declared-but-missing model references; independently inspect feature gaps and regression risks before choosing the following compatibility stage."
     },
     {
       "id": "M9",
       "name": "GUI model-source decision flow",
-      "status": "planned",
+      "status": "complete",
       "deliverables": [
         "clear candidate source files for declared-but-missing livery models",
         "explicit role/origin and missing-source presentation",
         "early validation and recovery path before Blender"
       ],
-      "acceptance": "Synthetic cases plus Pitts/Volocity installed records show candidates and source provenance without guessing; user can select valid model choices and the choice survives project save/reopen."
+      "acceptance": "Synthetic cases plus Pitts/Volocity installed records show candidates and source provenance without guessing; user can select valid model choices and the choice survives project save/reopen.",
+      "result": "Added model_choices.source_gaps for unresolved external model declarations. GUI now states the missing role and filename and explains that a chosen base-package candidate is a manual substitute; it does not mark it correct automatically. Synthetic tests pass, and a real Pitts livery check showed missing S1_Interior.xml with an available S1_Interior_LOD01.gltf from the installed base. 171 tests, GUI self-test and compileall pass.",
+      "next": "Start M10 compatibility-source audit: investigate unresolved optional texture fallbacks and distinguish resources truly absent from paths hidden in package layouts; do not loosen optional/required semantics."
     },
     {
       "id": "M10",
@@ -131,6 +133,17 @@
         "fix highest-impact reproducible package-resolution issue with fixtures"
       ],
       "acceptance": "Deep catalog has no unexplained false missing dependency among resolvable installed packages; every remaining blocked class has a concrete user action or explicit unsupported-source diagnosis."
+    },
+    {
+      "id": "M11",
+      "name": "GUI diagnostics and package-source actions",
+      "status": "planned",
+      "deliverables": [
+        "clear package/source provenance for candidates and fallbacks",
+        "user actions for installing/selecting absent base packages",
+        "validate missing/ambiguous references before launching Blender"
+      ],
+      "acceptance": "GUI explains whether a blocker is recoverable from local installed packages and what the user can do next; no unresolved ambiguity is silently guessed."
     }
   ],
   "rolling_roadmap": [

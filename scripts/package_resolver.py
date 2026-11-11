@@ -921,6 +921,11 @@ def model_choices(folder, *, roots=(), index=None):
         chosen.sort(key=lambda e: (not e["default"], not e["declared"], not e["available"],
                                    e["lod"] if e["lod"] is not None else 99, e["name"].casefold()))
         roles[role] = chosen
+    source_gaps = [{"kind": item.get("kind"), "role": item.get("name"),
+                    "path": item.get("path"), "problem_code": item.get("problem_code"),
+                    "detail": item.get("detail")}
+                   for item in report["dependencies"]
+                   if not item.get("resolved") and item.get("kind") == "model"]
     return {"aircraft": report["aircraft"], "path": report["path"], "reason_code": report["reason_code"],
             "reason": report["reason"], "action": report["action"], "partial": report["partial"],
             "needs_model_selection": report["needs_model_selection"],
@@ -928,4 +933,5 @@ def model_choices(folder, *, roots=(), index=None):
             "base_aircraft": None if base is None else {"name": base.get("name"), "path": base["path"],
                                                        "scanned": base_scanned},
             "roles": roles, "default_models": [{"path": m["path"], "role": m["role"]} for m in report["best_models"]],
+            "source_gaps": source_gaps,
             "missing_resources": report["missing_resources"]}

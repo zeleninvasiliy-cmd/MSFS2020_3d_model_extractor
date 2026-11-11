@@ -1,21 +1,21 @@
 {
   "version": "1.2.1",
   "last_completed_stage": "D-release-1.2.1",
-  "active_stage": "M8-resolver-diagnostics-and-release-automation",
-  "working_branch": "codex/release-pipeline",
-  "last_commit": "pending-M8-final-validation",
+  "active_stage": "M9-GUI-model-source-decision-flow",
+  "working_branch": "codex/gui-model-source-recovery",
+  "last_commit": "pending-M9-checkpoint",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "170 passed",
+    "unittest": "171 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
+    "git_diff_check": "passed",
+    "real_catalog": "Pitts livery queried through catalog/models CLI; missing S1_Interior.xml shown and available S1_Interior_LOD01.gltf candidate returned from base package",
     "release_build": "not run; feature branch is unmerged and VERSION remains 1.2.1",
-    "git_diff_check": "passed before final resolver-code update; rerun before commit",
-    "blender_worker_checks": "passed on Blender 5.2.3 LTS during M7",
-    "release_workflow": "guard reviewed; parser/actionlint unavailable, GitHub CI still required"
+    "release_workflow": "statically reviewed; GitHub Actions syntax and release job still need server-side CI"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -61,12 +61,12 @@
     "texture_fallback_affected_aircraft": 58,
     "ambiguous_dependency_count": 0
   },
-  "current_blocker": "GitHub integration returns HTTP 403 when creating PRs, so feature branches can be pushed but cannot be merged or release-tagged. Release automation is gated to commits already on main; workflow syntax still needs GitHub Actions CI validation.",
-  "next_step": "Commit/push the resolver and compatibility-report changes on codex/release-pipeline. Then inspect and improve the GUI decision flow for four installed-base model-file misses, test user-visible recovery, and independently audit for regressions.",
-  "next_stage": "M9-GUI-model-source-decision-flow",
+  "current_blocker": "GitHub integration returns HTTP 403 on PR creation; branches can be pushed but not merged or released. Release workflow is gated to merged-main tags.",
+  "next_step": "Commit and push M9. Then inspect all unresolved optional texture fallbacks through the program CLI, look for false misses in installed package roots, and add a regression test for any reproducible resolver issue.",
+  "next_stage": "M10-compatibility-source-audit",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T02:45:00Z"
+  "updated_utc": "2026-11-11T02:56:00Z"
 }
