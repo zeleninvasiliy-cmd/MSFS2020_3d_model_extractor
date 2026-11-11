@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/live-geometry-sample-third-tranche",
+  "working_branch": "codex/live-geometry-sample-fifth-tranche",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -469,6 +469,20 @@
       "acceptance": "Each selected record has one successful geometry checkpoint and Blender audit; all records were absent from earlier reports; temporary outputs removed and no source packages modified.",
       "result": "20 previously unreported livery/model-folder records across Caravan 208B, A320neo, 747-8i and 787-10 were processed. All 20 created one checkpoint and passed Blender 5.2 structural audit; 17 were complete and three partial B787 variants used the GUI model chooser. Elapsed time was 13.8–39.5 seconds per item. No render or source changes; temporary outputs cleaned. Report: compatibility/headless_live_geometry_sample_m35.json.",
       "next": "M36: continue breadth sampling remaining unreported geometry-buildable records, prioritizing distinct aircraft families and model source files, then perform an independent GUI and architecture review."
+    },
+    {
+      "id": "M36",
+      "name": "Live-catalog geometry import sample, fifth tranche",
+      "status": "complete",
+      "deliverables": [
+        "select more unreported installed aircraft/livery records across distinct package states",
+        "exercise complete and partial paths through the GUI model workflow",
+        "build and audit geometry through normal pipeline",
+        "document remaining coverage and follow-up"
+      ],
+      "acceptance": "Each selected unreported record creates one geometry checkpoint and passes Blender audit; temporary outputs are cleaned; no aircraft source is modified.",
+      "result": "20 unreported records across B787, Baron, Bonanza, C152 Aerobat/C152, C172, CAP10C and CJ4 all created one checkpoint and passed Blender 5.2 structural audit. See compatibility/headless_live_geometry_sample_m36.json. No renders or source changes; temporary outputs cleaned.",
+      "next": "M37: continue into remaining catalog variants and new aircraft families, then review availability classification and identify whether broad coverage gaps are caused by duplicate variants, missing base resources or unsupported source formats."
     }
   ],
   "rolling_roadmap": [
@@ -627,6 +641,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M36-live-geometry-sample-fifth-tranche",
-  "updated_utc": "2026-11-11T07:05:00Z"
+  "next_stage": "M37-live-geometry-sample-sixth-tranche",
+  "updated_utc": "2026-11-11T07:12:00Z"
 }

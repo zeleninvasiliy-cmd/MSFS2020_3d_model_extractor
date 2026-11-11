@@ -241,3 +241,7 @@ M34 проверил 30 ранее не охваченных реальным и
 M35 covers 20 additional, previously unreported livery/model-folder records across Caravan 208B, A320neo, 747-8i and 787-10. All 20 created one checkpoint and passed Blender 5.2 structural audit; three partial B787 liveries used explicit GUI role confirmation. Report: [headless_live_geometry_sample_m35.json](../compatibility/headless_live_geometry_sample_m35.json).
 
 M35 проверил 20 ранее не охваченных вариантов Caravan 208B, A320neo, 747-8i и 787-10 с разными папками моделей. Все создали по одному checkpoint и прошли структурный аудит Blender 5.2; для трёх частичных ливрей B787 состав явно подтвердили в GUI-мастере. Отчёт: [headless_live_geometry_sample_m35.json](../compatibility/headless_live_geometry_sample_m35.json).
+
+M36 covers 20 more unreported records across B787, Baron, Bonanza, C152 Aerobat/C152, C172, CAP10C and CJ4. Every build created one checkpoint and passed Blender 5.2 structural audit, including partial packages confirmed in the GUI chooser. Report: [headless_live_geometry_sample_m36.json](../compatibility/headless_live_geometry_sample_m36.json).
+
+M36 добавил 20 ранее не охваченных вариантов B787, Baron, Bonanza, C152 Aerobat/C152, C172, CAP10C и CJ4. Все сборки создали по одному checkpoint и прошли структурный аудит Blender 5.2; частичные пакеты подтверждались в GUI-мастере. Отчёт: [headless_live_geometry_sample_m36.json](../compatibility/headless_live_geometry_sample_m36.json).
