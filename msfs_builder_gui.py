@@ -831,7 +831,7 @@ class BuilderApp(tk.Tk):
         command = cli_command("catalog", "--root", root)
         if self.catalog_deep_var.get():
             command.append("--deep")
-        self.run_command(command, self.on_inventory_result)
+        self.run_command(command, self.on_catalog_result)
 
     def run_command(self, command, callback=None):
         if self.busy:
