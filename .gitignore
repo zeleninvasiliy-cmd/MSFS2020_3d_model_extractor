@@ -42,3 +42,9 @@ Desktop.ini
 
 # Generated compatibility and audit reports
 /compatibility/*.json
+
+# Retained local-only test sources, excluded from the public repository
+/tests/
+/.github/workflows/tests.yml
+/release/verify_installer.ps1
+/wiki/Testing.md
