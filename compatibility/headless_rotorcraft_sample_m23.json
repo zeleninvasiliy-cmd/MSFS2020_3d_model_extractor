@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T05:09:58Z",
+  "mode": "rotorcraft_normal_cli_geometry_build_and_audit_no_render",
+  "blender_major": "5.2",
+  "catalog_aircraft": 233,
+  "rotorcraft_builds_succeeded": 7,
+  "checkpoint_audits_passed": 7,
+  "blocked_source_cases": 1,
+  "build_seconds_range": [
+    7.7,
+    30.6
+  ],
+  "source_format_profile": {
+    "source_format": "gltf",
+    "required_extensions": [
+      "MSFT_texture_dds"
+    ],
+    "primitive_modes": [
+      4
+    ],
+    "buffer_count": 1
+  },
+  "temporary_outputs_cleaned": true,
+  "rendered": false,
+  "interpretation": "Checkpoint audit counts are review hints only; they do not validate placement, silhouette, or visual geometry correctness.",
+  "results": [
+    {
+      "aircraft": "Asobo_Cabri_G2",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": [
+        "Cabri_G2_LOD00.gltf",
+        "Cabri_G2_Interior_LOD00.gltf"
+      ],
+      "build_exit": 0,
+      "seconds": 8.9,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 327,
+        "same_world_geometry_groups": 0,
+        "far_disconnected_objects": 32
+      }
+    },
+    {
+      "aircraft": "cowansim-r22",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": [
+        "CS_R22_EXT.gltf",
+        "CS_R22_INT.gltf"
+      ],
+      "build_exit": 0,
+      "seconds": 15.6,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 779,
+        "same_world_geometry_groups": 1,
+        "far_disconnected_objects": 54
+      }
+    },
+    {
+      "aircraft": "cowansim-r66",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": [
+        "CS_R66_EXT.gltf",
+        "CS_R66_INT.gltf"
+      ],
+      "build_exit": 0,
+      "seconds": 22.2,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1027,
+        "same_world_geometry_groups": 4,
+        "far_disconnected_objects": 110
+      }
+    },
+    {
+      "aircraft": "digital_aeronautics_mi_2",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": [
+        "lod0_exterior.gltf",
+        "lod0_interior.gltf"
+      ],
+      "build_exit": 0,
+      "seconds": 30.6,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 789,
+        "same_world_geometry_groups": 0,
+        "far_disconnected_objects": 66
+      }
+    },
+    {
+      "aircraft": "hcg-cabri-g2",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": [
+        "G2_EXTERIOR_LOD00.gltf",
+        "G2_INTERIOR_LOD00.gltf"
+      ],
+      "build_exit": 0,
+      "seconds": 9.7,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 193,
+        "same_world_geometry_groups": 0,
+        "far_disconnected_objects": 30
+      }
+    },
+    {
+      "aircraft": "hcg_cabri_utility",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": [
+        "G2-Utility_EXTERIOR_LOD00.gltf",
+        "G2-Utility_INTERIOR_LOD00.gltf"
+      ],
+      "build_exit": 0,
+      "seconds": 8.6,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 176,
+        "same_world_geometry_groups": 0,
+        "far_disconnected_objects": 27
+      }
+    },
+    {
+      "aircraft": "microsoft-aircraft-bell407",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": [
+        "nd407_LOD0.gltf",
+        "nd407_interior_LOD0.gltf"
+      ],
+      "build_exit": 0,
+      "seconds": 7.7,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 552,
+        "same_world_geometry_groups": 0,
+        "far_disconnected_objects": 14
+      }
+    },
+    {
+      "aircraft": "RSP_R44_EC-NIK",
+      "catalog_reason_code": "UNRESOLVED_ALIAS",
+      "can_build_geometry": false,
+      "build_exit": null,
+      "failure_class": "catalog_source_blocker",
+      "diagnostic": "Не разрешена ссылка на базовую модель",
+      "user_action": "Добавить Packages-каталог с отсутствующим базовым самолётом и пересканировать."
+    }
+  ]
+}

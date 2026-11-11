@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/gui-audit-report-recovery",
+  "working_branch": "codex/rotorcraft-compatibility-audit",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -292,18 +292,31 @@
       ],
       "acceptance": "The report action never opens a report from a different project; it opens the highest numbered matching report or gives an actionable no-report message.",
       "result": "The Geometry tab now derives the report from the active project and currently selected/latest geometry checkpoint, scans only matching project-local audit reports, and chooses the highest numeric suffix (not mtime). Project close/open clears the in-memory pointer; stale references from other projects/checkpoints are ignored. Added tests for restart recovery, stale-project isolation, checkpoint matching, and numeric ordering. Fixed the desktop test fixture to always keep output under its temporary project and removed the verified placeholder it had written in repo root. 196 tests, GUI self-test, compileall and diff check pass.",
-      "next": "M23 compatibility breadth: measure whether installed packages include rotorcraft or other source/model classes outside prior samples; run normal geometry build/audit on newly represented classes, distinguish source limits from import errors, and use findings to prioritize format support."
+      "next": "M23 completed: seven installed rotorcraft built and passed Blender audit; RSP R44 was correctly stopped at the missing base-aircraft alias. Next, improve the catalog recovery workflow for packages with unresolved base links."
     },
     {
       "id": "M23",
       "name": "New aircraft class and rotorcraft compatibility audit",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "query the live catalog for rotorcraft or other source classes not covered by prior samples",
         "run plan validation and normal headless geometry import for newly represented buildable records",
         "identify any format or worker defect using a reproducible input; avoid guessing at unsupported sources"
       ],
-      "acceptance": "Selected new classes have a documented build/audit result and temporary cleanup; a non-existent class is documented from catalog evidence and another uncovered class is selected."
+      "acceptance": "Selected new classes have a documented build/audit result and temporary cleanup; a non-existent class is documented from catalog evidence and another uncovered class is selected.",
+      "result": "Deep catalog found seven buildable rotorcraft packages (Asobo Cabri G2, CowanSim R22/R66, Digital Aeronautics Mi-2, HCG Cabri G2 and Utility, Microsoft Bell 407); all 7 built one checkpoint through normal CLI with Blender 5.2 and passed audit, in 7.7–30.6 seconds. RSP_R44_EC-NIK was not sent to Blender: catalog correctly reported UNRESOLVED_ALIAS and advised adding the missing base-aircraft Packages root. All tested sources were JSON glTF, one local buffer, TRIANGLES and MSFT_texture_dds. No renders or source writes; temporary outputs cleaned. Path-free report: compatibility/headless_rotorcraft_sample_m23.json.",
+      "next": "M24 GUI: show a direct package-root recovery action when selected or diagnosed aircraft has an unresolved base_container/missing base aircraft; hide it for unrelated statuses; explain that the user must add a Packages root and rescan."
+    },
+    {
+      "id": "M24",
+      "name": "Contextual recovery for missing base aircraft",
+      "status": "in_progress",
+      "deliverables": [
+        "show the Packages root manager from the aircraft diagnosis when a base link is unresolved",
+        "hide the action for healthy packages and unrelated blockers",
+        "keep the action explanatory and follow it with a rescan workflow"
+      ],
+      "acceptance": "GUI regression tests cover unresolved alias, missing base dependency, healthy package and unrelated failure; package roots can still be managed only through the existing settings UI."
     }
   ],
   "rolling_roadmap": [
@@ -462,5 +475,5 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M19-GUI-checkpoint-audit-and-review-hints"
   },
-  "next_stage": "M23-new-aircraft-class-compatibility-audit"
+  "next_stage": "M24-contextual-base-package-recovery"
 }
