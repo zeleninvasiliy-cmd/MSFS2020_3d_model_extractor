@@ -753,7 +753,7 @@
     {
       "id": "M57",
       "name": "Full catalog texture coverage, sixth tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "process ten unsampled CJ4/DA40 NG/DA62 records",
         "run full geometry and texture pipeline",
@@ -761,7 +761,34 @@
         "reconcile counts and record any missing-map outlier"
       ],
       "acceptance": "Ten unique records pass final audit and texture stages are classified; exact remaining list is current and path-free.",
-      "next": "Continue ten-record batches across all remaining OK aircraft packages."
+      "next": "M58: fix aircraft catalog grouping so livery-suffix, subtype, and physical modifications share a family tree with collapsed subgroups; then resume M59 texture batches.",
+      "result": "Resumed and completed the interrupted sample. All ten CJ4/DA40 NG/DA62 records created geometry and texture checkpoints and passed final Blender 5.2 audit; all texture stages returned exit 0 with zero missing maps. Deep catalog reconciliation: 75/174 OK records sampled, 99 remain; partial coverage is 48/48. Reports: compatibility/headless_texture_ok_sample_m57.json and compatibility/ok_texture_coverage_m57.json. The interrupted temporary model directory and progress file were removed after auditing the final checkpoint."
+    },
+    {
+      "id": "M58",
+      "name": "Aircraft family and subtype grouping in catalog",
+      "status": "in_progress",
+      "deliverables": [
+        "recognize both `_Livery_*` and `_LiveryAviators` suffix forms",
+        "group engine/model modifications under one aircraft family",
+        "nest subtype paths such as C172SP/AS1000/Floaters and DA40/NG/TDI",
+        "keep group selection non-buildable, preserve selected leaf by source path, expand ancestors when focusing an item",
+        "add GUI regressions and bilingual workflow documentation"
+      ],
+      "acceptance": "Pitts base/Common/LiveryAviators share one group; DA40 NG and TDI are subgroups under DA40; C172 AS1000/Classic/Floaters/Skis/TowPlane share C172; all groups start collapsed; leaf selection/navigation/filter tests pass.",
+      "next": "M59: resume texture coverage with ten next unsampled OK records after the grouping correction is verified."
+    },
+    {
+      "id": "M59",
+      "name": "Full catalog texture coverage, seventh tranche",
+      "status": "planned",
+      "deliverables": [
+        "select ten next unsampled OK catalog entries from M57 index",
+        "run geometry, texture and Blender audit",
+        "refresh exact coverage index and classify texture status",
+        "continue until every OK entry has been sampled"
+      ],
+      "acceptance": "Ten unique records pass the final audit or have a reproducible blocker; coverage report remains path-free."
     }
   ],
   "rolling_roadmap": [
@@ -918,8 +945,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M57-full-catalog-texture-coverage-sixth-tranche"
+    "next_stage": "M58-aircraft-family-hierarchy"
   },
-  "next_stage": "M57-full-catalog-texture-coverage-sixth-tranche",
-  "updated_utc": "2026-11-11T10:41:00Z"
+  "next_stage": "M58-aircraft-family-hierarchy",
+  "updated_utc": "2026-11-11T10:15:35Z"
 }
