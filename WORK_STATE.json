@@ -1,19 +1,19 @@
 {
   "version": "1.2.0",
-  "last_completed_stage": "G0-documentation-cleanup",
-  "last_commit": "8315e06",
+  "last_completed_stage": "A-compatibility-audit",
+  "last_commit": "c23ab50",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42926784941"
   },
   "local_checks": {
-    "unittest": "140 passed",
+    "unittest": "143 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "release_build": "passed"
   },
   "current_blocker": "GitHub Wiki repository is enabled but has not been initialized with its first page.",
-  "next_step": "Create the first GitHub Wiki page, then push the bilingual wiki pages from the repository wiki/ directory.",
-  "next_stage": "A-compatibility-audit",
-  "updated_utc": "2026-11-10T23:20:00Z"
+  "next_step": "Continue stage B: audit resolver/format edge cases, starting with clear deep-diagnosis propagation and regression tests.",
+  "next_stage": "B-resolver-format-compatibility",
+  "updated_utc": "2026-11-11T00:20:00Z"
 }
