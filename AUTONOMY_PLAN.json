@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/live-geometry-sample-seventh-tranche",
+  "working_branch": "codex/live-geometry-sample-eighth-tranche",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -539,6 +539,20 @@
       "acceptance": "Tk GUI regression proves visible selection persistence, hidden selection cleanup, collapsed groups and disabled Next; full unit suite and GUI startup self-test pass.",
       "result": "Aircraft catalog filtering now restores the selected catalog entry when it remains visible and clears the aircraft/source/model/livery selection when the active filter hides it, preventing an invisible stale selection from enabling Next. Existing grouping test now asserts collapsed-by-default state and exercises both transitions. Focused regression and all 205 tests, GUI self-test, compileall and diff check pass.",
       "next": "M41: continue through remaining unreported geometry entries, then review whether catalog grouping exposes duplicate package/livery records clearly without presenting duplicate variants as separate aircraft families."
+    },
+    {
+      "id": "M41",
+      "name": "Live-catalog geometry import sample, eighth tranche",
+      "status": "complete",
+      "deliverables": [
+        "cover unreported SR22/TBM/VL3/XCub and DC-3 variants",
+        "verify partial model-role path and distinct model folders",
+        "audit every final geometry checkpoint",
+        "record coverage without private paths"
+      ],
+      "acceptance": "All selected unreported records build one checkpoint and pass Blender audit; temporary outputs are removed and no aircraft sources are modified.",
+      "result": "20 previously unreported records across Savage Shock Ultra, SR22, TBM 930, VL3, XCub and Douglas DC-3 created one checkpoint and passed Blender 5.2 audit. Three SR22 and one Savage Shock Ultra packages were partial and used explicit GUI model selection. DC-3 models with roughly 1,950–1,985 mesh objects also passed. Report: compatibility/headless_live_geometry_sample_m41.json.",
+      "next": "M42: reconcile the reports against the live catalog, audit duplicate/near-duplicate records and remaining geometry-buildable entries, then select an appropriate texture and UI task based on measured gaps."
     }
   ],
   "rolling_roadmap": [
@@ -697,6 +711,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M41-live-geometry-sample-eighth-tranche",
-  "updated_utc": "2026-11-11T07:55:00Z"
+  "next_stage": "M42-live-catalog-reconciliation",
+  "updated_utc": "2026-11-11T08:05:00Z"
 }

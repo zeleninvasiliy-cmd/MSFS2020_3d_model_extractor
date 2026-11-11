@@ -261,3 +261,7 @@ M39 добавил 20 ранее не охваченных геометриче�
 M40 hardens aircraft availability filters: a selected aircraft remains selected when it still matches the filter, and a hidden aircraft is cleared so the Next action cannot use invisible state. The GUI regression also verifies collapsed-by-default groups.
 
 M40 исправляет состояние фильтра каталога: самолёт остаётся выбранным, если он всё ещё виден; если фильтр его скрывает, выбор сбрасывается, и кнопка «Далее» выключается. GUI-регрессия также проверяет, что группы изначально свёрнуты.
+
+M41 covers 20 more records across SR22, TBM 930, VL3, XCub, Savage Shock Ultra and Douglas DC-3. All checkpoints passed Blender 5.2 structural audit, including partial packages selected in the GUI chooser. The DC-3 entries imported at roughly 1,950–1,985 mesh objects. Report: [headless_live_geometry_sample_m41.json](../compatibility/headless_live_geometry_sample_m41.json).
+
+M41 проверил 20 записей SR22, TBM 930, VL3, XCub, Savage Shock Ultra и Douglas DC-3. Все checkpoint прошли структурный аудит Blender 5.2, включая partial-пакеты с явным выбором в GUI-мастере. В моделях DC-3 импортировано примерно 1 950–1 985 mesh-объектов. Отчёт: [headless_live_geometry_sample_m41.json](../compatibility/headless_live_geometry_sample_m41.json).
