@@ -476,8 +476,8 @@ def make_plan(config_file, stage=None):
         seen = set()
         for item in models:
             path = Path(item["path"])
-            if path.suffix.casefold() != ".gltf" or not path.is_file() or item["role"] not in {"exterior", "interior"}:
-                raise ValueError(f"Требуется доступный glTF и роль exterior/interior: {item}. Проверьте inventory.")
+            if path.suffix.casefold() not in {".gltf", ".glb"} or not path.is_file() or item["role"] not in {"exterior", "interior"}:
+                raise ValueError(f"Требуется доступный glTF/GLB и роль exterior/interior: {item}. Проверьте inventory.")
             if path in seen:
                 raise ValueError(f"Дублирующаяся модель: {path}")
             seen.add(path)

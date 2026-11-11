@@ -369,6 +369,13 @@ class PlanDiagnosisTests(unittest.TestCase):
                                               models=[{"path": exterior, "role": "exterior"}]), "geometry")
         self.assertEqual([m["role"] for m in plan["models"]], ["exterior"])
 
+    def test_glb_model_is_accepted_by_build_plan(self):
+        folder = complete_aircraft(self.root / "src")
+        glb = folder / "model" / "body.glb"
+        glb.write_bytes(b"synthetic GLB placeholder")
+        plan = pipeline.make_plan(self.config(folder, models=[{"path": str(glb), "role": "exterior"}]), "geometry")
+        self.assertEqual(Path(plan["models"][0]["path"]), glb.resolve())
+
     def test_common_only_package_is_rejected_with_reason(self):
         folder = aircraft(self.root / "src", name="Test_Common")
         model = folder / "model"
