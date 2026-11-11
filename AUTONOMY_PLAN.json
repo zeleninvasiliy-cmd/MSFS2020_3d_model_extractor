@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/contextual-base-package-recovery",
+  "working_branch": "codex/float-ski-variant-coverage",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -318,18 +318,31 @@
       ],
       "acceptance": "GUI regression tests cover unresolved alias, missing base dependency, healthy package and unrelated failure; package roots can still be managed only through the existing settings UI.",
       "result": "Aircraft selection and deep diagnosis now show a contextual “Add base package folder” button only for reason_code=UNRESOLVED_ALIAS or an explicit unresolved base_container/base_aircraft_missing record. It opens the existing Package folders manager; healthy packages and texture-fallback-only issues hide it. Bilingual user and GUI guides updated. Added three GUI regressions for alias visibility/action, missing base dependency, and hiding for healthy/unrelated status. 199 tests, GUI self-test, compileall and diff check passed.",
-      "next": "M25 compatibility: select untested installed aircraft with float/skis variants and a very large flying boat; exercise normal build/audit and report any worker or plan defects separately."
+      "next": "M25 completed: nine float/ski aircraft variants and the Hughes H-4 all built and passed structural audit. Next, remove the extra manual rescan step from missing-base recovery."
     },
     {
       "id": "M25",
       "name": "Float/skis variants and large flying boat coverage",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "measure available unusual installed variants from deep catalog",
         "build/audit newly represented aircraft and variants through standard CLI",
         "classify failures by model source, role assignment and Blender worker behavior"
       ],
-      "acceptance": "Each selected variant has one recorded plan/build/audit result with no source modifications or renders; the report records any missing-source blocker precisely."
+      "acceptance": "Each selected variant has one recorded plan/build/audit result with no source modifications or renders; the report records any missing-source blocker precisely.",
+      "result": "Selected nine installed sources: C172 floats/skis, XCub floats/skis, Pilatus PC-6 G950 floats/wheels, PC-6 Gauge skis/wheels, and Hughes H-4 Hercules. Each normal GUI-generated config built through CLI with Blender 5.2, produced exactly one geometry checkpoint and passed the checkpoint audit. Build times: 7.1–17.0 s. `model.floats` was selected for XCub floats; the other variants used their declared `model` folder. All sources were JSON glTF with one local buffer and MSFT_texture_dds. No render or source writes; temporary outputs cleaned. Path-free evidence is compatibility/headless_float_ski_large_aircraft_m25.json. Visual float/ski placement remains outside this structural audit.",
+      "next": "M26 GUI recovery: selecting an additional root from the contextual missing-base action should save it and automatically rescan the catalog, so users do not have to return to a separate scan button. Preserve existing Package folders management for general use."
+    },
+    {
+      "id": "M26",
+      "name": "One-step missing-base root recovery",
+      "status": "in_progress",
+      "deliverables": [
+        "open a folder picker from the contextual missing-base action",
+        "persist the chosen Packages root without editing project JSON",
+        "rescan the catalog automatically after adding the root and show the refreshed diagnosis"
+      ],
+      "acceptance": "GUI tests cover cancellation, deduplicated root, saved new root, scan invocation and rescan failure; existing multi-root manager remains unchanged."
     }
   ],
   "rolling_roadmap": [
@@ -488,5 +501,5 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M19-GUI-checkpoint-audit-and-review-hints"
   },
-  "next_stage": "M25-floats-skis-and-large-flying-boat-coverage"
+  "next_stage": "M26-one-step-base-root-recovery"
 }

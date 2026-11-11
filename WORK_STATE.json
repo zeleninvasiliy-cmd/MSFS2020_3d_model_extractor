@@ -1,8 +1,8 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M24-contextual-base-package-recovery",
-  "active_stage": "M25-floats-skis-and-large-flying-boat-coverage",
-  "working_branch": "codex/contextual-base-package-recovery",
+  "last_completed_stage": "M25-floats-skis-and-large-flying-boat-coverage",
+  "active_stage": "M26-one-step-base-root-recovery",
+  "working_branch": "codex/float-ski-variant-coverage",
   "last_commit": "2e8e371",
   "ci": {
     "status": "success",
@@ -31,7 +31,9 @@
     "test_output_isolation": "all desktop project fixtures now use temporary project/blend folders; verified stray placeholder removed",
     "rotorcraft_sample": "7/7 real installed rotorcraft built one checkpoint and passed Blender 5.2 audit; 7.7–30.6 s/build; RSP R44 blocked pre-worker as UNRESOLVED_ALIAS; temp outputs cleaned; compatibility/headless_rotorcraft_sample_m23.json",
     "rotorcraft_source_formats": "all 7 builds: glTF, one local buffer, TRIANGLES, MSFT_texture_dds",
-    "package_root_recovery": "contextual Packages action tested for UNRESOLVED_ALIAS and missing base dependency; hidden for healthy package and unrelated texture fallback"
+    "package_root_recovery": "contextual Packages action tested for UNRESOLVED_ALIAS and missing base dependency; hidden for healthy package and unrelated texture fallback",
+    "m25_variant_sample": "9/9 float/ski/large aircraft sources built one checkpoint and passed Blender 5.2 audit; 7.1–17.0 s/build; no render; temp outputs cleaned; compatibility/headless_float_ski_large_aircraft_m25.json",
+    "m25_report": "JSON parses; 9 entries; all build_exit=0, checkpoint_count=1 and audit_passed=true; no absolute source paths"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -145,11 +147,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Scan the deep catalog for unusual float/skis variants and large flying-boat models not already in the smoke sample, then build and audit each selected source.",
-  "next_stage": "M25-floats-skis-and-large-flying-boat-coverage",
+  "next_step": "Make the contextual base-package action choose and save a folder then rescan catalog automatically, with cancellation and duplicate-root GUI regressions.",
+  "next_stage": "M26-one-step-base-root-recovery",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T05:18:12Z"
+  "updated_utc": "2026-11-11T05:24:12Z"
 }
