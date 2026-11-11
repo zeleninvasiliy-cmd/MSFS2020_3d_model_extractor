@@ -656,6 +656,31 @@ class TextureTableTests(EditorTestCase):
         click(window, "Использовать выбранный файл")
         self.assertEqual(self.app.project_extra["texture_overrides"]["body_albd.png"], str(second))
 
+    def test_package_search_merges_uri_aliases_by_map_basename(self):
+        self.report(self.payload())
+        table = self.table()
+        found = self.folder / "found"
+        found.mkdir()
+        first, second = found / "first.png", found / "second.png"
+        payload = {"matches": {"..\\TEXTURE1\\BODY_ALBD.PNG": [str(first), str(second)],
+                               "..\\TEXTURE2\\body_albd.png": [str(second)]},
+                   "searched_roots": ["C:/Packages"], "suggested_extra_texture_dirs": [str(found)],
+                   "missing": ["..\\TEXTURE1\\BODY_ALBD.PNG", "..\\TEXTURE2\\body_albd.png"]}
+        with patch.object(self.app, "run_command", side_effect=lambda _command, callback:
+                          (callback(0, json.dumps(payload)), True)[1]):
+            table.search_packages()
+
+        window = self.top(table)
+        box = widgets(window, ttk.Frame)[0]
+        tree = widgets(box, ttk.Treeview)[0]
+        rows = tree.get_children()
+        self.assertEqual(len(rows), 2)  # repeated candidate path is removed
+        self.assertEqual({tree.item(row, "values")[0] for row in rows}, {"body_albd.png"})
+        self.assertEqual({tree.item(row, "values")[2] for row in rows}, {"Неоднозначно (2)"})
+        labels = widgets(window, ttk.Label)
+        self.assertIn("однозначно: 0, неоднозначно: 1", labels[0].cget("text"))
+        self.assertIn("Не найдено: 1.", labels[0].cget("text"))
+
     def test_saved_project_keeps_the_replacement(self):
         self.report(self.payload())
         replacement = self.folder / "copy.png"

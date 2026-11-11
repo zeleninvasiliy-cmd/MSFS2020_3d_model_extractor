@@ -6,7 +6,7 @@ The texture stage reads material assignments from the selected glTF and resolves
 
 The worker handles common DDS/PNG maps, alpha modes, glass materials and normal-map conversion. When a normal map cannot be decoded safely, the report asks for manual review instead of silently producing a blank image. The original package remains untouched.
 
-The GUI's installed-package search labels each basename as a unique or ambiguous match and summarizes both counts. Adding suggested folders while any basename is ambiguous requires confirmation because automatic lookup can select a different livery; use an explicit per-map replacement when the exact file matters.
+The GUI's installed-package search groups report URIs by map basename, deduplicates repeated file paths, labels each basename as a unique or ambiguous match and summarizes both counts. Adding suggested folders while any basename is ambiguous requires confirmation because automatic lookup can select a different livery; use an explicit per-map replacement when the exact file matters.
 
 ---
 
@@ -103,7 +103,7 @@ python .\scripts\msfs_universal.py find-textures .\blend\02_textured_strip_auto_
 | найти карту в других установленных пакетах | «Найти в установленных пакетах» — CLI `find-textures` |
 | вернуть автоматический поиск | «Сбросить замену» |
 
-Поиск в установленных пакетах помечает каждое имя карты как однозначное или неоднозначное и показывает обе сводные цифры. Если есть неоднозначные совпадения, перед добавлением предложенных папок программа запрашивает подтверждение: автоматический поиск может выбрать другую ливрею. Для точной карты используйте явную замену отдельного файла.
+Поиск в установленных пакетах группирует URI по basename карты, убирает повторяющиеся пути, помечает каждую карту как однозначную или неоднозначную и показывает обе сводные цифры. Если есть неоднозначные совпадения, перед добавлением предложенных папок программа запрашивает подтверждение: автоматический поиск может выбрать другую ливрею. Для точной карты используйте явную замену отдельного файла.
 
 Отчёт берётся из `02_textured*.json` последней сборки: итоговый `03_model*.json` содержит только геометрию и карты не скрывает. Замена применяется при следующем запуске «Добавить textures» или «Весь цикл».
 

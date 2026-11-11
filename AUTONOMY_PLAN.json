@@ -641,7 +641,7 @@
     {
       "id": "M49",
       "name": "Normalize duplicate texture URI results in GUI",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "group find-textures results by normalized basename in the GUI",
         "merge and deduplicate candidate paths before counting ambiguity",
@@ -649,7 +649,21 @@
         "review texture recovery docs and run full local checks"
       ],
       "acceptance": "Two report keys with the same basename appear as one GUI map with the union of candidate paths and accurate unique/ambiguous counts; exact selected-path override still targets that basename. Full suite passes.",
-      "next": "After M49, resume compatibility breadth: diagnose and sample remaining missing-map packages; keep geometry and texture status distinct."
+      "next": "M50: continue texture-stage compatibility on ten previously unsampled partial livery packages, favoring remaining Longitude, Pipistrel, Pitts, Savage and SR22 variants.",
+      "result": "The package-search table now groups `find-textures` report keys by normalized basename and deduplicates candidate paths case-insensitively before classifying ambiguity. Missing names are normalized too. Regression simulates two relative URIs for one map and an overlapping candidate path: one basename, two actual candidates, one ambiguous map, one missing basename. Three focused tests, 208 full tests, GUI self-test, compileall and diff check passed. Bilingual wiki updated."
+    },
+    {
+      "id": "M50",
+      "name": "Partial livery texture sample, fourth tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "select ten partial livery records absent from all previous texture reports",
+        "run geometry, textures and final Blender audit using the standard CLI",
+        "use package-wide recovery probes on representative reports",
+        "publish a path-free report and clean all temporary outputs"
+      ],
+      "acceptance": "10/10 selected packages either produce texture checkpoints and pass final Blender audits or show a reproducible blocker; expected partial results are counted separately from failures; report is path-free.",
+      "next": "After M50 review whether any residual partial livery records remain, then continue with the last unmeasured candidates and architecture/UI review."
     }
   ],
   "rolling_roadmap": [
@@ -806,8 +820,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M49-texture-search-basename-grouping"
+    "next_stage": "M50-partial-livery-texture-sample-fourth-tranche"
   },
-  "next_stage": "M49-texture-search-basename-grouping",
-  "updated_utc": "2026-11-11T08:46:00Z"
+  "next_stage": "M50-partial-livery-texture-sample-fourth-tranche",
+  "updated_utc": "2026-11-11T08:49:00Z"
 }

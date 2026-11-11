@@ -364,15 +364,26 @@ class TextureTable(tk.Toplevel):
                 label.configure(text="Не удалось разобрать ответ find-textures.")
                 return
             state["data"] = data
-            matches = data.get("matches") or {}
+            raw_matches = data.get("matches") or {}
+            matches = {}
+            for name, paths in raw_matches.items():
+                basename = map_name(name)
+                candidates = matches.setdefault(basename, [])
+                known_paths = {path.casefold() for path in candidates}
+                for path in paths or []:
+                    path = str(path)
+                    if path.casefold() not in known_paths:
+                        candidates.append(path)
+                        known_paths.add(path.casefold())
             ambiguous = sum(len(paths) > 1 for paths in matches.values())
             tree.delete(*tree.get_children())
+            found.clear()
             for name, paths in sorted(matches.items(), key=lambda pair: str.casefold(pair[0])):
                 for path in paths:
                     match_text = "Уникальное" if len(paths) == 1 else f"Неоднозначно ({len(paths)})"
                     item_id = tree.insert("", "end", values=(map_name(name), path, match_text))
                     found[item_id] = (map_name(name), path)
-            missing = data.get("missing") or []
+            missing = sorted({map_name(name) for name in (data.get("missing") or []) if name}, key=str.casefold)
             label.configure(text=f"Просмотрено корней: {len(data.get('searched_roots') or [])}. "
                                  f"Карт найдено: {sum(len(paths) for paths in matches.values())} "
                                  f"для {sum(1 for paths in matches.values() if paths)} имён "
