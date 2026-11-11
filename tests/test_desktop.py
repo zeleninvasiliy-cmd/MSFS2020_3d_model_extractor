@@ -34,6 +34,19 @@ class DesktopRegressionTests(unittest.TestCase):
         self.app.model_var.set("model")
         self.app.blender_var.set(sys.executable)
 
+    def test_detail_summarizes_optional_texture_fallbacks(self):
+        report = {"dependencies": [
+            {"kind": "texture_fallback", "name": f"fallback.{i}", "resolved": i < 7,
+             "optional": True, "path": f"C:/pkg/texture/{i}"}
+            for i in range(10)
+        ]}
+
+        detail = self.app.format_detail(report)
+
+        self.assertIn("найдено папок 7 из 10", detail)
+        self.assertIn("отчёте текстурирования", detail)
+        self.assertNotIn("fallback.1", detail)
+
     def test_save_preserves_tab_and_advanced_operations(self):
         self.project()
         self.app.project_extra = {"placements": {"Rudder": {"anchor": "Tail", "offset_m": [0, 1, 0]}}}

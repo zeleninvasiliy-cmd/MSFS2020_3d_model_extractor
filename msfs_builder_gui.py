@@ -37,6 +37,7 @@ ORIGIN_LABELS = {
     "base_container": "наследование базового самолёта",
     "aircraft_index": "пакет базового самолёта",
     "base_package": "базовый пакет",
+    "package_index": "индекс пакетов MSFS",
     "name_lookup": "поиск по имени в каталоге MSFS",
 }
 
@@ -1420,15 +1421,25 @@ class BuilderApp(tk.Tk):
             lines.append("")
             lines.append("Texture-варианты: " + ", ".join(report["textures"]))
         dependencies = report.get("dependencies", [])
-        if dependencies:
+        fallback_dependencies = [item for item in dependencies if item.get("kind") == "texture_fallback"]
+        other_dependencies = [item for item in dependencies if item.get("kind") != "texture_fallback"]
+        if other_dependencies or fallback_dependencies:
             lines.append("")
             lines.append("Зависимости:")
-            for dependency in dependencies[:12]:
+            for dependency in other_dependencies[:12]:
                 mark = "OK" if dependency.get("resolved") else "НЕ разрешена"
                 origin = f", {origin_text(dependency['origin'])}" if dependency.get("origin") else ""
                 detail = f" — {dependency['detail']}" if dependency.get("detail") else ""
                 lines.append(f"  • {dependency.get('kind')}: {dependency.get('path') or dependency.get('name')}"
                              f" — {mark}{origin}{detail}")
+            if fallback_dependencies:
+                found = sum(bool(item.get("resolved")) for item in fallback_dependencies)
+                lines.append(f"  • texture.cfg fallback: найдено папок {found} из {len(fallback_dependencies)}; "
+                             "проверяйте отсутствующие карты в отчёте текстурирования.")
+                ambiguous = [item for item in fallback_dependencies
+                             if "несколько установленных пакетов" in str(item.get("detail") or "")]
+                for dependency in ambiguous[:3]:
+                    lines.append(f"      {dependency.get('name')}: {dependency['detail']}")
         return "\n".join(lines)
 
     def diagnose_selected(self):

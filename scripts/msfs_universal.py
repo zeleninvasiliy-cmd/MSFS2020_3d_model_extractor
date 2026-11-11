@@ -249,7 +249,7 @@ def texture_folders(aircraft, livery, extras, allow_other_liveries, index=None):
             for _, value in fallbacks:
                 target = resolve(folder, value.replace("\\", "/"))
                 if not target.is_dir() and index is not None:
-                    target, _, _ = rebase(target, aircraft, index)
+                    target, _, _ = rebase(target, aircraft, index, allow_global=True)
                 if not target.is_dir():
                     missing.append(str(target))
                 else:

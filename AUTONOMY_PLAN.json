@@ -3,15 +3,28 @@
   "purpose": "Long-running maintenance plan for unattended repository work",
   "long_term_goal": {
     "objective": "Correctly diagnose and process every aircraft in the user's installed MSFS catalog wherever the package contains usable source data; explicitly identify missing or unsupported source features rather than guessing.",
-    "priorities": ["compatibility breadth and fidelity", "intuitive GUI", "architecture and code hygiene", "bilingual documentation and repeatable releases"],
+    "priorities": [
+      "compatibility breadth and fidelity",
+      "intuitive GUI",
+      "architecture and code hygiene",
+      "bilingual documentation and repeatable releases"
+    ],
     "cycle": "Alternate compatibility work and GUI work; after every stage run a focused architecture/code review, record newly found issues, and update this roadmap before starting the next stage."
   },
   "stage_workflow": {
     "branch_prefix": "codex/",
-    "steps": ["create stage branch from main", "implement with regression fixtures", "run local checks and real-catalog measurement", "review and clean affected architecture/docs", "push branch and open PR", "wait for CI and merge without force-push", "build and publish a versioned release when stage criteria are met"],
+    "steps": [
+      "create a focused codex/* branch from the current integration base",
+      "implement with regression fixtures",
+      "run local checks and real-catalog measurement",
+      "review and clean affected architecture/docs",
+      "push branch and open PR",
+      "wait for CI; merge only after checks",
+      "publish a versioned release from the integrated main branch when release criteria are met"
+    ],
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release."
   },
-  "working_branch": "main",
+  "working_branch": "codex/package-resource-graph",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -30,35 +43,57 @@
       "id": "G0",
       "name": "GitHub and documentation hygiene",
       "status": "in_progress",
-      "deliverables": ["initialized GitHub Wiki", "bilingual current documentation", "clean release contents"],
+      "deliverables": [
+        "initialized GitHub Wiki",
+        "bilingual current documentation",
+        "clean release contents"
+      ],
       "note": "Repository documentation and release contents are clean; GitHub Wiki still needs its first page created in the GitHub UI before the wiki mirror can be pushed."
     },
     {
       "id": "A",
       "name": "Compatibility audit",
       "status": "complete",
-      "deliverables": ["package and glTF coverage matrix", "reproducible synthetic fixtures", "prioritized blockers"],
+      "deliverables": [
+        "package and glTF coverage matrix",
+        "reproducible synthetic fixtures",
+        "prioritized blockers"
+      ],
       "result": "Added catalog --deep, corrected stale format documentation, added compatibility_report.py and a path-free compatibility snapshot."
     },
     {
       "id": "B",
       "name": "Resolver and format compatibility",
       "status": "complete",
-      "deliverables": ["safe package inheritance", "clear unsupported-format diagnostics", "no silent geometry guesses"],
+      "deliverables": [
+        "safe package inheritance",
+        "clear unsupported-format diagnostics",
+        "no silent geometry guesses"
+      ],
       "result": "Deep catalog diagnostics are available in CLI and GUI; GLB is accepted by build plans; draw_mode=msfs incompatibility is rejected before Blender. B1-B4 transform/checkpoint fixes were verified with unit and headless Blender checks. Remaining B work is resolver edge-case hardening."
     },
     {
       "id": "C",
       "name": "GUI workflow and editors",
       "status": "complete",
-      "deliverables": ["project-gated workflow", "graphical rules", "recoverable checkpoints", "clear errors"],
+      "deliverables": [
+        "project-gated workflow",
+        "graphical rules",
+        "recoverable checkpoints",
+        "clear errors"
+      ],
       "result": "Added graphical controls for deep catalog diagnosis, normal_decode, converted_normal_dir, pose_position and repair_skin_roots; unified custom/system catalog callbacks. Existing rule editors and checkpoint workflow remain covered by regression tests."
     },
     {
       "id": "D",
       "name": "Release and portability",
       "status": "complete",
-      "deliverables": ["repeatable Setup/Portable build", "checksums", "release verification", "bilingual user package"],
+      "deliverables": [
+        "repeatable Setup/Portable build",
+        "checksums",
+        "release verification",
+        "bilingual user package"
+      ],
       "result": "Built and smoke-tested 1.2.1 Setup and Portable artifacts; docs and licenses are included and SHA256SUMS.txt was regenerated."
     }
   ],
@@ -67,61 +102,130 @@
       "id": "M1",
       "name": "Resolver edge-case hardening",
       "status": "complete",
-      "focus": ["surface texture fallback ambiguity", "preserve useful unresolved paths", "verify dependency diagnostics end to end"],
-      "exit_criteria": ["synthetic regression fixtures", "full unit and GUI self checks", "documentation updated", "checkpoint committed"],
+      "focus": [
+        "surface texture fallback ambiguity",
+        "preserve useful unresolved paths",
+        "verify dependency diagnostics end to end"
+      ],
+      "exit_criteria": [
+        "synthetic regression fixtures",
+        "full unit and GUI self checks",
+        "documentation updated",
+        "checkpoint committed"
+      ],
       "result": "Texture fallback ambiguity now lists all candidate package folders; unresolved diagnostics retain the original path instead of returning the string None. 150 unit tests, GUI self-test, compileall and diff check passed."
     },
     {
       "id": "M2",
       "name": "Catalog identity and availability",
       "status": "complete",
-      "focus": ["duplicate aircraft names across real packages and history stubs", "status counts vs deep scan", "stable grouping and filters"],
-      "exit_criteria": ["dedup policy is explicit and tested", "catalog report explains retained alternatives", "GUI list remains stable"],
+      "focus": [
+        "duplicate aircraft names across real packages and history stubs",
+        "status counts vs deep scan",
+        "stable grouping and filters"
+      ],
+      "exit_criteria": [
+        "dedup policy is explicit and tested",
+        "catalog report explains retained alternatives",
+        "GUI list remains stable"
+      ],
       "result": "Actual catalog found one duplicate pair: buildable Asobo_DA62 and an empty fs-base-history placeholder. The placeholder is now reported separately, while unique history-only records and other same-name packages remain visible. Actual selection list reduced from 234 to 233; one suppressed record retained with shadowed_by. 153 unit tests, GUI self-test, compileall, Blender worker checks and diff checks passed."
     },
     {
       "id": "M3",
       "name": "GUI diagnostics and recovery",
       "status": "complete",
-      "focus": ["show dependency provenance and ambiguity clearly", "validate edits before Blender starts", "audit checkpoint selection and error recovery"],
-      "exit_criteria": ["actionable errors for invalid rules", "no raw traceback for expected user input", "self-test covers navigation and recovery"],
+      "focus": [
+        "show dependency provenance and ambiguity clearly",
+        "validate edits before Blender starts",
+        "audit checkpoint selection and error recovery"
+      ],
+      "exit_criteria": [
+        "actionable errors for invalid rules",
+        "no raw traceback for expected user input",
+        "self-test covers navigation and recovery"
+      ],
       "result": "Unified unknown-key validation between rule preflight and build; the rule editor now warns and asks before saving named rules when the geometry object inventory is not loaded. GUI regression test covers the warning. All bilingual wiki pages now place English before Russian; stale module test counts were corrected. 155 tests, GUI self-test, compileall, diff check, and headless Blender checks passed."
     },
     {
       "id": "M4",
       "name": "Installed model configuration and role coverage",
       "status": "complete",
-      "focus": ["two INVALID_MODEL_CFG packages", "two MISSING_MODEL_CFG packages", "manual role/LOD selection behavior", "keep shared-resource packages distinct from selectable aircraft"],
-      "exit_criteria": ["all four installed package records have actionable candidates or exact blocker reasons", "manual selection remains explicit", "no role is silently inferred as fact", "synthetic and real catalog checks pass"],
+      "focus": [
+        "two INVALID_MODEL_CFG packages",
+        "two MISSING_MODEL_CFG packages",
+        "manual role/LOD selection behavior",
+        "keep shared-resource packages distinct from selectable aircraft"
+      ],
+      "exit_criteria": [
+        "all four installed package records have actionable candidates or exact blocker reasons",
+        "manual selection remains explicit",
+        "no role is silently inferred as fact",
+        "synthetic and real catalog checks pass"
+      ],
       "result": "Both INVALID_MODEL_CFG and both MISSING_MODEL_CFG aircraft expose available exterior/interior candidates; explicit selection produced valid geometry build plans for all four. The six COMMON_RESOURCES_ONLY entries are shared-resource packages, not standalone model sources. RSP_R44_EC-NIK declares base_container=..\\r44, but no r44 folder or indexed aircraft exists in the installed packages. Deep scan found no nested errors in selected glTF/GLB models. A path-free working snapshot records 233 selectable entries, 226 geometry-buildable, 48 partial and one suppressed history stub."
     },
     {
       "id": "M5",
       "name": "Add-on inheritance and resource graph",
-      "status": "in_progress",
-      "focus": ["base_container and model.cfg links across installed roots", "fallback texture resolution and ambiguity", "unresolved alias diagnosis for third-party packages", "separate absent source files from resolver misses"],
-      "exit_criteria": ["every unresolved dependency is classified as absent, ambiguous or layout mismatch", "synthetic regressions cover each class", "no dependency is silently guessed"]
+      "status": "complete",
+      "focus": [
+        "base_container and model.cfg links across installed roots",
+        "fallback texture resolution and ambiguity",
+        "unresolved alias diagnosis for third-party packages",
+        "separate absent source files from resolver misses"
+      ],
+      "exit_criteria": [
+        "every unresolved dependency is classified as absent, ambiguous or layout mismatch",
+        "synthetic regressions cover each class",
+        "no dependency is silently guessed"
+      ],
+      "result": "Indexed 526 installed package roots, including resource-only packages; all 52 manifest dependencies resolve. Deep catalog remains 233 selectable records, 226 geometry-buildable and 48 partial. Global VFS lookup reduced unresolved texture fallbacks to 60/1919, with 4 ambiguous; 49 base_container and 48 model links remain unresolved and require classification as absent/ambiguous/layout mismatch. Fixed a crash when a model dependency rebases ambiguously; synthetic regression added. 164 unit tests, GUI self-test, compileall, deep catalog and path-free snapshot passed. Full deep scan measured about 19.4 seconds on this installation."
     },
     {
       "id": "M6",
       "name": "GUI dependency diagnosis",
-      "status": "planned",
-      "focus": ["show dependency provenance and unresolved reason in the aircraft detail panel", "provide a next action for absent vs ambiguous resources", "keep the catalog usable for large add-on sets"],
-      "exit_criteria": ["users can act on each displayed dependency state without editing JSON", "GUI tests cover each state"]
+      "status": "in_progress",
+      "focus": [
+        "show package dependency counts and provenance without overwhelming detail",
+        "surface actionable absent vs ambiguous vs unresolved paths",
+        "support explicit package selection where multiple owners exist",
+        "keep aircraft selection responsive for large add-on sets"
+      ],
+      "exit_criteria": [
+        "GUI gives a next action for each displayed dependency state without editing JSON",
+        "ambiguous package candidates can be selected explicitly or are clearly documented as requiring configuration",
+        "GUI tests cover resolved, absent and ambiguous dependencies"
+      ]
     },
     {
       "id": "M7",
       "name": "Community format compatibility",
       "status": "planned",
-      "focus": ["GLB buffers and extensions", "skin and primitive variants", "texture decoding edge cases"],
-      "exit_criteria": ["features are measured against installed add-ons", "each supported/rejected feature has a fixture and clear diagnosis"]
+      "focus": [
+        "GLB buffers and extensions",
+        "skin and primitive variants",
+        "texture decoding edge cases"
+      ],
+      "exit_criteria": [
+        "features are measured against installed add-ons",
+        "each supported/rejected feature has a fixture and clear diagnosis"
+      ]
     },
     {
       "id": "M8",
       "name": "Compatibility measurement and next release",
       "status": "planned",
-      "focus": ["repeatable catalog compatibility snapshot", "prioritize blockers by affected aircraft", "package bilingual docs and release artifacts"],
-      "exit_criteria": ["before/after measurements", "release audit passes", "versioned checkpoint and CI success"]
+      "focus": [
+        "repeatable catalog compatibility snapshot",
+        "prioritize blockers by affected aircraft",
+        "package bilingual docs and release artifacts"
+      ],
+      "exit_criteria": [
+        "before/after measurements",
+        "release audit passes",
+        "versioned checkpoint and CI success"
+      ]
     }
   ],
   "blocked_policy": {
@@ -130,8 +234,17 @@
     "user_data_policy": "do not request or upload MSFS aircraft or personal project files"
   },
   "resume": {
-    "read_first": ["AUTONOMY_PLAN.json", "WORK_STATE.json", "VERSION", "git log -5"],
-    "update_after": ["each stage", "each discovered blocker", "each release build"],
+    "read_first": [
+      "AUTONOMY_PLAN.json",
+      "WORK_STATE.json",
+      "VERSION",
+      "git log -5"
+    ],
+    "update_after": [
+      "each stage",
+      "each discovered blocker",
+      "each release build"
+    ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping"
   }

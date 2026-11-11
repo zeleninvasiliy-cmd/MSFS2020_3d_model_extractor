@@ -63,6 +63,28 @@ class IndexTests(_PathAssertions, unittest.TestCase):
         self.assert_path_equal(index.package_of(folder), self.root / "test-base")
         self.assertEqual(index.packages[index_module._key(self.root / "test-base")]["content_type"], "AIRCRAFT")
 
+    def test_indexes_resource_only_packages_and_nested_install_roots(self):
+        installed = self.root / "Installed"
+        resource = installed / "Official" / "Steam" / "shared-resources"
+        resource.mkdir(parents=True)
+        (resource / "manifest.json").write_text(json.dumps({"content_type": "CORE"}), encoding="utf-8")
+        (resource / "layout.json").write_text("{}", encoding="utf-8")
+        index = PackageIndex.build([installed])
+        self.assert_path_equal(index.package_folders("SHARED-RESOURCES")[0], resource)
+        self.assertEqual(index.packages[index_module._key(resource)]["aircraft"], [])
+        self.assertEqual(index.packages[index_module._key(resource)]["content_type"], "CORE")
+
+    def test_index_finds_nested_community_and_official_resource_packages(self):
+        installed = self.root / "Packages"
+        official = installed / "Official" / "Steam" / "base-assets"
+        community = installed / "Community" / "addon-assets"
+        for package in (official, community):
+            package.mkdir(parents=True)
+            (package / "manifest.json").write_text("{}", encoding="utf-8")
+        index = PackageIndex.build([installed])
+        self.assertEqual(len(index.package_folders("base-assets")), 1)
+        self.assertEqual(len(index.package_folders("addon-assets")), 1)
+
     def test_name_lookup_is_case_insensitive(self):
         folder = aircraft(self.root, "test-base", "Test_Plane")
         index = self.build()
@@ -324,6 +346,107 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         self.assertTrue(entry["resolved"])
         self.assertEqual(entry["origin"], "base_package")
         self.assert_path_equal(Path(entry["path"]), gauges)
+
+    def test_manifest_dependency_resolves_to_resource_only_package(self):
+        folder = aircraft(self.root, "owner-package", "Owner_Plane")
+        owner_manifest = self.root / "owner-package" / "manifest.json"
+        owner_manifest.write_text(json.dumps({"dependencies": [{"name": "shared-resources"}]}), encoding="utf-8")
+        shared = self.root / "shared-resources"
+        shared.mkdir()
+        (shared / "manifest.json").write_text(json.dumps({"content_type": "CORE"}), encoding="utf-8")
+        (shared / "layout.json").write_text("{}", encoding="utf-8")
+
+        result = resolver.resolve_aircraft(folder, index=PackageIndex.build([self.root]))
+
+        dependency = next(d for d in result["dependencies"] if d["kind"] == "manifest")
+        self.assertTrue(dependency["resolved"])
+        self.assertEqual(dependency["origin"], "package_index")
+        self.assert_path_equal(Path(dependency["path"]), shared)
+
+    def test_ambiguous_manifest_dependency_requires_package_choice(self):
+        folder = aircraft(self.root, "owner-package", "Owner_Plane")
+        (self.root / "owner-package" / "manifest.json").write_text(
+            json.dumps({"dependencies": [{"name": "shared-resources"}]}), encoding="utf-8")
+        candidates = []
+        for parent in ("Official", "Community"):
+            package = self.root / parent / "shared-resources"
+            package.mkdir(parents=True)
+            (package / "manifest.json").write_text("{}", encoding="utf-8")
+            candidates.append(package)
+
+        result = resolver.resolve_aircraft(folder, index=PackageIndex.build([self.root]))
+
+        dependency = next(d for d in result["dependencies"] if d["kind"] == "manifest")
+        self.assertFalse(dependency["resolved"])
+        self.assertIn("несколько установленных пакетов", dependency["detail"])
+        for candidate in candidates:
+            self.assertIn(str(candidate), dependency["detail"])
+
+    def test_vfs_rebase_searches_unique_resource_package(self):
+        owner = aircraft(self.root, "owner-package", "Owner_Plane")
+        shared = self.root / "shared-resources"
+        gauges = shared / "texture" / "Gauges"
+        gauges.mkdir(parents=True)
+        (shared / "manifest.json").write_text("{}", encoding="utf-8")
+        index = PackageIndex.build([self.root])
+
+        found, origin, candidates = index.rebase(self.root / "owner-package" / "texture" / "Gauges", owner)
+
+        self.assert_path_equal(found, gauges)
+        self.assertEqual(origin, "package_index")
+        self.assertEqual(candidates, [])
+
+    def test_vfs_rebase_uses_shared_resource_after_missing_base_copy(self):
+        _, livery = self.base_and_livery()
+        shared = self.root / "shared-resources"
+        gauges = shared / "texture" / "Gauges"
+        gauges.mkdir(parents=True)
+        (shared / "manifest.json").write_text("{}", encoding="utf-8")
+        index = PackageIndex.build([self.root])
+
+        found, origin, _ = index.rebase(
+            self.root / "test-livery" / "texture" / "Gauges", livery, allow_global=True)
+
+        self.assert_path_equal(found, gauges)
+        self.assertEqual(origin, "package_index")
+
+    def test_vfs_rebase_reports_ambiguous_resource_packages(self):
+        owner = aircraft(self.root, "owner-package", "Owner_Plane")
+        packages = []
+        for name in ("shared-one", "shared-two"):
+            package = self.root / name
+            (package / "texture" / "Gauges").mkdir(parents=True)
+            (package / "manifest.json").write_text("{}", encoding="utf-8")
+            packages.append(package)
+        index = PackageIndex.build([self.root])
+
+        found, origin, candidates = index.rebase(self.root / "owner-package" / "texture" / "Gauges", owner)
+
+        self.assertIsNone(found)
+        self.assertEqual(origin, "ambiguous")
+        self.assertEqual(len(candidates), 2)
+        for package in packages:
+            self.assertTrue(any(str(package) in candidate for candidate in candidates))
+
+    def test_ambiguous_model_dependency_is_reported_without_crashing(self):
+        _, livery = self.base_and_livery()
+        for package_name in ("test-base", "test-base-copy"):
+            base = self.root / package_name / "SimObjects" / "Airplanes" / "Test_Base"
+            (base / "model").mkdir(parents=True)
+            (base / "aircraft.cfg").write_text("[fltsim.0]\ntitle=Test Base\n", encoding="utf-8")
+            (base / "model" / "interior.xml").write_text("<Model/>", encoding="utf-8")
+        (livery / "aircraft.cfg").write_text(
+            "[VARIATION]\nbase_container=..\\Test_Base\n", encoding="utf-8")
+        model = livery / "model" / "model.cfg"
+        model.parent.mkdir(parents=True, exist_ok=True)
+        model.write_text("[models]\ninterior=..\\..\\Test_Base\\model\\interior.xml\n", encoding="utf-8")
+
+        result = resolver.resolve_aircraft(livery, index=PackageIndex.build([self.root]))
+
+        dependency = next(d for d in result["dependencies"] if d["kind"] == "model")
+        self.assertFalse(dependency["resolved"])
+        self.assertNotEqual(dependency["path"], "None")
+        self.assertIn("несколько установленных пакетов", dependency["detail"])
 
     def test_ambiguous_texture_fallback_is_reported_without_none_path(self):
         _, livery = self.base_and_livery()

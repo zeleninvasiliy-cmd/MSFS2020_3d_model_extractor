@@ -22,6 +22,9 @@ class CompatibilityReportTests(unittest.TestCase):
                 {"reason_code": "SUPPORTED_PARTIAL", "can_build_geometry": False,
                  "can_build_textures": False, "partial": True, "needs_model_selection": True,
                  "texture_images": False, "missing_resources": [{"kind": "base_container"}],
+                 "dependencies": [{"kind": "manifest", "resolved": True, "origin": "package_index"},
+                                  {"kind": "texture_fallback", "resolved": False,
+                                   "detail": "несколько установленных пакетов: A; B"}],
                  "variants": [{"models": [{"reason_code": "MISSING_BUFFER"}],
                                "missing_resources": [{"kind": "buffer"}]}]},
             ],
@@ -33,6 +36,9 @@ class CompatibilityReportTests(unittest.TestCase):
         self.assertEqual(report["reason_codes"]["SUPPORTED_PARTIAL"], 1)
         self.assertEqual(report["missing_resource_kinds"], {"base_container": 1, "buffer": 1})
         self.assertEqual(report["nested_model_reason_codes"], {"MISSING_BUFFER": 1})
+        self.assertEqual(report["dependencies"]["by_kind"], {"manifest": 1, "texture_fallback": 1})
+        self.assertEqual(report["dependencies"]["unresolved_by_kind"], {"texture_fallback": 1})
+        self.assertEqual(report["dependencies"]["ambiguous"], 1)
         self.assertEqual(report["source"]["name"], "fixture.json")
 
     def test_summary_does_not_copy_aircraft_paths(self):

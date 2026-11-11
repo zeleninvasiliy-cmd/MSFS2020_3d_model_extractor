@@ -25,7 +25,18 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
     reason_codes = Counter(str(item.get("reason_code") or "UNKNOWN") for item in aircraft)
     missing_kinds: Counter[str] = Counter()
     nested_reason_codes: Counter[str] = Counter()
+    dependency_kinds: Counter[str] = Counter()
+    unresolved_dependencies: Counter[str] = Counter()
+    ambiguous_dependencies = 0
     for item in aircraft:
+        for dependency in _as_records(item.get("dependencies")):
+            kind = str(dependency.get("kind") or "UNKNOWN")
+            dependency_kinds[kind] += 1
+            if not dependency.get("resolved"):
+                unresolved_dependencies[kind] += 1
+            if (dependency.get("origin") == "ambiguous"
+                    or "несколько установленных пакетов" in str(dependency.get("detail") or "")):
+                ambiguous_dependencies += 1
         for resource in _as_records(item.get("missing_resources")):
             if resource.get("kind"):
                 missing_kinds[str(resource["kind"])] += 1
@@ -54,6 +65,9 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
         "reason_codes": dict(sorted(reason_codes.items())),
         "missing_resource_kinds": dict(sorted(missing_kinds.items())),
         "nested_model_reason_codes": dict(sorted(nested_reason_codes.items())),
+        "dependencies": {"by_kind": dict(sorted(dependency_kinds.items())),
+                         "unresolved_by_kind": dict(sorted(unresolved_dependencies.items())),
+                         "ambiguous": ambiguous_dependencies},
         "index": catalog.get("index") if isinstance(catalog.get("index"), dict) else {},
         "notes": [
             "Counts describe the selected local MSFS installation, not a guarantee for every third-party package.",

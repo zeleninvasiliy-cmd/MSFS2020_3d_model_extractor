@@ -14,7 +14,7 @@ The Windows GitHub Actions job repeats compilation, GUI startup and the regressi
 
 The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts and blocker kinds only; machine-specific paths are discarded.
 
-The shared configuration validator rejects unknown fields in both the graphical rule preflight and the build command. The catalog suppresses only a non-buildable `fs-base-history` placeholder shadowed by a same-name geometry-buildable package, and records the suppressed path for diagnostics.
+The shared configuration validator rejects unknown fields in both the graphical rule preflight and the build command. The catalog suppresses only a non-buildable `fs-base-history` placeholder shadowed by a same-name geometry-buildable package, and records the suppressed path for diagnostics. Package-index fixtures also cover resource-only packages, manifest dependency resolution and ambiguity-safe VFS rebasing.
 
 ---
 
@@ -29,7 +29,7 @@ python -m unittest discover -s tests -p "test_*.py" -v
 python msfs_builder_gui.py --self-test
 ```
 
-Текущий набор содержит 140 проверок. В CI используется Python 3.13; тесты не сканируют установленный MSFS и не пишут в пользовательский кэш. Реальные самолёты и визуальная приёмка Blender остаются ручной проверкой пользователя.
+Тесты не сканируют установленный MSFS и не пишут в пользовательский кэш. Реальные самолёты и визуальная приёмка Blender остаются ручной проверкой пользователя.
 
 ### `tests/test_resolver.py` — 29 сценариев
 
@@ -53,14 +53,14 @@ python msfs_builder_gui.py --self-test
 
 `PlanDiagnosisTests`: частичный пакет требует явных `models` (ошибка содержит «Диагностика пакета» и `SUPPORTED_PARTIAL`, затем сборка проходит с заданным составом); common-only отклоняется с причиной.
 
-### `tests/test_index.py` — 27 сценариев
+### `tests/test_index.py` — 35 сценариев
 
 [Индекс пакетов](Package-Index) и его влияние на диагностику. Тоже синтетическое дерево во временном каталоге, без bpy и без MSFS.
 
 | Группа | Что проверяется |
 |---|---|
 | независимость | `package_index.py` не содержит `import bpy` |
-| индекс | самолёт и пакет проиндексированы, `content_type` прочитан, поиск по имени регистронезависим |
+| индекс | самолёт и пакет проиндексированы, ресурсные пакеты без самолёта найдены в Official/Community, `content_type` прочитан, поиск по имени регистронезависим |
 | перенос | якорь по имени самолёта; хвост внутри корня пакета → базовый пакет; существующий путь возвращается без подмены и нормализуется |
 | честность | отсутствующая база не выдумывается; владелец не считается собственной базой; цикл в объявлениях не зацикливает |
 | неоднозначность | несколько пакетов с одним именем → `ambiguous` и список кандидатов, а не угадывание |
@@ -70,7 +70,7 @@ python msfs_builder_gui.py --self-test
 | описание | `describe` помечает установленную и отсутствующую базу, фильтр по точному имени без учёта регистра |
 | наследование | ливрея получает интерьер из базового пакета и становится `OK`; без индекса та же ливрея `SUPPORTED_PARTIAL`; отсутствующая база оставляет partial; неоднозначная база сообщается |
 | причины | «базовый самолёт не установлен» против «базовый самолёт установлен, но объявленный файл в нём отсутствует» |
-| сборка | `model_from_cfg` возвращает перенесённый путь с `origin=aircraft_index`; `texture.cfg fallback.*` разрешается через базовый пакет с `origin=base_package` |
+| сборка | `model_from_cfg` возвращает перенесённый путь с `origin=aircraft_index`; manifest-зависимости и общие VFS-пути ищутся по пакетам ресурсов; неоднозначность не угадывается и не вызывает сбой диагностики |
 
 ### `tests/test_pipeline.py` — 15 проверок
 

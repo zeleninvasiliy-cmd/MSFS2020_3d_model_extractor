@@ -17,11 +17,10 @@ from pathlib import Path
 from package_resolver import by_case, find_aircraft, package_manifest
 
 
-# Version 3 includes the per-aircraft configuration files and canonical path
-# keys that are stable across Windows 8.3 aliases.
-# signature.  The index stores ``base_container`` from aircraft.cfg, so an
-# in-place cfg edit must invalidate an otherwise unchanged package folder.
-INDEX_VERSION = 3
+# Version 4 includes resource-only packages as well as packages with aircraft.
+# The index stores ``base_container`` from aircraft.cfg, so an in-place cfg
+# edit invalidates an otherwise unchanged package folder.
+INDEX_VERSION = 4
 
 
 def _key(path):
@@ -71,6 +70,40 @@ def _signature(package):
     return parts
 
 
+def _package_roots(root, max_depth=5):
+    """Find package roots without walking the contents of each package."""
+    root = Path(root)
+    found = {}
+    errors = []
+
+    def on_error(error):
+        errors.append({"path": str(getattr(error, "filename", root)),
+                       "detail": getattr(error, "strerror", None) or str(error)})
+
+    for current, folders, files in os.walk(root, topdown=True, onerror=on_error):
+        current = Path(current)
+        relative = current.relative_to(root)
+        depth = len(relative.parts)
+        file_names = {name.casefold() for name in files}
+        if {"manifest.json", "layout.json"} & file_names:
+            found[_key(current)] = current
+            folders[:] = []
+            continue
+        if depth >= max_depth:
+            folders[:] = []
+            continue
+        kept = []
+        for name in sorted(folders, key=str.casefold):
+            child = current / name
+            try:
+                if not child.is_symlink() and not name.startswith("."):
+                    kept.append(name)
+            except OSError:
+                continue
+        folders[:] = kept
+    return list(found.values()), errors
+
+
 def default_cache_path():
     local = os.environ.get("LOCALAPPDATA")
     if not local:
@@ -83,6 +116,9 @@ class PackageIndex:
         self.roots = [Path(root).resolve() for root in roots]
         self.aircraft = {}
         self.packages = {}
+        self.package_top_dirs = {}
+        self.package_resource_cache = {}
+        self.rebase_cache = {}
         self.errors = []
         self.reused = 0
         self.scanned = 0
@@ -91,11 +127,16 @@ class PackageIndex:
     def build(cls, roots, *, cache_path=None):
         index = cls(roots)
         cached = index._load(cache_path)
+        package_paths = {}
         grouped = {}
         for root in index.roots:
             if not root.is_dir():
                 index.errors.append({"path": str(root), "detail": "каталог не найден"})
                 continue
+            discovered, errors = _package_roots(root)
+            index.errors.extend(errors)
+            for package in discovered:
+                package_paths[_key(package)] = package
             try:
                 folders = find_aircraft(root)
             except OSError as error:
@@ -105,9 +146,11 @@ class PackageIndex:
                 _, package = package_manifest(folder)
                 if package is None:
                     package = folder
-                grouped.setdefault(package, []).append(folder)
-        for package, folders in grouped.items():
-            key = _key(package)
+                key = _key(package)
+                package_paths[key] = package
+                grouped.setdefault(key, {})[_key(folder)] = folder
+        for key, package in package_paths.items():
+            folders = sorted(grouped.get(key, {}).values(), key=lambda p: p.name.casefold())
             signature = _signature(package)
             previous = cached.get(key)
             if previous and previous.get("signature") == signature:
@@ -119,6 +162,14 @@ class PackageIndex:
             index.packages[key] = record
             for aircraft in record["aircraft"]:
                 index.aircraft.setdefault(aircraft["name"].casefold(), []).append(aircraft)
+            try:
+                children = sorted((child for child in package.iterdir() if child.is_dir()),
+                                  key=lambda child: child.name.casefold())
+            except OSError as error:
+                index.errors.append({"path": str(package), "detail": str(error)})
+                children = []
+            for child in children:
+                index.package_top_dirs.setdefault(child.name.casefold(), []).append(package)
         index._save(cache_path)
         return index
 
@@ -127,7 +178,9 @@ class PackageIndex:
         record = {"path": str(package), "name": package.name,
                   "version": manifest.get("package_version"),
                   "content_type": manifest.get("content_type"),
-                  "title": manifest.get("title"), "aircraft": [], "signature": _signature(package)}
+                  "title": manifest.get("title"),
+                  "dependencies": manifest.get("dependencies") or [],
+                  "aircraft": [], "signature": _signature(package)}
         for folder in folders:
             cfg = by_case(folder, "aircraft.cfg")
             record["aircraft"].append({"name": folder.name, "path": str(folder),
@@ -166,6 +219,40 @@ class PackageIndex:
 
     def aircraft_folders(self, name):
         return [Path(item["path"]) for item in self.aircraft.get(str(name).casefold(), [])]
+
+    def package_folders(self, name):
+        """Return installed package roots whose folder name matches a manifest dependency."""
+        wanted = str(name or "").casefold()
+        return sorted((Path(item["path"]) for item in self.packages.values()
+                       if str(item.get("name") or "").casefold() == wanted),
+                      key=lambda path: _key(path))
+
+    @staticmethod
+    def _package_path(package, tail):
+        candidate = package.joinpath(*tail.parts)
+        if candidate.exists() or os.name == "nt":
+            return candidate
+        # Keep tests and ad-hoc indexes portable to case-sensitive filesystems.
+        candidate = package
+        for part in tail.parts:
+            candidate = by_case(candidate, part)
+        return candidate
+
+    def _resource_matches(self, tail):
+        key = tuple(part.casefold() for part in tail.parts)
+        if key in self.package_resource_cache:
+            return list(self.package_resource_cache[key])
+        packages = self.package_top_dirs.get(key[0], []) if key else []
+        matches = []
+        seen = set()
+        for package in packages:
+            candidate = self._package_path(package, tail)
+            candidate_key = _key(candidate)
+            if candidate_key not in seen and candidate.exists():
+                seen.add(candidate_key)
+                matches.append((candidate, package))
+        self.package_resource_cache[key] = tuple(matches)
+        return matches
 
     def package_of(self, folder):
         folder = Path(os.path.abspath(os.fspath(folder)))
@@ -213,7 +300,7 @@ class PackageIndex:
             result[key] = described
         return result
 
-    def rebase(self, target, owner):
+    def rebase(self, target, owner, *, allow_global=False):
         """Resolve a VFS-relative path that does not exist inside its own package.
 
         Returns (path, origin, candidates). `path` is None when nothing matched;
@@ -221,6 +308,15 @@ class PackageIndex:
         which the user must decide instead of the resolver guessing.
         """
         target = Path(os.path.normpath(os.path.abspath(os.fspath(target))))
+        cache_key = (_key(target), _key(owner), bool(allow_global))
+        if cache_key in self.rebase_cache:
+            path, origin, candidates = self.rebase_cache[cache_key]
+            return path, origin, list(candidates)
+        result = self._rebase(target, owner, allow_global=allow_global)
+        self.rebase_cache[cache_key] = result
+        return result
+
+    def _rebase(self, target, owner, *, allow_global=False):
         owner_key = _key(owner)
         if target.exists():
             return target, None, []
@@ -275,12 +371,24 @@ class PackageIndex:
             package = self.package_of(base)
             if package is not None and package not in packages:
                 packages.append(package)
-        matches = [(package.joinpath(tail), package) for package in packages
-                   if package.joinpath(tail).exists()]
+        matches = []
+        seen = set()
+        for package in packages:
+            candidate = self._package_path(package, tail)
+            candidate_key = _key(candidate)
+            if candidate.exists() and candidate_key not in seen:
+                seen.add(candidate_key)
+                matches.append((candidate, package))
         if len(matches) == 1:
             return matches[0][0], "base_package", []
         if len(matches) > 1:
             return None, "ambiguous", [str(candidate) for candidate, _ in matches]
+        if not packages or allow_global:
+            matches = self._resource_matches(tail)
+            if len(matches) == 1:
+                return matches[0][0], "package_index", []
+            if len(matches) > 1:
+                return None, "ambiguous", [str(candidate) for candidate, _ in matches]
         return None, None, []
 
 

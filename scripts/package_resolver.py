@@ -72,13 +72,13 @@ def resolve(base, value):
     return (base / Path(os.path.expandvars(str(value))).expanduser()).resolve()
 
 
-def rebase(path, aircraft, index):
+def rebase(path, aircraft, index, *, allow_global=False):
     """A livery's relative path is written for the merged VFS tree, so on disk
     it points inside the livery package where nothing exists. The index knows
     which installed package actually owns the named aircraft or folder."""
     if index is None or path.exists():
         return path, None, []
-    found, origin, candidates = index.rebase(path, aircraft)
+    found, origin, candidates = index.rebase(path, aircraft, allow_global=allow_global)
     if found is not None:
         return found, origin, []
     return path, None, candidates
@@ -580,8 +580,17 @@ def collect_dependencies(folder, roots=(), index=None):
     for item in manifest.get("dependencies") or []:
         name = item.get("name") if isinstance(item, dict) else item
         if name:
-            dependencies.append({"kind": "manifest", "name": str(name), "path": None,
-                                 "resolved": False, "source": "manifest.json"})
+            entry = {"kind": "manifest", "name": str(name), "path": None,
+                     "resolved": False, "source": "manifest.json"}
+            if index is not None:
+                matches = index.package_folders(name)
+                if len(matches) == 1:
+                    entry.update(path=str(matches[0]), resolved=True, origin="package_index")
+                elif len(matches) > 1:
+                    entry["detail"] = "несколько установленных пакетов: " + "; ".join(map(str, matches))
+                else:
+                    entry["detail"] = "пакет не найден среди установленных корней"
+            dependencies.append(entry)
     cfg = by_case(folder, "aircraft.cfg")
     if cfg.is_file():
         try:
@@ -591,7 +600,7 @@ def collect_dependencies(folder, roots=(), index=None):
                     entry = {"kind": "base_container", "name": Path(value.replace("\\", "/")).name,
                              "path": str(target), "resolved": target.is_dir(), "source": str(cfg)}
                     if not entry["resolved"] and index is not None:
-                        found, origin, ambiguous = rebase(target, folder, index)
+                        found, origin, ambiguous = rebase(target, folder, index, allow_global=True)
                         if ambiguous:
                             entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                         elif origin:
@@ -624,8 +633,9 @@ def collect_dependencies(folder, roots=(), index=None):
             target = resolve(variant, value.replace("\\", "/"))
             if folder not in target.parents and target != folder:
                 found, origin, ambiguous = rebase(target, folder, index)
-                entry = {"kind": "model", "name": key, "path": str(found),
-                         "resolved": found.exists(), "source": str(cfg)}
+                entry = {"kind": "model", "name": key,
+                         "path": str(found if found is not None else target),
+                         "resolved": bool(found is not None and found.exists()), "source": str(cfg)}
                 if origin:
                     entry["origin"] = origin
                 if ambiguous:
@@ -647,10 +657,11 @@ def collect_dependencies(folder, roots=(), index=None):
         for key, value in values:
             target = resolve(texture, value.replace("\\", "/"))
             if folder not in target.parents:
-                found, origin, ambiguous = rebase(target, folder, index)
+                found, origin, ambiguous = rebase(target, folder, index, allow_global=True)
                 resolved_path = found if found is not None else target
                 entry = {"kind": "texture_fallback", "name": key, "path": str(resolved_path),
-                         "resolved": bool(found is not None and found.is_dir()), "source": str(cfg)}
+                         "resolved": bool(found is not None and found.is_dir()), "optional": True,
+                         "source": str(cfg)}
                 if ambiguous:
                     entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                 elif origin:
