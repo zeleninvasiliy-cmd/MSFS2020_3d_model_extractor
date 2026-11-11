@@ -89,7 +89,7 @@ python .\scripts\msfs_universal.py build .\project.json --stage geometry
 
 `inventory` checks one package; `catalog` lists aircraft; add `--deep` to validate every glTF/GLB and BIN before project creation. `index` resolves package inheritance, `models` prints role candidates, `validate` checks configuration without Blender, and `build` runs a stage. The GUI exposes the same option as **Deep glTF/BIN check**. See [wiki/CLI-Reference.md](wiki/CLI-Reference.md) for the complete reference.
 
-To check the installed set without creating Blender files, run `python .\scripts\msfs_universal.py audit-plans`. It preflights a geometry plan for every entry marked buildable and reports plans that need a manual model choice or a source fix. It does not check visual output in Blender.
+To check the installed set without creating Blender files, run `python .\scripts\msfs_universal.py audit-plans`. It preflights a geometry plan for every entry marked buildable and reports plans that need a manual model choice or a source fix. It does not check visual output in Blender. A requested root that does not exist is listed in the result and returns exit code 2, so an incomplete scan cannot appear successful.
 
 The same check is available from the **Check plans** button in the top toolbar. The result shows the number of validated and rejected plans; rejected aircraft are listed with their problem code.
 

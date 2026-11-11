@@ -580,8 +580,10 @@ def make_plan(config_file, stage=None, *, index=None, require_blender=True):
 
 def audit_build_plans(extra_roots=()):
     """Preflight every deep-catalog geometry candidate without launching Blender."""
-    index = build_index(extra_roots)
-    report = catalog(extra_roots, deep=True, index=index)
+    requested_roots = [Path(root).expanduser().resolve() for root in extra_roots]
+    missing_roots = [str(path) for path in requested_roots if not path.is_dir()]
+    index = build_index(requested_roots)
+    report = catalog(requested_roots, deep=True, index=index)
     candidates = [item for item in report["aircraft"] if item.get("can_build_geometry")]
     passed = 0
     failures = []
@@ -630,6 +632,8 @@ def audit_build_plans(extra_roots=()):
     return {
         "schema_version": 1,
         "mode": "preflight_only_blender_not_started",
+        "scope_complete": not missing_roots,
+        "missing_roots": missing_roots,
         "catalog_aircraft": len(report["aircraft"]),
         "geometry_buildable": len(candidates),
         "plans_validated": passed,
@@ -885,7 +889,7 @@ def main():
         if args.command == "audit-plans":
             result = audit_build_plans(args.root)
             print(json.dumps(result, ensure_ascii=False, indent=2))
-            return 2 if result["plans_rejected"] else 0
+            return 2 if result["plans_rejected"] or result["missing_roots"] else 0
         if args.command == "models":
             roots = installed_package_roots(args.root)
             index = build_index(args.root, near=args.source.resolve())

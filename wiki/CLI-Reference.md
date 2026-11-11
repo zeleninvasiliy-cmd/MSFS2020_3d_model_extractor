@@ -19,7 +19,7 @@ python .\scripts\msfs_universal.py audit-plans
 python .\scripts\msfs_universal.py audit-plans --root "D:\MSFS\Community"
 ```
 
-The JSON response reports buildable, validated and rejected plan counts, index errors and each rejected aircraft's problem code. Inspect a rejected package with `inventory --deep` or the GUI.
+The JSON response reports buildable, validated and rejected plan counts, index errors and each rejected aircraft's problem code. Requested roots that do not exist appear in `missing_roots`; `scope_complete` becomes `false`, and the command exits with code 2 so a partial scan cannot look like full success. Inspect a rejected package with `inventory --deep` or the GUI.
 
 ---
 
@@ -122,7 +122,7 @@ python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Official" --root "E:\
 
 ### `audit-plans`
 
-Проверяет, что стандартный план сборки геометрии может быть подготовлен для каждого самолёта, который каталог пометил как доступный. Команда использует глубокую проверку glTF/BIN, переиспользует один индекс пакетов и не запускает Blender, не создаёт `.blend` и не изменяет пакеты. Успех означает, что источники и параметры прошли preflight; фактический импорт в Blender и правильность геометрии этим не подтверждаются.
+Проверяет, что стандартный план сборки геометрии может быть подготовлен для каждого самолёта, который каталог пометил как доступный. Команда использует глубокую проверку glTF/BIN, переиспользует один индекс пакетов и не запускает Blender, не создаёт `.blend` и не изменяет пакеты. Успех означает, что источники и параметры прошли preflight; фактический импорт в Blender и правильность геометрии этим не подтверждаются. Если один из явно запрошенных `--root` отсутствует, путь возвращается в `missing_roots`, `scope_complete` будет `false`, а код завершения станет 2 — частичная проверка не выглядит как полная.
 
 | Аргумент | Тип | По умолчанию | Описание |
 |---|---|---|---|

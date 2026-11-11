@@ -1081,8 +1081,10 @@ class BuilderApp(tk.Tk):
             return
         validated = int(data.get("plans_validated") or 0)
         buildable = int(data.get("geometry_buildable") or 0)
-        failures = data.get("failures") if isinstance(data.get("failures"), list) else []
-        if code == 0 and not failures:
+        failure_values = data.get("failures") if isinstance(data.get("failures"), list) else []
+        failures = [item for item in failure_values if isinstance(item, dict)]
+        missing_roots = data.get("missing_roots") if isinstance(data.get("missing_roots"), list) else []
+        if code == 0 and not failures and not missing_roots:
             summary = (f"Планы геометрии проверены: {validated}/{buildable}. "
                        "Blender не запускался, файлы не создавались.")
             self.status_var.set(summary)
@@ -1090,15 +1092,28 @@ class BuilderApp(tk.Tk):
             messagebox.showinfo("Проверка планов геометрии", summary)
             return
         examples = [f"• {item.get('aircraft', '?')}: {item.get('problem', 'ошибка')}" for item in failures[:8]]
+        examples.extend(f"• Каталог не найден: {path}" for path in missing_roots[:4])
         more = f"\n…и ещё {len(failures) - 8}" if len(failures) > 8 else ""
-        summary = f"Прошли: {validated}/{buildable}; отклонено: {len(failures)}."
+        if len(missing_roots) > 4:
+            more += f"\n…и ещё отсутствующих каталогов: {len(missing_roots) - 4}"
+        summary = (f"Прошли: {validated}/{buildable}; отклонено планов: {len(failures)}; "
+                   f"не найдено корней: {len(missing_roots)}.")
         detail = "\n".join(examples) + more
-        self.status_var.set("Есть отклонённые планы геометрии; подробности в журнале.")
+        if failures and missing_roots:
+            status = "Есть отклонённые планы и отсутствующие корни; подробности в журнале."
+        elif missing_roots:
+            status = "Не все каталоги проверены; исправьте отсутствующие корни."
+        else:
+            status = "Есть отклонённые планы геометрии; подробности в журнале."
+        self.status_var.set(status)
         self.append_log(summary + ("\n" + detail if detail else ""))
+        advice = ("Проверьте пути в окне «Каталоги Packages…» и повторите проверку."
+                  if missing_roots else
+                  "Откройте диагностику соответствующего пакета через каталог самолётов.")
         messagebox.showwarning(
             "Проверка планов геометрии",
             summary + ("\n\n" + detail if detail else "")
-            + "\n\nОткройте диагностику соответствующего пакета через каталог самолётов.",
+            + "\n\n" + advice,
         )
 
     def scan_custom(self):

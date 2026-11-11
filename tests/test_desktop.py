@@ -238,6 +238,18 @@ class DesktopRegressionTests(unittest.TestCase):
         showerror.assert_called_once()
         append_log.assert_called_once()
 
+    def test_geometry_plan_audit_warns_when_requested_root_is_missing(self):
+        missing = r"D:\MissingCommunity"
+        output = json.dumps({"plans_validated": 226, "geometry_buildable": 226,
+                             "failures": [], "missing_roots": [missing], "scope_complete": False})
+        with patch.object(gui.messagebox, "showwarning") as showwarning:
+            self.app.on_geometry_plan_audit_result(2, output)
+
+        self.assertIn("не найдено корней: 1", showwarning.call_args.args[1])
+        self.assertIn(missing, showwarning.call_args.args[1])
+        self.assertIn("Каталоги Packages", showwarning.call_args.args[1])
+        self.assertIn("Не все каталоги проверены", self.app.status_var.get())
+
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()
         self.app.normal_decode_var.set("dxt5n")

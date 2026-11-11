@@ -424,6 +424,15 @@ class PlanDiagnosisTests(unittest.TestCase):
         self.assertEqual(result["plans_rejected"], 0)
         self.assertEqual(result["mode"], "preflight_only_blender_not_started")
 
+    def test_audit_plans_marks_missing_roots_as_incomplete_scope(self):
+        missing = self.root / "missing-community"
+        with patch.object(pipeline, "build_index", return_value=object()), \
+             patch.object(pipeline, "catalog", return_value={"aircraft": [], "index": {"errors": []}}):
+            result = pipeline.audit_build_plans([missing])
+
+        self.assertFalse(result["scope_complete"])
+        self.assertEqual(result["missing_roots"], [str(missing.resolve())])
+
     def test_glb_model_is_accepted_by_build_plan(self):
         folder = complete_aircraft(self.root / "src")
         glb = folder / "model" / "body.glb"

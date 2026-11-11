@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M15-GUI-build-plan-audit-entry-point",
-  "active_stage": "M15-GUI-build-plan-audit-entry-point",
-  "working_branch": "codex/gui-build-plan-audit",
-  "last_commit": "pending M15 checkpoint commit",
+  "last_completed_stage": "M16-third-party-mod-root-coverage-audit",
+  "active_stage": "M17-GUI-recovery-actions-for-plan-audit-failures",
+  "working_branch": "codex/community-mod-coverage",
+  "last_commit": "pending M16 checkpoint commit",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "187 passed",
+    "unittest": "189 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -19,7 +19,8 @@
     "release_build": "not run; feature branch is unmerged and VERSION remains 1.2.1",
     "release_workflow": "static review only; GitHub Actions CI still required",
     "deep_catalog": "passed; 233 aircraft, 226 geometry-buildable, 48 partial, 526 packages, 0 index errors",
-    "audit_plans": "passed; 226/226 geometry-buildable installed entries; 0 rejected; Blender not launched"
+    "audit_plans": "passed; 226/226 geometry-buildable installed entries; 0 rejected; Blender not launched",
+    "community_mod_audit": "An-2 package root: 230/230 plans; direct Wheels aircraft root: 227/227; missing requested root exits 2 and scope_complete=false"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -91,14 +92,33 @@
       "plans_rejected": 0,
       "index_errors": 0,
       "shared_dual_role_gltf_deduplicated": 1
+    },
+    "community_mod_audit": {
+      "available_historical_mods": [
+        "Antonov An-2"
+      ],
+      "missing_historical_mods": [
+        "Wilga 35A",
+        "Zenith 701",
+        "K21",
+        "SG38"
+      ],
+      "package_root_catalog_aircraft": 237,
+      "package_root_geometry_buildable": 230,
+      "package_root_plans_validated": 230,
+      "direct_aircraft_root_catalog_aircraft": 234,
+      "direct_aircraft_root_geometry_buildable": 227,
+      "direct_aircraft_root_plans_validated": 227,
+      "index_errors": 0,
+      "missing_root_exit_code": 2
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Commit/push M15 GUI audit entry point. Then create codex/community-mod-coverage and exercise the plan-only audit over the previously analyzed Wilga, Zenith 701, K21, SG38 and Antonov An-2 folders.",
-  "next_stage": "M16-third-party-mod-root-coverage-audit",
+  "next_step": "Commit/push M16 root-scope reporting and An-2 measurements. Then create codex/gui-plan-audit-recovery; add direct GUI actions to fix missing roots and inspect rejected aircraft without editing JSON.",
+  "next_stage": "M17-GUI-recovery-actions-for-plan-audit-failures",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T04:01:00Z"
+  "updated_utc": "2026-11-11T04:10:00Z"
 }

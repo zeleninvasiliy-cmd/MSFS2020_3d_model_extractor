@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/gui-build-plan-audit",
+  "working_branch": "codex/community-mod-coverage",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -205,18 +205,20 @@
     {
       "id": "M16",
       "name": "Third-party mod root coverage audit",
-      "status": "planned",
+      "status": "complete",
       "deliverables": [
-        "run deep catalog and geometry plan preflight over representative local community aircraft roots",
-        "verify direct aircraft, package-root and wrapper layouts without changing source packages",
-        "fix only reproducible root or resolver misses and retain path-free findings"
+        "run deep catalog and geometry plan preflight over representative community aircraft folders currently available",
+        "verify package-root and direct-aircraft-root layouts without changing source packages",
+        "make explicitly requested missing roots visible and fail incomplete-scope audits"
       ],
-      "acceptance": "Every geometry-buildable representative mod yields a plan; non-buildable packages expose a stable source/layout reason; no source package is modified."
+      "acceptance": "Every geometry-buildable representative source currently present locally yields a plan; missing requested roots are listed and cannot be mistaken for a complete pass.",
+      "result": "The five historical mod folders were checked: only the Antonov An-2 download remains present; Wilga, Zenith 701, K21 and SG38 are absent from the noted Downloads locations and were not substituted. Package-root audit including An-2: 237 catalog entries, 230 geometry-buildable, 230/230 valid plans, 0 index errors. Direct An-2 Wheels aircraft-folder root: 234 catalog entries, 227/227 valid plans. A deliberately missing root reports scope_complete=false and exits 2. Added regression and GUI handling for missing roots; no aircraft files or .blend files were modified. 189 tests, GUI self-test, compileall and diff checks pass.",
+      "next": "Improve GUI recovery after the audit: make missing-root results open the root manager and rejected aircraft selectable in the catalog, then verify the chosen aircraft diagnosis/model chooser action. Keep the audit read-only."
     },
     {
       "id": "M17",
       "name": "GUI recovery actions for plan audit failures",
-      "status": "planned",
+      "status": "in_progress",
       "deliverables": [
         "connect rejected plan codes to the selected aircraft diagnosis and model chooser",
         "make root-scope issues open the multi-root manager",
@@ -379,6 +381,6 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M16-third-party-mod-root-coverage-audit"
+    "next_stage": "M17-GUI-recovery-actions-for-plan-audit-failures"
   }
 }
