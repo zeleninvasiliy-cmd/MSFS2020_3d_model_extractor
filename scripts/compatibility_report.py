@@ -54,6 +54,7 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
     dependency_kinds: Counter[str] = Counter()
     unresolved_dependencies: Counter[str] = Counter()
     unresolved_dependency_problems: Counter[str] = Counter()
+    unresolved_targets: dict[str, set[str]] = {}
     affected_dependency_aircraft: dict[str, set[int]] = {}
     affected_resource_aircraft: dict[str, set[int]] = {}
     ambiguous_dependencies = 0
@@ -67,6 +68,14 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
                 problem = _dependency_problem(dependency)
                 unresolved_dependency_problems[problem] += 1
                 affected_dependency_aircraft.setdefault(kind, set()).add(aircraft_index)
+                target = str(
+                    dependency.get("target_aircraft")
+                    or dependency.get("name")
+                    or dependency.get("path")
+                    or ""
+                ).strip()
+                if target:
+                    unresolved_targets.setdefault(kind, set()).add(target.casefold())
             if (dependency.get("problem_code") == "ambiguous_owner"
                     or dependency.get("origin") == "ambiguous"
                     or "несколько установленных пакетов" in str(dependency.get("detail") or "")):
@@ -127,6 +136,8 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
         "dependencies": {"by_kind": dict(sorted(dependency_kinds.items())),
                          "unresolved_by_kind": dict(sorted(unresolved_dependencies.items())),
                          "unresolved_by_reason": dict(sorted(unresolved_dependency_problems.items())),
+                         "unresolved_unique_targets_by_kind": {
+                             kind: len(targets) for kind, targets in sorted(unresolved_targets.items())},
                          "affected_aircraft_by_kind": {
                              kind: len(indices) for kind, indices in sorted(affected_dependency_aircraft.items())},
                          "ambiguous": ambiguous_dependencies},

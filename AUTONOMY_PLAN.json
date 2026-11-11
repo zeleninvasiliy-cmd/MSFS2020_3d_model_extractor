@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/gui-package-roots",
+  "working_branch": "codex/model-ownership-audit",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -153,18 +153,20 @@
     {
       "id": "M12",
       "name": "Audit unresolved base-aircraft and model ownership",
-      "status": "planned",
+      "status": "complete",
       "deliverables": [
         "measure all unresolved base_container/model references by package and manifest",
         "check whether exact model sources exist in indexed packages under alternate ownership",
         "fix any reproducible false misses; keep genuinely absent sources clearly diagnosed"
       ],
-      "acceptance": "No unresolved base/model link has an installed exact owner that the resolver fails to find; remaining missing sources are classified as absent, malformed, or unsupported."
+      "acceptance": "No unresolved base/model link has an installed exact owner that the resolver fails to find; remaining missing sources are classified as absent, malformed, or unsupported.",
+      "result": "Audited all 45 unresolved base_container records (12 unique base names) against every resolved manifest dependency package, exact aircraft folder, and declared model XML; no installed exact owner or source was found. Deep catalog: 233 aircraft, 226 geometry-buildable, 48 partial, 526 indexed packages, 0 index errors. Compatibility snapshot now distinguishes unresolved record counts from unique target counts: base_container 12, model 1, texture_fallback 18; 89 missing-base causes, 4 declared model files absent, 60 optional texture fallbacks. Added target fallback handling and regression coverage. 179 unit tests, GUI self-test, compileall and path-free snapshot regeneration pass.",
+      "next": "Start M13 on a fresh branch: audit the multi-root GUI and dependency actions, then test new/open/reopen and legacy settings migration. Independently review validation and user-facing error paths before the next compatibility stage."
     },
     {
       "id": "M13",
       "name": "GUI root and dependency diagnostics review",
-      "status": "planned",
+      "status": "in_progress",
       "deliverables": [
         "review the multi-root manager after actual catalog use",
         "show package-root errors and unresolved dependencies with concrete actions",
@@ -326,6 +328,7 @@
       "each release build"
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
-    "usage_limit": "leave a clean commit, test result and next_step before stopping"
+    "usage_limit": "leave a clean commit, test result and next_step before stopping",
+    "next_stage": "M13-GUI-root-and-dependency-diagnostics-review"
   }
 }
