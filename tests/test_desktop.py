@@ -97,6 +97,13 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertEqual(config["pose_position"], "POSE")
         self.assertTrue(config["repair_skin_roots"])
 
+    def test_converted_normal_directory_is_saved_from_texture_controls(self):
+        self.project()
+        normal_dir = self.folder / "normal_png"
+        normal_dir.mkdir()
+        self.app.converted_normal_var.set(str(normal_dir))
+        self.assertEqual(Path(self.app.make_config()["converted_normal_dir"]), normal_dir.resolve())
+
     def test_report_object_catalog_survives_exclusions(self):
         self.app._populate_catalog([
             {"name": "Wheel_Left", "type": "MESH", "collections": ["05_LANDING_GEAR"], "included": False},

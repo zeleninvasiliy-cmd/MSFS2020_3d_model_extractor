@@ -10,7 +10,7 @@ Relative paths are resolved from the configuration file. Unknown keys and invali
 
 JSON-конфиг сборки читает `make_plan` (`scripts/msfs_universal.py`). Неизвестные ключи **отклоняются**. Относительные пути разрешаются от каталога файла конфигурации.
 
-GUI формирует этот JSON автоматически; обычному пользователю редактировать его не нужно. Правила `split_*`, `mirror_objects`, `placements`, `collection_overrides`, `manual_keep_pivots` и `texture_overrides` задаются окнами [редакторов правил и таблицы карт](Rule-Editors). `normal_decode` выбирается на вкладке «Текстуры», а `pose_position` и `repair_skin_roots` — в параметрах geometry. Без графического редактора остаются `converted_normal_dir` и `profile`: GUI сохраняет их при круговой загрузке, но менять их можно только в файле.
+GUI формирует этот JSON автоматически; обычному пользователю редактировать его не нужно. Правила `split_*`, `mirror_objects`, `placements`, `collection_overrides`, `manual_keep_pivots` и `texture_overrides` задаются окнами [редакторов правил и таблицы карт](Rule-Editors). `normal_decode` и `converted_normal_dir` выбираются на вкладке «Текстуры», а `pose_position` и `repair_skin_roots` — в параметрах geometry. Без графического редактора остаётся только `profile`: GUI сохраняет его при круговой загрузке, но менять его можно только в файле.
 
 Структура всех перечисленных правил проверяется функцией `validate_config` **до** запуска Blender. Та же функция вызывается командой CLI `validate <config.json>`, которую используют редакторы при каждом сохранении, — поэтому определение допустимого правила существует в одном месте.
 

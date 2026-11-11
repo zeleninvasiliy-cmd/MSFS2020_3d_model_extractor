@@ -140,6 +140,7 @@ class BuilderApp(tk.Tk):
         self.draw_var = tk.StringVar(value="auto")
         self.pose_position_var = tk.StringVar(value="REST")
         self.normal_decode_var = tk.StringVar(value="auto")
+        self.converted_normal_var = tk.StringVar(value="")
         self.filter_runtime_var = tk.BooleanVar(value=True)
         self.repair_skin_roots_var = tk.BooleanVar(value=False)
         self.all_liveries_var = tk.BooleanVar(value=False)
@@ -208,6 +209,7 @@ class BuilderApp(tk.Tk):
             self.skinning_var,
             self.draw_var,
             self.normal_decode_var,
+            self.converted_normal_var,
             self.filter_runtime_var,
             self.pose_position_var,
             self.repair_skin_roots_var,
@@ -478,6 +480,14 @@ class BuilderApp(tk.Tk):
         self.extra_text.grid(row=0, column=0, sticky="ew")
         self.extra_text.bind("<<Modified>>", self.on_extra_text_modified)
         ttk.Label(extra_frame, text="По одному каталогу на строку; эти пути сохраняются в проекте.", foreground="#555").grid(row=1, column=0, sticky="w", pady=(5, 0))
+        converted_row = ttk.Frame(extra_frame)
+        converted_row.grid(row=2, column=0, sticky="ew", pady=(8, 0))
+        converted_row.columnconfigure(1, weight=1)
+        ttk.Label(converted_row, text="PNG нормалей:").grid(row=0, column=0, sticky="w")
+        ttk.Entry(converted_row, textvariable=self.converted_normal_var).grid(row=0, column=1, sticky="ew", padx=8)
+        ttk.Button(converted_row, text="Выбрать каталог", command=self.choose_converted_normal_dir).grid(row=0, column=2)
+        ttk.Label(extra_frame, text="Необязательно: каталог уже декодированных PNG с именами исходных NORM-карт.",
+                  foreground="#555").grid(row=3, column=0, sticky="w", pady=(4, 0))
 
         variants = ttk.LabelFrame(tab, text="Собранные варианты для сравнения", padding=8)
         variants.grid(row=4, column=0, sticky="ew", pady=(0, 8))
@@ -826,6 +836,13 @@ class BuilderApp(tk.Tk):
         if path:
             self.blender_var.set(path)
             self._save_user_settings()
+
+    def choose_converted_normal_dir(self):
+        if not self.project_open or self.busy:
+            return
+        path = self.directory_dialog("Каталог PNG нормалей", self.converted_normal_var.get() or self.output_var.get())
+        if path:
+            self.converted_normal_var.set(path)
 
     def scan_installed(self):
         if self.busy or self.project_open:
@@ -1602,6 +1619,7 @@ class BuilderApp(tk.Tk):
             "pose_position": self.pose_position_var.get(),
             "repair_skin_roots": bool(self.repair_skin_roots_var.get()),
             "normal_decode": self.normal_decode_var.get(),
+            "converted_normal_dir": self.converted_normal_var.get().strip() or None,
             "filter_runtime": bool(self.filter_runtime_var.get()),
             "include_all_liveries": bool(self.all_liveries_var.get()),
             "exclude_objects": self.current_exclusions(),
@@ -1843,6 +1861,7 @@ class BuilderApp(tk.Tk):
             self.pose_position_var.set(data.get("pose_position", "REST"))
             self.repair_skin_roots_var.set(data.get("repair_skin_roots", False))
             self.normal_decode_var.set(data.get("normal_decode", "auto"))
+            self.converted_normal_var.set(data.get("converted_normal_dir", "") or "")
             self.build_variant_var.set(data.get("build_variant", f"{self.skinning_var.get()}_{self.draw_var.get()}"))
             self.filter_runtime_var.set(data.get("filter_runtime", True))
             self.all_liveries_var.set(data.get("include_all_liveries", False))
