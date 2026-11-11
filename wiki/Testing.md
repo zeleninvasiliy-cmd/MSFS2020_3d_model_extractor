@@ -12,7 +12,7 @@ python -c "import compileall; raise SystemExit(0 if compileall.compile_dir('.', 
 
 The Windows GitHub Actions job repeats compilation, GUI startup and the regression suite. Tests cover package resolution, inheritance, model selection, GUI state, editing rules, texture tables, glTF metadata and pipeline locks. Real aircraft and Blender acceptance remain user checks.
 
-The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts, dependency states and a path-free format matrix (unique models, source formats, extensions, primitive modes and sparse accessors); machine-specific paths are discarded. The detailed GUI diagnosis groups dependency states and gives a next step for missing or ambiguous links; optional texture fallbacks point users to the texturing report.
+The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts, affected-aircraft totals by blocker, stable dependency `problem_code`s and a path-free format matrix (unique models, source formats, extensions, primitive modes and sparse accessors); machine-specific paths are discarded. The detailed GUI diagnosis groups dependency states and gives a next step for missing or ambiguous links; optional texture fallbacks point users to the texturing report. Human-readable `detail` strings are not used as the primary machine classification.
 
 The shared configuration validator rejects unknown fields in both the graphical rule preflight and the build command. The catalog suppresses only a non-buildable `fs-base-history` placeholder shadowed by a same-name geometry-buildable package, and records the suppressed path for diagnostics. Package-index fixtures also cover resource-only packages, manifest dependency resolution and ambiguity-safe VFS rebasing. Format regressions cover compression declarations on glTF primitives and buffer views; the resolver and worker both reject Draco/Meshopt geometry before importing it as ordinary triangles.
 
@@ -20,7 +20,7 @@ The shared configuration validator rejects unknown fields in both the graphical 
 
 Три уровня проверки. Игровые ресурсы не используются нигде: все входы синтетические, поэтому набор проходит на GitHub Actions без MSFS и Blender.
 
-Аудит совместимости воспроизводится отдельно: `catalog --deep` проверяет установленные glTF/GLB и BIN до создания проекта, а `scripts/compatibility_report.py` сохраняет только безопасную сводку: уникальные модели, форматы, расширения, primitive modes, sparse accessors и типы блокеров — без личных путей. Снимок для текущей рабочей версии создаётся той же командой после обновления каталога.
+Аудит совместимости воспроизводится отдельно: `catalog --deep` проверяет установленные glTF/GLB и BIN до создания проекта, а `scripts/compatibility_report.py` сохраняет только безопасную сводку: число затронутых самолётов по типу блокера, стабильные `problem_code` неразрешённых связей, уникальные модели, форматы, расширения, primitive modes и sparse accessors — без личных путей. Человекочитаемое поле `detail` отделено от классификации, поэтому перевод интерфейса не меняет статистику. Снимок для текущей рабочей версии создаётся той же командой после обновления каталога.
 
 ## 1. Регрессия без Blender и без MSFS
 
@@ -55,7 +55,7 @@ python msfs_builder_gui.py --self-test
 
 `tests/test_gltf.py` проверяет JSON/GLB контейнеры, несколько буферов, data URI и общий детектор сжатия Draco/Meshopt на primitive и bufferView.
 
-### `tests/test_index.py` — 35 сценариев
+### `tests/test_index.py` — 38 сценариев
 
 [Индекс пакетов](Package-Index) и его влияние на диагностику. Тоже синтетическое дерево во временном каталоге, без bpy и без MSFS.
 
@@ -70,7 +70,7 @@ python msfs_builder_gui.py --self-test
 | ошибки | недоступный корень попадает в `errors`, остальные сканируются |
 | cfg | комментарий `;` и кавычки в `base_container` снимаются |
 | описание | `describe` помечает установленную и отсутствующую базу, фильтр по точному имени без учёта регистра |
-| наследование | ливрея получает интерьер из базового пакета и становится `OK`; без индекса та же ливрея `SUPPORTED_PARTIAL`; отсутствующая база оставляет partial; неоднозначная база сообщается |
+| наследование | ливрея получает интерьер из базового пакета и становится `OK`; без индекса та же ливрея `SUPPORTED_PARTIAL`; отсутствующая база оставляет partial; неоднозначная настоящая база сообщается; shadowed `fs-base-history` не создаёт ложный конфликт |
 | причины | «базовый самолёт не установлен» против «базовый самолёт установлен, но объявленный файл в нём отсутствует» |
 | сборка | `model_from_cfg` возвращает перенесённый путь с `origin=aircraft_index`; manifest-зависимости и общие VFS-пути ищутся по пакетам ресурсов; неоднозначность не угадывается и не вызывает сбой диагностики |
 

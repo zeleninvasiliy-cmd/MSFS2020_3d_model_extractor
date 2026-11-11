@@ -4,6 +4,10 @@
 
 The package index is a no-`bpy` cache built from selected MSFS roots. It maps aircraft names to folders, all installed packages (including resource-only packages) to roots, and livery `base_container` declarations to their installed bases. Manifest dependencies are resolved by package name. Configuration mtimes and the index version invalidate stale records.
 
+When a buildable same-name aircraft exists, a non-buildable `fs-base-history` placeholder is excluded from inheritance lookup so it cannot create a false ambiguous base. Unique history-only aircraft remain available as diagnostic records.
+
+Unresolved dependencies include a stable `problem_code` such as `ambiguous_owner`, `base_aircraft_missing`, `declared_model_file_missing`, `manifest_package_missing` or `optional_texture_fallback_missing`. User-facing Russian `detail` text remains separate; reports can classify blockers without depending on translated wording.
+
 When a relative VFS path does not exist in the livery, the resolver tries the indexed aircraft or base package, then optionally searches resource packages for shared paths. The origin is preserved in diagnostics. If two packages can own the same resource, the index reports ambiguity and the user must choose; an inaccessible package does not abort the scan.
 
 Texture fallback diagnostics keep the original unresolved path when no package matches. If multiple base packages contain the fallback directory, the dependency stays unresolved and lists all candidates instead of returning an empty path.
@@ -34,7 +38,7 @@ interior = ..\..\Asobo_208B_GRAND_CARAVAN_EX\model\208B_GRAND_CARAVAN_EX_INTERIO
 
 ## Что индексируется
 
-`PackageIndex.build(roots, cache_path=…)` обходит корни `Packages` (Official/Steam и Community) и дополнительные моды. Индекс версии 4 находит пакеты по `manifest.json`/`layout.json`, в том числе пакеты общих ресурсов без `SimObjects/Airplanes`:
+`PackageIndex.build(roots, cache_path=…)` обходит корни `Packages` (Official/Steam и Community) и дополнительные моды. Индекс версии 5 находит пакеты по `manifest.json`/`layout.json`, включая пакеты общих ресурсов без `SimObjects/Airplanes`, и исключает из поиска баз подавленные history-заглушки:
 
 | Источник | Что берётся |
 |---|---|
@@ -43,6 +47,10 @@ interior = ..\..\Asobo_208B_GRAND_CARAVAN_EX\model\208B_GRAND_CARAVAN_EX_INTERIO
 | `aircraft.cfg`, `[VARIATION]` | объявленная база (`base_container`) |
 | `manifest.json` dependencies | имена зависимых пакетов |
 | ресурсные каталоги в пакетах | кандидаты для переноса общих VFS-путей |
+
+При поиске базового самолёта индекс игнорирует не собираемую заглушку `fs-base-history`, если для того же имени есть собираемый самолёт. Уникальные history-записи остаются в каталоге и диагностике; это предотвращает ложную неоднозначность у ливрей.
+
+Для неразрешённых зависимостей resolver также выдаёт стабильный `problem_code` (`ambiguous_owner`, `base_aircraft_missing`, `declared_model_file_missing`, `manifest_package_missing`, `optional_texture_fallback_missing`). Поле `detail` предназначено для человека и может переводиться; машинная классификация от его текста не зависит.
 
 Содержимое `model.cfg`, model XML и glTF на этом шаге **не читается** — индекс должен строиться быстро. Их разбирает resolver, уже зная, где искать.
 

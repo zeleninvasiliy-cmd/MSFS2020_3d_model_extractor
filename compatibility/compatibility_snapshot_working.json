@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_utc": "2026-11-11T02:18:41+00:00",
+  "generated_utc": "2026-11-11T02:45:08+00:00",
   "source": {
     "kind": "catalog_json",
-    "name": "installed-msfs-deep-catalog-after-M7"
+    "name": "installed-msfs-deep-catalog-after-M8"
   },
   "counts": {
     "aircraft": 233,
@@ -24,11 +24,18 @@
     "UNRESOLVED_ALIAS": 1
   },
   "missing_resource_kinds": {
-    "base_container": 49,
+    "base_container": 45,
     "gltf": 96,
     "model": 50,
     "model_cfg": 37,
     "model_xml": 118
+  },
+  "affected_aircraft_by_missing_resource_kind": {
+    "base_container": 45,
+    "gltf": 4,
+    "model": 50,
+    "model_cfg": 7,
+    "model_xml": 50
   },
   "nested_model_reason_codes": {},
   "dependencies": {
@@ -39,11 +46,21 @@
       "texture_fallback": 1919
     },
     "unresolved_by_kind": {
-      "base_container": 49,
+      "base_container": 45,
       "model": 48,
       "texture_fallback": 60
     },
-    "ambiguous": 4
+    "unresolved_by_reason": {
+      "base_aircraft_missing": 89,
+      "declared_model_file_missing": 4,
+      "optional_texture_fallback_missing": 60
+    },
+    "affected_aircraft_by_kind": {
+      "base_container": 45,
+      "model": 48,
+      "texture_fallback": 58
+    },
+    "ambiguous": 0
   },
   "format_features": {
     "unique_models": 285,
@@ -97,6 +114,5 @@
     "Counts describe the selected local MSFS installation, not a guarantee for every third-party package.",
     "A shallow catalog checks structure and declared files; use catalog --deep for glTF/GLB and BIN validation.",
     "Missing source geometry is reported, not reconstructed or guessed."
-  ],
-  "measurement_context": "Deep catalog after M7 compression guard and format feature instrumentation; selected local MSFS installation; path-free summary."
+  ]
 }

@@ -1,21 +1,21 @@
 {
   "version": "1.2.1",
   "last_completed_stage": "D-release-1.2.1",
-  "active_stage": "M8-compatibility-measurement-and-release",
+  "active_stage": "M8-resolver-diagnostics-and-release-automation",
   "working_branch": "codex/release-pipeline",
-  "last_commit": "pending-M8-release-workflow-checkpoint",
+  "last_commit": "pending-M8-final-validation",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "167 passed",
+    "unittest": "170 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
-    "release_build": "not run; changes are unmerged",
-    "git_diff_check": "passed",
-    "blender_worker_checks": "passed on Blender 5.2.3 LTS",
-    "release_workflow": "added tag and merged-main gates; syntax not yet checked with actionlint (not installed)"
+    "release_build": "not run; feature branch is unmerged and VERSION remains 1.2.1",
+    "git_diff_check": "passed before final resolver-code update; rerun before commit",
+    "blender_worker_checks": "passed on Blender 5.2.3 LTS during M7",
+    "release_workflow": "guard reviewed; parser/actionlint unavailable, GitHub CI still required"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -40,7 +40,7 @@
     "texture_fallback_dependencies_total": 1919,
     "texture_fallback_unresolved": 60,
     "texture_fallback_ambiguous": 4,
-    "base_container_unresolved": 49,
+    "base_container_unresolved": 45,
     "model_links_unresolved": 48,
     "deep_catalog_seconds_approx": 19.4,
     "index_errors": 0,
@@ -55,14 +55,18 @@
     "local_buffers": 285,
     "unsupported_geometry_features": 0,
     "draco_models": 0,
-    "meshopt_models": 0
+    "meshopt_models": 0,
+    "missing_base_reason_instances": 89,
+    "declared_model_file_missing": 4,
+    "texture_fallback_affected_aircraft": 58,
+    "ambiguous_dependency_count": 0
   },
-  "current_blocker": "GitHub release automation can be prepared on a feature branch. Public release is intentionally gated to tags on commits already merged into main; current feature PR creation is denied to the connected integration with HTTP 403, so no release can be published safely yet.",
-  "next_step": "Validate release workflow syntax and guards, audit artifact naming/checksum behavior and current path-free snapshot; then continue with the highest-impact remaining catalog blocker while PR access remains unavailable.",
-  "next_stage": "M8-compatibility-measurement-and-release",
+  "current_blocker": "GitHub integration returns HTTP 403 when creating PRs, so feature branches can be pushed but cannot be merged or release-tagged. Release automation is gated to commits already on main; workflow syntax still needs GitHub Actions CI validation.",
+  "next_step": "Commit/push the resolver and compatibility-report changes on codex/release-pipeline. Then inspect and improve the GUI decision flow for four installed-base model-file misses, test user-visible recovery, and independently audit for regressions.",
+  "next_stage": "M9-GUI-model-source-decision-flow",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T02:29:15Z"
+  "updated_utc": "2026-11-11T02:45:00Z"
 }

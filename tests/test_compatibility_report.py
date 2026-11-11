@@ -24,6 +24,7 @@ class CompatibilityReportTests(unittest.TestCase):
                  "texture_images": False, "missing_resources": [{"kind": "base_container"}],
                  "dependencies": [{"kind": "manifest", "resolved": True, "origin": "package_index"},
                                   {"kind": "texture_fallback", "resolved": False,
+                                   "problem_code": "ambiguous_owner",
                                    "detail": "несколько установленных пакетов: A; B"}],
                  "variants": [{"models": [{"path": "C:/pkg/a.gltf", "reason_code": "MISSING_BUFFER",
                                              "source_format": "gltf", "extensions_used": ["EXT_test"],
@@ -42,7 +43,10 @@ class CompatibilityReportTests(unittest.TestCase):
         self.assertEqual(report["nested_model_reason_codes"], {"MISSING_BUFFER": 1})
         self.assertEqual(report["dependencies"]["by_kind"], {"manifest": 1, "texture_fallback": 1})
         self.assertEqual(report["dependencies"]["unresolved_by_kind"], {"texture_fallback": 1})
+        self.assertEqual(report["dependencies"]["unresolved_by_reason"], {"ambiguous_owner": 1})
+        self.assertEqual(report["dependencies"]["affected_aircraft_by_kind"], {"texture_fallback": 1})
         self.assertEqual(report["dependencies"]["ambiguous"], 1)
+        self.assertEqual(report["affected_aircraft_by_missing_resource_kind"], {"base_container": 1, "buffer": 1})
         self.assertEqual(report["format_features"]["unique_models"], 1)
         self.assertEqual(report["format_features"]["source_formats"], {"gltf": 1})
         self.assertEqual(report["format_features"]["extensions_used"], {"EXT_test": 1})

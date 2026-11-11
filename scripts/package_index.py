@@ -14,13 +14,14 @@ import json
 import os
 from pathlib import Path
 
-from package_resolver import by_case, find_aircraft, package_manifest
+from package_resolver import by_case, find_aircraft, package_manifest, resolve_aircraft
 
 
-# Version 4 includes resource-only packages as well as packages with aircraft.
+# Version 5 excludes shadowed, non-buildable history placeholders from base lookup.
+# Version 4 added resource-only packages as well as packages with aircraft.
 # The index stores ``base_container`` from aircraft.cfg, so an in-place cfg
 # edit invalidates an otherwise unchanged package folder.
-INDEX_VERSION = 4
+INDEX_VERSION = 5
 
 
 def _key(path):
@@ -170,8 +171,36 @@ class PackageIndex:
                 children = []
             for child in children:
                 index.package_top_dirs.setdefault(child.name.casefold(), []).append(package)
+        index._suppress_shadowed_history_stubs()
         index._save(cache_path)
         return index
+
+    def _suppress_shadowed_history_stubs(self):
+        """Keep empty fs-base-history entries out of base lookups when a real
+        same-name package has buildable local geometry. Catalog reporting keeps
+        the separate suppressed-history diagnostics for users.
+        """
+        suppressed = set()
+        for entries in self.aircraft.values():
+            history = [item for item in entries
+                       if "fs-base-history" in {part.casefold() for part in Path(item["path"]).parts}]
+            if not history:
+                continue
+            peers = [item for item in entries if item not in history]
+            for peer in peers:
+                try:
+                    report = resolve_aircraft(Path(peer["path"]))
+                except (OSError, ValueError):
+                    continue
+                if report.get("can_build_geometry"):
+                    suppressed.update(_key(item["path"]) for item in history)
+                    break
+        if suppressed:
+            self.aircraft = {
+                name: [item for item in entries if _key(item["path"]) not in suppressed]
+                for name, entries in self.aircraft.items()
+            }
+            self.aircraft = {name: entries for name, entries in self.aircraft.items() if entries}
 
     def _scan_package(self, package, folders):
         manifest, _ = package_manifest(package)

@@ -20,6 +20,30 @@ def _as_records(value: Any) -> list[dict[str, Any]]:
     return [item for item in value or [] if isinstance(item, dict)]
 
 
+def _dependency_problem(dependency: dict[str, Any]) -> str:
+    """Return a path-free blocker class for an unresolved dependency.
+
+    New resolver output carries ``problem_code``. The text fallback is retained
+    only for catalog JSON files produced by older program versions.
+    """
+    problem_code = dependency.get("problem_code")
+    if problem_code:
+        return str(problem_code)
+    kind = str(dependency.get("kind") or "UNKNOWN")
+    detail = str(dependency.get("detail") or "").casefold()
+    if "несколько установленных пакетов" in detail:
+        return "ambiguous_owner"
+    if kind == "texture_fallback":
+        return "optional_texture_fallback_missing"
+    if kind in {"base_container", "model"} and "базовый самолёт не установлен" in detail:
+        return "base_aircraft_missing"
+    if kind == "model" and "объявленный файл в нём отсутствует" in detail:
+        return "declared_model_file_missing"
+    if kind == "manifest" and "пакет не найден" in detail:
+        return "manifest_package_missing"
+    return "unresolved_path"
+
+
 def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dict[str, Any]:
     aircraft = _as_records(catalog.get("aircraft"))
     reason_codes = Counter(str(item.get("reason_code") or "UNKNOWN") for item in aircraft)
@@ -27,20 +51,29 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
     nested_reason_codes: Counter[str] = Counter()
     dependency_kinds: Counter[str] = Counter()
     unresolved_dependencies: Counter[str] = Counter()
+    unresolved_dependency_problems: Counter[str] = Counter()
+    affected_dependency_aircraft: dict[str, set[int]] = {}
+    affected_resource_aircraft: dict[str, set[int]] = {}
     ambiguous_dependencies = 0
     feature_models: dict[str, dict[str, Any]] = {}
-    for item in aircraft:
+    for aircraft_index, item in enumerate(aircraft):
         for dependency in _as_records(item.get("dependencies")):
             kind = str(dependency.get("kind") or "UNKNOWN")
             dependency_kinds[kind] += 1
             if not dependency.get("resolved"):
                 unresolved_dependencies[kind] += 1
-            if (dependency.get("origin") == "ambiguous"
+                problem = _dependency_problem(dependency)
+                unresolved_dependency_problems[problem] += 1
+                affected_dependency_aircraft.setdefault(kind, set()).add(aircraft_index)
+            if (dependency.get("problem_code") == "ambiguous_owner"
+                    or dependency.get("origin") == "ambiguous"
                     or "несколько установленных пакетов" in str(dependency.get("detail") or "")):
                 ambiguous_dependencies += 1
         for resource in _as_records(item.get("missing_resources")):
             if resource.get("kind"):
-                missing_kinds[str(resource["kind"])] += 1
+                kind = str(resource["kind"])
+                missing_kinds[kind] += 1
+                affected_resource_aircraft.setdefault(kind, set()).add(aircraft_index)
         for variant in _as_records(item.get("variants")):
             for model in _as_records(variant.get("models")):
                 path = str(model.get("path") or "")
@@ -51,7 +84,9 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
                     nested_reason_codes[str(code)] += 1
             for resource in _as_records(variant.get("missing_resources")):
                 if resource.get("kind"):
-                    missing_kinds[str(resource["kind"])] += 1
+                    kind = str(resource["kind"])
+                    missing_kinds[kind] += 1
+                    affected_resource_aircraft.setdefault(kind, set()).add(aircraft_index)
     formats: Counter[str] = Counter()
     extensions_used: Counter[str] = Counter()
     extensions_required: Counter[str] = Counter()
@@ -84,9 +119,14 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
         },
         "reason_codes": dict(sorted(reason_codes.items())),
         "missing_resource_kinds": dict(sorted(missing_kinds.items())),
+        "affected_aircraft_by_missing_resource_kind": {
+            kind: len(indices) for kind, indices in sorted(affected_resource_aircraft.items())},
         "nested_model_reason_codes": dict(sorted(nested_reason_codes.items())),
         "dependencies": {"by_kind": dict(sorted(dependency_kinds.items())),
                          "unresolved_by_kind": dict(sorted(unresolved_dependencies.items())),
+                         "unresolved_by_reason": dict(sorted(unresolved_dependency_problems.items())),
+                         "affected_aircraft_by_kind": {
+                             kind: len(indices) for kind, indices in sorted(affected_dependency_aircraft.items())},
                          "ambiguous": ambiguous_dependencies},
         "format_features": {
             "unique_models": len(feature_models),

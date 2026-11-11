@@ -63,6 +63,51 @@ class IndexTests(_PathAssertions, unittest.TestCase):
         self.assert_path_equal(index.package_of(folder), self.root / "test-base")
         self.assertEqual(index.packages[index_module._key(self.root / "test-base")]["content_type"], "AIRCRAFT")
 
+    def test_shadowed_history_stub_does_not_make_livery_base_ambiguous(self):
+        official = self.root / "Official" / "Steam"
+        real = aircraft(official, "asobo-aircraft-da62", "Asobo_DA62")
+        model_xml(real / "model" / "int.xml", ["int_LOD00.gltf"])
+        gltf(real / "model" / "int_LOD00.gltf", ("int_LOD00.bin",))
+        (real / "model" / "model.cfg").write_text("[models]\ninterior=int.xml\n", encoding="utf-8")
+        stub = aircraft(official, "fs-base-history", "Asobo_DA62")
+        livery = aircraft(official, "da62-livery", "Asobo_DA62_Livery", base="Asobo_DA62",
+                          content_type="LIVERY")
+        model_xml(livery / "model" / "ext.xml", ["ext_LOD00.gltf"])
+        gltf(livery / "model" / "ext_LOD00.gltf", ("ext_LOD00.bin",))
+        (livery / "model" / "model.cfg").write_text(
+            "[models]\nexterior=ext.xml\ninterior=..\\..\\Asobo_DA62\\model\\int.xml\n", encoding="utf-8")
+
+        index = PackageIndex.build([self.root])
+        result = resolver.resolve_aircraft(livery, index=index)
+
+        self.assertEqual(len(index.aircraft_folders("Asobo_DA62")), 1)
+        self.assert_path_equal(index.aircraft_folders("Asobo_DA62")[0], real)
+        base = next(item for item in result["dependencies"] if item["kind"] == "base_container")
+        interior = next(item for item in result["dependencies"]
+                        if item["kind"] == "model" and item["name"] == "interior")
+        self.assertTrue(base["resolved"])
+        self.assertTrue(interior["resolved"])
+        interior_model = next(item for item in result["best_models"] if item["role"] == "interior")
+        self.assert_path_equal(Path(interior_model["path"]), real / "model" / "int_LOD00.gltf")
+        self.assertEqual(len(index.packages[index_module._key(official / "fs-base-history")]["aircraft"]), 1)
+
+    def test_history_entry_remains_when_no_buildable_peer_exists(self):
+        official = self.root / "Official" / "Steam"
+        aircraft(official, "fs-base-history", "Legacy_Plane")
+
+        index = PackageIndex.build([self.root])
+
+        self.assertEqual(len(index.aircraft_folders("Legacy_Plane")), 1)
+
+    def test_history_stub_is_not_suppressed_by_a_nonbuildable_peer(self):
+        official = self.root / "Official" / "Steam"
+        aircraft(official, "vendor-placeholder", "Legacy_Plane")
+        aircraft(official, "fs-base-history", "Legacy_Plane")
+
+        index = PackageIndex.build([self.root])
+
+        self.assertEqual(len(index.aircraft_folders("Legacy_Plane")), 2)
+
     def test_indexes_resource_only_packages_and_nested_install_roots(self):
         installed = self.root / "Installed"
         resource = installed / "Official" / "Steam" / "shared-resources"
@@ -293,6 +338,7 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         base = next(d for d in result["dependencies"] if d["kind"] == "base_container")
         self.assertFalse(base["resolved"])
         self.assertFalse(base["base_installed"])
+        self.assertEqual(base["problem_code"], "base_aircraft_missing")
         self.assertEqual(base["detail"], "базовый самолёт не установлен")
 
     def test_installed_base_without_the_declared_file_is_distinguished(self):
@@ -304,6 +350,7 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         entry = next(d for d in result["dependencies"] if d["kind"] == "base_container")
         self.assertTrue(entry["resolved"])
         model = next(d for d in result["dependencies"] if d["kind"] == "model" and not d["resolved"])
+        self.assertEqual(model["problem_code"], "declared_model_file_missing")
         self.assertEqual(model["detail"], "базовый самолёт установлен, но объявленный файл в нём отсутствует")
 
     def test_ambiguous_base_is_reported_not_guessed(self):

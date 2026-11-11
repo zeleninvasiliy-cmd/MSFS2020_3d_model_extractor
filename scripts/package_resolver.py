@@ -598,8 +598,10 @@ def collect_dependencies(folder, roots=(), index=None):
                 if len(matches) == 1:
                     entry.update(path=str(matches[0]), resolved=True, origin="package_index")
                 elif len(matches) > 1:
+                    entry["problem_code"] = "ambiguous_owner"
                     entry["detail"] = "несколько установленных пакетов: " + "; ".join(map(str, matches))
                 else:
+                    entry["problem_code"] = "manifest_package_missing"
                     entry["detail"] = "пакет не найден среди установленных корней"
             dependencies.append(entry)
     cfg = by_case(folder, "aircraft.cfg")
@@ -613,11 +615,13 @@ def collect_dependencies(folder, roots=(), index=None):
                     if not entry["resolved"] and index is not None:
                         found, origin, ambiguous = rebase(target, folder, index, allow_global=True)
                         if ambiguous:
+                            entry["problem_code"] = "ambiguous_owner"
                             entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                         elif origin:
                             entry.update(path=str(found), resolved=True, origin=origin)
                         else:
                             entry["base_installed"] = False
+                            entry["problem_code"] = "base_aircraft_missing"
                             entry["detail"] = "базовый самолёт не установлен"
                     if not entry["resolved"] and roots:
                         found = locate_aircraft_folder(entry["name"], roots)
@@ -650,12 +654,17 @@ def collect_dependencies(folder, roots=(), index=None):
                 if origin:
                     entry["origin"] = origin
                 if ambiguous:
+                    entry["problem_code"] = "ambiguous_owner"
                     entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                 elif not entry["resolved"] and base_entry is not None:
                     # The base folder can be installed while the file the livery
                     # declares inside it is not: those are different user actions.
-                    entry["detail"] = ("базовый самолёт установлен, но объявленный файл в нём отсутствует"
-                                       if base_entry["resolved"] else "базовый самолёт не установлен")
+                    if base_entry["resolved"]:
+                        entry["problem_code"] = "declared_model_file_missing"
+                        entry["detail"] = "базовый самолёт установлен, но объявленный файл в нём отсутствует"
+                    else:
+                        entry["problem_code"] = "base_aircraft_missing"
+                        entry["detail"] = "базовый самолёт не установлен"
                 dependencies.append(entry)
     for texture in texture_variants(folder):
         cfg = by_case(texture, "texture.cfg")
@@ -674,10 +683,12 @@ def collect_dependencies(folder, roots=(), index=None):
                          "resolved": bool(found is not None and found.is_dir()), "optional": True,
                          "source": str(cfg)}
                 if ambiguous:
+                    entry["problem_code"] = "ambiguous_owner"
                     entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                 elif origin:
                     entry["origin"] = origin
                 elif not entry["resolved"]:
+                    entry["problem_code"] = "optional_texture_fallback_missing"
                     entry["detail"] = "папка fallback не найдена"
                 dependencies.append(entry)
     unique = []
