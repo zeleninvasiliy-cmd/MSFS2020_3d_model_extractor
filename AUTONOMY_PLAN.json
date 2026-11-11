@@ -627,7 +627,7 @@
     {
       "id": "M48",
       "name": "Partial livery texture sample, third tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "select ten partial livery packages not yet in texture reports",
         "run geometry and texture stages through the standard CLI and Blender worker",
@@ -635,7 +635,21 @@
         "probe package-wide recovery matches for representative reports and redact local paths"
       ],
       "acceptance": "Each selected package either produces a valid texture checkpoint and passes Blender audit or has a reproducible pre-worker blocker; report is path-free; outputs are cleaned.",
-      "next": "Review texture-stage breadth versus unresolved source dependencies, update the multi-stage roadmap, then continue with next compatibility or GUI issue."
+      "next": "M49: group package-search candidates by normalized map basename so duplicate glTF URI paths do not appear as repeated rows or inflate ambiguity counts; add regression coverage.",
+      "result": "Ten previously untested partial-livery entries were processed by the normal CLI/Blender workflow. All 10 geometry checkpoints, all 10 texture checkpoints and all 10 final Blender audits passed. Nine returned the expected partial-texture exit 2 (21–37 missing unique maps); Pitts S1 Reno Aviators returned complete exit 0 with no missing maps. find-textures probes: DV20 0/26 basenames found; Longitude 4/37 found, all ambiguous; Pipistrel 3/24 found, all ambiguous. Path-free report: compatibility/headless_texture_partial_sample_m48.json. Temporary .blend directories and progress script were removed."
+    },
+    {
+      "id": "M49",
+      "name": "Normalize duplicate texture URI results in GUI",
+      "status": "in_progress",
+      "deliverables": [
+        "group find-textures results by normalized basename in the GUI",
+        "merge and deduplicate candidate paths before counting ambiguity",
+        "add regression for multiple report URIs sharing one basename",
+        "review texture recovery docs and run full local checks"
+      ],
+      "acceptance": "Two report keys with the same basename appear as one GUI map with the union of candidate paths and accurate unique/ambiguous counts; exact selected-path override still targets that basename. Full suite passes.",
+      "next": "After M49, resume compatibility breadth: diagnose and sample remaining missing-map packages; keep geometry and texture status distinct."
     }
   ],
   "rolling_roadmap": [
@@ -792,8 +806,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M48-partial-livery-texture-sample-third-tranche"
+    "next_stage": "M49-texture-search-basename-grouping"
   },
-  "next_stage": "M48-partial-livery-texture-sample-third-tranche",
-  "updated_utc": "2026-11-11T08:36:41Z"
+  "next_stage": "M49-texture-search-basename-grouping",
+  "updated_utc": "2026-11-11T08:46:00Z"
 }

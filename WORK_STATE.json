@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M47-graphical-missing-texture-recovery",
-  "active_stage": "M48-partial-livery-texture-sample-third-tranche",
+  "last_completed_stage": "M48-partial-livery-texture-sample-third-tranche",
+  "active_stage": "M49-texture-search-basename-grouping",
   "working_branch": "codex/partial-texture-sample-second-tranche",
-  "last_commit": "ecb58b5",
+  "last_commit": "4298e7e",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -81,7 +81,9 @@
     "m46_find_textures": "Aerobat missing-map probe: 22/23 found, 19 unique, 3 ambiguous, 1 absent, 8 suggested dirs; no paths/map names published.",
     "m46_report": "compatibility/headless_texture_partial_sample_m46.json; path-free, ten records.",
     "m47_texture_search_ambiguity": "Unique/ambiguous match labels and counts; confirmation cancellation is a no-op; exact selected match writes texture_overrides.",
-    "m47_regression": "207 unit tests, GUI self-test, compileall and git diff check passed; bilingual Texture and GUI workflow docs updated."
+    "m47_regression": "207 unit tests, GUI self-test, compileall and git diff check passed; bilingual Texture and GUI workflow docs updated.",
+    "m48_texture_sample": "10/10 geometry checkpoints, 10/10 texture checkpoints and 10/10 final Blender audits; one complete (exit 0), nine expected partial (exit 2); report compatibility/headless_texture_partial_sample_m48.json.",
+    "m48_recovery_probe": "DV20: 0/26 map basenames found; Longitude 4/37 and Pipistrel 3/24 found, all matches ambiguous; no local paths in report, temporary outputs/scripts removed."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -201,11 +203,11 @@
     "unresolved_aliases": 1
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M48: select ten partial livery packages not present in M31/M38/M44/M46 texture reports; run geometry + texture + Blender audit, collect path-free results, then independently review for the next stage.",
+  "next_step": "M49: normalize find-textures candidates by map basename in GUI, prevent duplicate URI rows/inflated ambiguous counts, add regression and rerun full checks.",
   "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T08:36:41Z"
+  "updated_utc": "2026-11-11T08:46:00Z"
 }
