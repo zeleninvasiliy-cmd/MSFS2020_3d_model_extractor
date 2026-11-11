@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M14-installed-aircraft-build-plan-coverage-audit",
-  "active_stage": "M14-installed-aircraft-build-plan-coverage-audit",
-  "working_branch": "codex/aircraft-build-plan-audit",
-  "last_commit": "pending M14 checkpoint commit",
+  "last_completed_stage": "M15-GUI-build-plan-audit-entry-point",
+  "active_stage": "M15-GUI-build-plan-audit-entry-point",
+  "working_branch": "codex/gui-build-plan-audit",
+  "last_commit": "pending M15 checkpoint commit",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "183 passed at M14 checkpoint; 186 passed including subsequent M15 GUI tests",
+    "unittest": "187 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -94,11 +94,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Commit/push M14 CLI audit and shared-model deduplication. Then create codex/gui-build-plan-audit, expose the audit from the GUI and verify success/failure presentation.",
-  "next_stage": "M15-GUI-build-plan-audit-entry-point",
+  "next_step": "Commit/push M15 GUI audit entry point. Then create codex/community-mod-coverage and exercise the plan-only audit over the previously analyzed Wilga, Zenith 701, K21, SG38 and Antonov An-2 folders.",
+  "next_stage": "M16-third-party-mod-root-coverage-audit",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T03:50:00Z"
+  "updated_utc": "2026-11-11T04:01:00Z"
 }

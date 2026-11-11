@@ -199,6 +199,45 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertIn("Технические подробности", showerror.call_args.args[1])
         self.app.package_roots_window.destroy()
 
+    def test_geometry_plan_audit_forwards_all_roots(self):
+        self.app.settings["msfs_roots"] = [r"D:\Official", r"E:\Community"]
+        with patch.object(self.app, "run_command") as runner:
+            self.app.audit_geometry_plans()
+
+        command = runner.call_args.args[0]
+        self.assertIn("audit-plans", command)
+        self.assertEqual([command[i + 1] for i, value in enumerate(command[:-1]) if value == "--root"],
+                         [r"D:\Official", r"E:\Community"])
+        self.assertIn("анализ glTF", self.app.status_var.get())
+
+    def test_geometry_plan_audit_reports_success_without_blender(self):
+        output = json.dumps({"plans_validated": 226, "geometry_buildable": 226, "failures": []})
+        with patch.object(gui.messagebox, "showinfo") as showinfo:
+            self.app.on_geometry_plan_audit_result(0, output)
+
+        self.assertIn("226/226", self.app.status_var.get())
+        self.assertIn("Blender не запускался", showinfo.call_args.args[1])
+
+    def test_geometry_plan_audit_lists_rejected_aircraft(self):
+        output = json.dumps({"plans_validated": 1, "geometry_buildable": 2,
+                             "failures": [{"aircraft": "Test_Plane", "problem": "MODEL_SELECTION_REQUIRED"}]})
+        with patch.object(gui.messagebox, "showwarning") as showwarning, \
+             patch.object(self.app, "append_log") as append_log:
+            self.app.on_geometry_plan_audit_result(2, output)
+
+        self.assertIn("отклонённые планы", self.app.status_var.get())
+        self.assertIn("Test_Plane", showwarning.call_args.args[1])
+        append_log.assert_called_once()
+
+    def test_geometry_plan_audit_rejects_unexpected_json_shape(self):
+        with patch.object(gui.messagebox, "showerror") as showerror, \
+             patch.object(self.app, "append_log") as append_log:
+            self.app.on_geometry_plan_audit_result(0, "[]")
+
+        self.assertIn("неверная структура", self.app.status_var.get())
+        showerror.assert_called_once()
+        append_log.assert_called_once()
+
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()
         self.app.normal_decode_var.set("dxt5n")

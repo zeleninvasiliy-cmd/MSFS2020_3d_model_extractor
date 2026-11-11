@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/aircraft-build-plan-audit",
+  "working_branch": "codex/gui-build-plan-audit",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -192,13 +192,37 @@
     {
       "id": "M15",
       "name": "GUI build-plan diagnosis and repair routing",
-      "status": "planned",
+      "status": "complete",
       "deliverables": [
         "show plan-preflight blockers before starting Blender",
         "map each stable blocker code to a concrete supported action",
         "preserve confirmed model choices and package roots across project reopen"
       ],
-      "acceptance": "A user can identify whether a package needs a source root, model selection, supported mode change, or source restoration before running the worker."
+      "acceptance": "A user can identify whether a package needs a source root, model selection, supported mode change, or source restoration before running the worker.",
+      "result": "Added a GUI toolbar button that calls `audit-plans` with all saved package roots. The UI shows analysis progress, a compact success count, rejected aircraft/problem codes, and directs the user to package diagnosis. It handles malformed JSON without a traceback. 187 tests, GUI self-test, compileall and diff checks pass.",
+      "next": "Expand compatibility validation to the user’s previously analyzed local community aircraft folders (Wilga, Zenith 701, K21, SG38 and Antonov An-2), plus additional-root package layouts. Use the plan-only CLI and classify any failures before changing the resolver."
+    },
+    {
+      "id": "M16",
+      "name": "Third-party mod root coverage audit",
+      "status": "planned",
+      "deliverables": [
+        "run deep catalog and geometry plan preflight over representative local community aircraft roots",
+        "verify direct aircraft, package-root and wrapper layouts without changing source packages",
+        "fix only reproducible root or resolver misses and retain path-free findings"
+      ],
+      "acceptance": "Every geometry-buildable representative mod yields a plan; non-buildable packages expose a stable source/layout reason; no source package is modified."
+    },
+    {
+      "id": "M17",
+      "name": "GUI recovery actions for plan audit failures",
+      "status": "planned",
+      "deliverables": [
+        "connect rejected plan codes to the selected aircraft diagnosis and model chooser",
+        "make root-scope issues open the multi-root manager",
+        "preserve quick recovery without requiring JSON edits"
+      ],
+      "acceptance": "For each audited failure the GUI names the package and offers the existing matching recovery action, or clearly states source data is absent."
     }
   ],
   "rolling_roadmap": [
@@ -355,6 +379,6 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M15-GUI-build-plan-audit-entry-point"
+    "next_stage": "M16-third-party-mod-root-coverage-audit"
   }
 }

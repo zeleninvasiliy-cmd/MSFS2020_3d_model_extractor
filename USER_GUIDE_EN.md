@@ -91,6 +91,8 @@ python .\scripts\msfs_universal.py build .\project.json --stage geometry
 
 To check the installed set without creating Blender files, run `python .\scripts\msfs_universal.py audit-plans`. It preflights a geometry plan for every entry marked buildable and reports plans that need a manual model choice or a source fix. It does not check visual output in Blender.
 
+The same check is available from the **Check plans** button in the top toolbar. The result shows the number of validated and rejected plans; rejected aircraft are listed with their problem code.
+
 `roots` lists automatically detected roots, added roots and the effective search set. Repeat `--root` to pass multiple directories.
 
 ## 9. When the result is wrong

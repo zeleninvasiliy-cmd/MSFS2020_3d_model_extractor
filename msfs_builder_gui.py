@@ -171,6 +171,7 @@ class BuilderApp(tk.Tk):
         toolbar = ttk.Frame(self, padding=8)
         toolbar.grid(row=0, column=0, sticky="ew")
         ttk.Button(toolbar, text="Сканировать MSFS", command=self.scan_installed).pack(side="left", padx=3)
+        ttk.Button(toolbar, text="Проверить планы", command=self.audit_geometry_plans).pack(side="left", padx=3)
         ttk.Button(toolbar, text="Выбрать каталог", command=self.choose_catalog).pack(side="left", padx=3)
         ttk.Button(toolbar, text="Каталоги Packages...", command=self.manage_package_roots).pack(side="left", padx=3)
         ttk.Label(toolbar, textvariable=self.status_var).pack(side="left", padx=16)
@@ -1056,6 +1057,50 @@ class BuilderApp(tk.Tk):
             command.append("--deep")
         self.run_command(command, self.on_catalog_result)
 
+    def audit_geometry_plans(self):
+        """Run a package-wide geometry preflight; no Blender process is started."""
+        if self.busy:
+            return
+        command = self.append_package_roots(cli_command("audit-plans"), self.package_roots())
+        if self.run_command(command, self.on_geometry_plan_audit_result):
+            self.status_var.set("Проверка build-plan для доступных самолётов: анализ glTF и ресурсов…")
+
+    def on_geometry_plan_audit_result(self, code, output):
+        try:
+            data = json.loads(output)
+        except (json.JSONDecodeError, TypeError):
+            detail = output[-1200:] if output else "Ответ команды пуст."
+            self.append_log("Не удалось прочитать результат проверки планов: " + detail)
+            self.status_var.set("Ошибка проверки планов геометрии")
+            messagebox.showerror("Проверка планов", "Не удалось прочитать результат. Подробности во вкладке «Журнал».")
+            return
+        if not isinstance(data, dict):
+            self.append_log("Ответ проверки планов имеет неверную структуру JSON.")
+            self.status_var.set("Не удалось обработать ответ: неверная структура JSON")
+            messagebox.showerror("Проверка планов", "Ответ имеет неверную структуру. Подробности во вкладке «Журнал».")
+            return
+        validated = int(data.get("plans_validated") or 0)
+        buildable = int(data.get("geometry_buildable") or 0)
+        failures = data.get("failures") if isinstance(data.get("failures"), list) else []
+        if code == 0 and not failures:
+            summary = (f"Планы геометрии проверены: {validated}/{buildable}. "
+                       "Blender не запускался, файлы не создавались.")
+            self.status_var.set(summary)
+            self.append_log(summary)
+            messagebox.showinfo("Проверка планов геометрии", summary)
+            return
+        examples = [f"• {item.get('aircraft', '?')}: {item.get('problem', 'ошибка')}" for item in failures[:8]]
+        more = f"\n…и ещё {len(failures) - 8}" if len(failures) > 8 else ""
+        summary = f"Прошли: {validated}/{buildable}; отклонено: {len(failures)}."
+        detail = "\n".join(examples) + more
+        self.status_var.set("Есть отклонённые планы геометрии; подробности в журнале.")
+        self.append_log(summary + ("\n" + detail if detail else ""))
+        messagebox.showwarning(
+            "Проверка планов геометрии",
+            summary + ("\n\n" + detail if detail else "")
+            + "\n\nОткройте диагностику соответствующего пакета через каталог самолётов.",
+        )
+
     def scan_custom(self):
         if self.busy or self.project_open:
             return
@@ -1080,7 +1125,7 @@ class BuilderApp(tk.Tk):
         self._set_busy_widgets(True)
         self.append_log("$ " + " ".join(f'\"{part}\"' if " " in part else part for part in command))
         self.status_var.set("Выполняется...")
-        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "roots", "models", "validate", "bones",
+        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "roots", "models", "validate", "bones", "audit-plans",
                                         "find-textures"} for part in command)
 
         def worker():
