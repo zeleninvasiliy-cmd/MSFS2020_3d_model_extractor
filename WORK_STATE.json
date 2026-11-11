@@ -3,17 +3,17 @@
   "last_completed_stage": "D-release-1.2.1",
   "active_stage": "M7-community-format-compatibility",
   "working_branch": "codex/gui-dependency-actions",
-  "last_commit": "pending-M6-checkpoint",
+  "last_commit": "f84bd70",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "165 passed",
+    "unittest": "165 passed after M6 changes",
     "gui_self_test": "passed",
     "compileall": "passed",
     "release_build": "not run; changes are unmerged",
-    "git_diff_check": "passed",
+    "git_diff_check": "passed before M6 commit",
     "blender_worker_checks": "passed"
   },
   "measurements": {
@@ -45,12 +45,12 @@
     "index_errors": 0,
     "warm_package_index_seconds_526_packages": 3.3
   },
-  "current_blocker": "M5 feature branch codex/package-resource-graph is pushed, but PR creation was rejected by the connected GitHub integration with HTTP 403 'Resource not accessible by integration'. GitHub CLI is absent. Continue in feature branches; no release from unmerged changes. M6 branch is stacked on M5.",
+  "current_blocker": "Published feature branches: M5 codex/package-resource-graph (2581ecd) and stacked M6 codex/gui-dependency-actions (f84bd70). GitHub PR creation was rejected by the connected integration with HTTP 403 'Resource not accessible by integration' on M5; no GitHub CLI is installed. Branch pushes work. Do not bypass branch protections, merge directly, or create a release from unmerged changes.",
   "next_step": "M7: choose the next high-impact community format blocker from the installed catalog, inspect the precise glTF/GLB feature and worker importer boundary, add a synthetic fixture first, then implement only if a real aircraft is affected. Audit supported/rejected primitive modes, buffers, sparse accessors, Draco/meshopt and texture decode behavior; extend compatibility_report by blocker impact, update bilingual docs, run full tests and real deep scan. Continue using feature branches; PR/release publication remains blocked by integration permissions.",
   "next_stage": "M7-community-format-compatibility",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T02:08:41Z"
+  "updated_utc": "2026-11-11T02:09:40Z"
 }
