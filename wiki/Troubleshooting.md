@@ -1,5 +1,13 @@
 # Troubleshooting
 
+## English version
+
+Use this order: diagnose the package, verify the selected geometry, then investigate textures.
+
+If the aircraft is absent, set the MSFS/package root and rescan. If it is partial, inspect the base package and confirm models in the wizard. If geometry is displaced, compare another mode and use a placement/mirror rule. If a texture is missing, search installed package roots and inspect the map table. A missing original glTF/BIN cannot be fixed by changing a build mode. Keep the detailed Journal log and the failed checkpoint when reporting a reproducible problem.
+
+---
+
 Порядок диагностики всегда один: **сначала причина пакета, потом геометрия, потом карты**. Не меняйте режим сборки, пока не убедились, что выбран правильный состав моделей.
 
 ## Самолёт не появился в списке или помечен причиной
@@ -117,11 +125,3 @@
 Версия программы и Blender, имя и версия пакета, режимы сборки, код причины из диагностики, текст ошибки из «Журнала», точные имена объектов и шаги воспроизведения. Присылать весь пакет самолёта не нужно.
 
 Дальше: [Known Issues](Known-Issues) · [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Package Diagnosis](Package-Diagnosis) · [Package Index](Package-Index) · [Build Modes](Build-Modes)
-
----
-
-## English version
-
-Use this order: diagnose the package, verify the selected geometry, then investigate textures.
-
-If the aircraft is absent, set the MSFS/package root and rescan. If it is partial, inspect the base package and confirm models in the wizard. If geometry is displaced, compare another mode and use a placement/mirror rule. If a texture is missing, search installed package roots and inspect the map table. A missing original glTF/BIN cannot be fixed by changing a build mode. Keep the detailed Journal log and the failed checkpoint when reporting a reproducible problem.

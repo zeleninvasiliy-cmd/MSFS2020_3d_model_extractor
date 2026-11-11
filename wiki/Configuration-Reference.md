@@ -1,5 +1,13 @@
 # Configuration Reference
 
+## English version
+
+The build configuration is JSON and is validated before Blender starts. Required fields are the source package and an output directory outside the source package. The GUI writes the normal project configuration; users should prefer the graphical editors for model selection, object exclusions, split/mirror/placement rules, collection overrides, pivots and texture replacements.
+
+Relative paths are resolved from the configuration file. Unknown keys and invalid rule shapes are rejected. The `validate` CLI command runs the same validator used by the GUI, so a configuration accepted in the editor is the one the worker receives.
+
+---
+
 JSON-конфиг сборки читает `make_plan` (`scripts/msfs_universal.py`). Неизвестные ключи **отклоняются**. Относительные пути разрешаются от каталога файла конфигурации.
 
 GUI формирует этот JSON автоматически; обычному пользователю редактировать его не нужно. Правила `split_*`, `mirror_objects`, `placements`, `collection_overrides`, `manual_keep_pivots` и `texture_overrides` задаются окнами [редакторов правил и таблицы карт](Rule-Editors). Без графического редактора остаются `converted_normal_dir`, `normal_decode`, `repair_skin_roots`, `pose_position` и `profile`: GUI сохраняет их при круговой загрузке, но менять их можно только в файле.
@@ -147,9 +155,3 @@ GUI формирует этот JSON автоматически; обычном�
 Дальше: [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Build Modes](Build-Modes) · [Textures and Materials](Textures-and-Materials) · [Object Organization](Object-Organization)
 
 ---
-
-## English version
-
-The build configuration is JSON and is validated before Blender starts. Required fields are the source package and an output directory outside the source package. The GUI writes the normal project configuration; users should prefer the graphical editors for model selection, object exclusions, split/mirror/placement rules, collection overrides, pivots and texture replacements.
-
-Relative paths are resolved from the configuration file. Unknown keys and invalid rule shapes are rejected. The `validate` CLI command runs the same validator used by the GUI, so a configuration accepted in the editor is the one the worker receives.

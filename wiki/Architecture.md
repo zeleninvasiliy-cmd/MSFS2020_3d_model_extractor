@@ -1,5 +1,19 @@
 # Architecture
 
+## English version
+
+The application has three processes:
+
+1. `MSFSBuilder.exe` — Tkinter GUI and project state.
+2. `MSFSBuilderCLI.exe` — the JSON-producing orchestrator used by the GUI.
+3. `blender.exe -b` — the worker that reads glTF and writes the Blender checkpoint.
+
+The resolver and validators run without `bpy`; package diagnosis, model selection and rule validation therefore work before Blender starts. The worker owns geometry, materials and scene metadata. The GUI only collects choices, starts a child process and displays its reports. Source packages are read-only and every stage writes into the project output folder.
+
+See [GUI Workflow](GUI-Workflow), [CLI Reference](CLI-Reference) and [Build Modes](Build-Modes) for the public interfaces.
+
+---
+
 ## Три процесса
 
 ```
@@ -118,17 +132,3 @@ config.json ──► make_plan (валидация) ────┤
 Каталог `msfs_gui_build` внутри `SimObjects/Airplanes` исключён из скана, чтобы результаты не попадали в список самолётов симулятора. Дополнительно `output_dir` не может находиться внутри исходного пакета.
 
 Дальше: [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Package Index](Package-Index) · [MSFS glTF Format](MSFS-glTF-Format) · [Building and Release](Building-and-Release) · [CLI Reference](CLI-Reference)
-
----
-
-## English version
-
-The application has three processes:
-
-1. `MSFSBuilder.exe` — Tkinter GUI and project state.
-2. `MSFSBuilderCLI.exe` — the JSON-producing orchestrator used by the GUI.
-3. `blender.exe -b` — the worker that reads glTF and writes the Blender checkpoint.
-
-The resolver and validators run without `bpy`; package diagnosis, model selection and rule validation therefore work before Blender starts. The worker owns geometry, materials and scene metadata. The GUI only collects choices, starts a child process and displays its reports. Source packages are read-only and every stage writes into the project output folder.
-
-See [GUI Workflow](GUI-Workflow), [CLI Reference](CLI-Reference) and [Build Modes](Build-Modes) for the public interfaces.

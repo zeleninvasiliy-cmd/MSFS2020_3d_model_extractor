@@ -1,5 +1,13 @@
 # Textures and Materials
 
+## English version
+
+The texture stage reads material assignments from the selected glTF and resolves PBR maps through the package resolver. The table reports missing, substituted, duplicated and unreadable images. Texture replacements are keyed by the original map basename.
+
+The worker handles common DDS/PNG maps, alpha modes, glass materials and normal-map conversion. When a normal map cannot be decoded safely, the report asks for manual review instead of silently producing a blank image. The original package remains untouched.
+
+---
+
 Текстурирование — отдельный этап, который открывается **после** подтверждённой пользователем геометрии. Он не меняет вершины.
 
 ## Карты MSFS
@@ -106,9 +114,3 @@ Worker пишет на меш `msfs_source_role` и `msfs_pipeline_source`, на
 Дальше: [Rule Editors](Rule-Editors) · [Build Modes](Build-Modes) · [Troubleshooting](Troubleshooting)
 
 ---
-
-## English version
-
-The texture stage reads material assignments from the selected glTF and resolves PBR maps through the package resolver. The table reports missing, substituted, duplicated and unreadable images. Texture replacements are keyed by the original map basename.
-
-The worker handles common DDS/PNG maps, alpha modes, glass materials and normal-map conversion. When a normal map cannot be decoded safely, the report asks for manual review instead of silently producing a blank image. The original package remains untouched.

@@ -1,5 +1,36 @@
 # Known Issues / Известные ограничения
 
+## English version
+
+This list applies to **1.2.0**. These are current operating limits, not a historical audit of earlier milestones.
+
+### Source-data limits
+
+- Exact geometry is impossible without an available glTF/GLB and its BIN buffer.
+- Shared packages containing only XML, sounds or textures are reported as `COMMON_RESOURCES_ONLY`.
+- A livery without an installed `base_container` remains partial.
+- Packages with multiple candidates require an explicit role and LOD selection.
+- Draco, KTX2 and other unsupported glTF extensions are diagnosed before Blender; the program never silently invents geometry.
+- Protected or encrypted resources are not decrypted.
+
+### Build limits
+
+- Animations are intentionally not imported.
+- The result may require a Blender check of symmetry, landing gear, control surfaces and glazing.
+- Filename-based role detection is only a hint; the user confirms the final choice.
+- Non-standard DDS normal maps may need manual review.
+- There is no embedded 3D preview.
+
+### Safe response
+
+1. Run the deep package diagnosis.
+2. Check the origin of every selected glTF and the presence of BIN files.
+3. Confirm the model composition in the wizard for a partial package.
+4. Use the graphical placement or mirror rule for an offset part, then compare a new Blender variant.
+5. Do not edit MSFS source files or remove an active checkpoint.
+
+---
+
 ## Русская версия
 
 Список относится к версии **1.2.0**. Это рабочие ограничения, а не исторический аудит старых этапов.

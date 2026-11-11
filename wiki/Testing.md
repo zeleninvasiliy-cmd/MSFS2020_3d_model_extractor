@@ -1,5 +1,19 @@
 # Testing
 
+## English version
+
+The repository test suite is synthetic and does not require an MSFS installation. Run:
+
+```powershell
+python -m unittest discover -s tests -p "test_*.py" -v
+python msfs_builder_gui.py --self-test
+python -c "import compileall; raise SystemExit(0 if compileall.compile_dir('.', quiet=1) else 1)"
+```
+
+The Windows GitHub Actions job repeats compilation, GUI startup and the regression suite. Tests cover package resolution, inheritance, model selection, GUI state, editing rules, texture tables, glTF metadata and pipeline locks. Real aircraft and Blender acceptance remain user checks.
+
+---
+
 Три уровня проверки. Игровые ресурсы не используются нигде: все входы синтетические, поэтому набор проходит на GitHub Actions без MSFS и Blender.
 
 ## 1. Регрессия без Blender и без MSFS
@@ -168,17 +182,3 @@ python msfs_builder_gui.py --self-test
 Новый графический инструмент проверяйте через его настоящие виджеты и настоящий CLI, а не через вызов внутренних функций в обход кнопок: именно так были найдены неверный ключ замены карты, потеря выбора при обновлении таблицы и выбор отчёта без полей текстур.
 
 Дальше: [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Package Index](Package-Index) · [Building and Release](Building-and-Release) · [Known Issues](Known-Issues)
-
----
-
-## English version
-
-The repository test suite is synthetic and does not require an MSFS installation. Run:
-
-```powershell
-python -m unittest discover -s tests -p "test_*.py" -v
-python msfs_builder_gui.py --self-test
-python -c "import compileall; raise SystemExit(0 if compileall.compile_dir('.', quiet=1) else 1)"
-```
-
-The Windows GitHub Actions job repeats compilation, GUI startup and the regression suite. Tests cover package resolution, inheritance, model selection, GUI state, editing rules, texture tables, glTF metadata and pipeline locks. Real aircraft and Blender acceptance remain user checks.

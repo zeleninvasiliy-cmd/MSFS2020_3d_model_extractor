@@ -1,5 +1,13 @@
 # MSFS glTF Format
 
+## English version
+
+The adapter reads the glTF JSON and its available buffers, maps MSFS attributes and creates Blender meshes and materials. It validates primitive modes, indices, accessors, winding and node transforms before creating the scene.
+
+Supported resources depend on the installed package and the current adapter. Missing buffers, unsupported extensions and malformed containers are reported before Blender. The program does not silently replace a failed primitive with an approximate mesh. See [Known Issues](Known-Issues) for the current limits.
+
+---
+
 Microsoft Flight Simulator 2020 хранит модели в glTF 2.0 с расширениями Asobo. Стандартный импортёр Blender такие файлы читает неверно: индексы упакованы в draw ranges, атрибуты сжаты, winding обратный. Эта страница описывает особенности, которые обрабатывает `scripts/msfs_geometry.py`.
 
 ## Draw ranges: `ASOBO_primitive`
@@ -105,11 +113,3 @@ Resolver (`inspect_gltf`) проверяет документ **до** сбор�
 worker.
 
 Дальше: [Build Modes](Build-Modes) · [Package Diagnosis](Package-Diagnosis) · [Textures and Materials](Textures-and-Materials)
-
----
-
-## English version
-
-The adapter reads the glTF JSON and its available buffers, maps MSFS attributes and creates Blender meshes and materials. It validates primitive modes, indices, accessors, winding and node transforms before creating the scene.
-
-Supported resources depend on the installed package and the current adapter. Missing buffers, unsupported extensions and malformed containers are reported before Blender. The program does not silently replace a failed primitive with an approximate mesh. See [Known Issues](Known-Issues) for the current limits.

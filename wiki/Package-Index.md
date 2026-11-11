@@ -1,5 +1,13 @@
 # Package Index
 
+## English version
+
+The package index is a no-`bpy` cache built from selected MSFS roots. It maps aircraft names to folders, packages to roots and livery `base_container` declarations to their installed bases. Configuration mtimes and the index version invalidate stale records.
+
+When a relative VFS path does not exist in the livery, the resolver tries the indexed aircraft or base package. The origin is preserved in diagnostics. If two packages can own the same resource, the index reports ambiguity and the user must choose; an inaccessible package does not abort the scan.
+
+---
+
 Индекс установленных пакетов решает одну задачу: **ресурсы лежат в соседнем пакете, а конфиг ливреи указывает внутрь себя**. Реализован в `scripts/package_index.py` — модуле без `bpy`, который используют и CLI, и GUI.
 
 ## Почему ливрея указывает «не туда»
@@ -124,11 +132,3 @@ python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages\Com
 - Исходные пакеты открываются только для чтения; кэш пишется в профиль пользователя.
 
 Дальше: [Package Diagnosis](Package-Diagnosis) · [CLI Reference](CLI-Reference) · [Architecture](Architecture) · [Textures and Materials](Textures-and-Materials)
-
----
-
-## English version
-
-The package index is a no-`bpy` cache built from selected MSFS roots. It maps aircraft names to folders, packages to roots and livery `base_container` declarations to their installed bases. Configuration mtimes and the index version invalidate stale records.
-
-When a relative VFS path does not exist in the livery, the resolver tries the indexed aircraft or base package. The origin is preserved in diagnostics. If two packages can own the same resource, the index reports ambiguity and the user must choose; an inaccessible package does not abort the scan.

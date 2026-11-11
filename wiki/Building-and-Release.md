@@ -1,5 +1,18 @@
 # Building and Release
 
+## English version
+
+A release build is made on Windows with Python 3.13 x64 and Inno Setup 7:
+
+1. Create a virtual environment and install `release/build_requirements.txt`.
+2. Run `release/build_release.ps1` with the build Python and optional `-ISCC`.
+3. The script freezes the GUI and CLI, copies the two user guides and license notices, runs CLI/GUI smoke tests, builds Setup and Portable packages, and writes `SHA256SUMS.txt`.
+4. Upload only the Setup, Portable ZIP and checksum file to the GitHub Release.
+
+Blender and MSFS packages are never bundled. A portable build must keep both executables and the shared `_internal` directory together. The installer is per-user and does not delete projects or settings.
+
+---
+
 Сборочный компьютер: Windows x64, Python 3.13 x64, Inno Setup 7. На компьютере пользователя Python и Inno Setup не требуются. Blender устанавливается отдельно.
 
 ## Подготовка среды
@@ -90,14 +103,3 @@ powershell -File .\release\verify_installer.ps1
 Дальше: [Architecture](Architecture) · [Testing](Testing) · [Getting Started](Getting-Started)
 
 ---
-
-## English version
-
-A release build is made on Windows with Python 3.13 x64 and Inno Setup 7:
-
-1. Create a virtual environment and install `release/build_requirements.txt`.
-2. Run `release/build_release.ps1` with the build Python and optional `-ISCC`.
-3. The script freezes the GUI and CLI, copies the two user guides and license notices, runs CLI/GUI smoke tests, builds Setup and Portable packages, and writes `SHA256SUMS.txt`.
-4. Upload only the Setup, Portable ZIP and checksum file to the GitHub Release.
-
-Blender and MSFS packages are never bundled. A portable build must keep both executables and the shared `_internal` directory together. The installer is per-user and does not delete projects or settings.
