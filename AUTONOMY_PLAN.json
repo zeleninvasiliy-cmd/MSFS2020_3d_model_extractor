@@ -739,7 +739,7 @@
     {
       "id": "M56",
       "name": "Full catalog texture coverage, fifth tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "process next ten unsampled C172/Cap10C/CJ4 records",
         "audit all texture outputs in Blender 5.2",
@@ -747,7 +747,21 @@
         "record missing-map status separately from build/audit failures"
       ],
       "acceptance": "Ten new records pass geometry and texture checkpoint audit with expected exit classification; exact coverage index contains no duplicates or local paths.",
-      "next": "Continue ten-record batches through the 174 OK records and pause only for a reproducible blocker or when all are covered."
+      "next": "M57: test the next ten unsampled records (three CJ4, three DA40 NG and four DA62 variants).",
+      "result": "Ten new OK records (C172 skis/towplane, four Cap10C variants and four CJ4 liveries) created geometry and texture checkpoints and passed final Blender 5.2 audits. All ten texture stages returned exit 0 with zero missing maps. Deep-catalog reconciliation: 65/174 OK records sampled, 109 remain; partial coverage stays 48/48. Reports: compatibility/headless_texture_ok_sample_m56.json and compatibility/ok_texture_coverage_m56.json."
+    },
+    {
+      "id": "M57",
+      "name": "Full catalog texture coverage, sixth tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "process ten unsampled CJ4/DA40 NG/DA62 records",
+        "run full geometry and texture pipeline",
+        "audit each generated texture checkpoint with Blender",
+        "reconcile counts and record any missing-map outlier"
+      ],
+      "acceptance": "Ten unique records pass final audit and texture stages are classified; exact remaining list is current and path-free.",
+      "next": "Continue ten-record batches across all remaining OK aircraft packages."
     }
   ],
   "rolling_roadmap": [
@@ -904,8 +918,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M56-full-catalog-texture-coverage-fifth-tranche"
+    "next_stage": "M57-full-catalog-texture-coverage-sixth-tranche"
   },
-  "next_stage": "M56-full-catalog-texture-coverage-fifth-tranche",
-  "updated_utc": "2026-11-11T10:14:00Z"
+  "next_stage": "M57-full-catalog-texture-coverage-sixth-tranche",
+  "updated_utc": "2026-11-11T10:41:00Z"
 }
