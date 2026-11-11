@@ -34,7 +34,8 @@
       "id": "B",
       "name": "Resolver and format compatibility",
       "status": "in_progress",
-      "deliverables": ["safe package inheritance", "clear unsupported-format diagnostics", "no silent geometry guesses"]
+      "deliverables": ["safe package inheritance", "clear unsupported-format diagnostics", "no silent geometry guesses"],
+      "result": "Deep catalog diagnostics are available in CLI and GUI; B1-B4 transform/checkpoint fixes were verified with unit and headless Blender checks. Remaining B work is early validation and resolver edge-case hardening."
     },
     {
       "id": "C",
