@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M36-live-geometry-sample-fifth-tranche",
-  "active_stage": "M37-live-geometry-sample-sixth-tranche",
-  "working_branch": "codex/live-geometry-sample-fifth-tranche",
-  "last_commit": "8cc5223",
+  "last_completed_stage": "M37-live-geometry-sample-sixth-tranche",
+  "active_stage": "M38-live-geometry-sample-seventh-tranche",
+  "working_branch": "codex/live-geometry-sample-sixth-tranche",
+  "last_commit": "8391e4c",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -54,7 +54,9 @@
     "m35_geometry_sample": "20/20 newly unreported livery/model-folder records built one checkpoint and passed Blender 5.2 audit; 17 OK, 3 partial B787 variants confirmed via GUI chooser; no renders/source changes; temp outputs cleaned.",
     "m35_report": "compatibility/headless_live_geometry_sample_m35.json; path-free, 20 records; all build_exit=0, checkpoint_count=1 and audit_passed=true.",
     "m36_geometry_sample": "20/20 previously unreported catalog entries created one geometry checkpoint and passed Blender 5.2 audit; GUI/CLI path used, temp outputs cleaned.",
-    "m36_report": "compatibility/headless_live_geometry_sample_m36.json; path-free, all 20 successful and audit_passed."
+    "m36_report": "compatibility/headless_live_geometry_sample_m36.json; path-free, all 20 successful and audit_passed.",
+    "m37_geometry_sample": "20/20 previously unreported records built one geometry checkpoint and passed Blender 5.2 audit; includes 5 partial records confirmed in GUI chooser; temp outputs cleaned.",
+    "m37_report": "compatibility/headless_live_geometry_sample_m37.json; path-free, 20 records, all build and audit checks passed."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -166,14 +168,14 @@
       "temporary_outputs_cleaned": true,
       "path_free_report": "compatibility/headless_import_sample.json"
     },
-    "unique_real_import_report_records": 156
+    "unique_real_import_report_records": 176
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M37: continue imports from remaining catalog families/variants; audit coverage gaps and source availability.",
+  "next_step": "M38: continue unreported livery/model-folder geometry imports and audit texture path on representative covered families.",
   "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T07:12:00Z"
+  "updated_utc": "2026-11-11T07:25:00Z"
 }

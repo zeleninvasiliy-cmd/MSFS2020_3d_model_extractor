@@ -1,0 +1,724 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T07:25:00Z",
+  "mode": "normal_gui_generated_config_cli_geometry_build_and_blender_audit",
+  "blender_major": "5.2",
+  "sample_size": 20,
+  "builds_succeeded": 20,
+  "checkpoint_audits_passed": 20,
+  "reason_codes": {
+    "OK": 17,
+    "SUPPORTED_PARTIAL": 3
+  },
+  "manual_gui_model_confirmations": 3,
+  "elapsed_seconds_including_gui_build_audit_range": [
+    10.3,
+    18.2
+  ],
+  "temporary_outputs_cleaned": true,
+  "rendered": false,
+  "source_modified": false,
+  "interpretation": "Sixth live-catalog tranche adds previously unreported CJ4, DA40, DA62, DG1001E, DR400, DV20, E330, F/A-18E and Flight Design CT records. The normal GUI project state, CLI geometry builder and Blender 5.2 audit were used. Partial packages used explicit model chooser confirmation. Structural audit is not visual acceptance.",
+  "personal_paths_included": false,
+  "results": [
+    {
+      "aircraft": "Asobo_CJ4_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "CJ4_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "CJ4_Cockpit_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 21472478,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 688,
+        "same_base_name_groups": 3,
+        "same_local_geometry_groups": 130,
+        "same_world_geometry_groups": 5,
+        "gear_candidates": 19,
+        "far_disconnected_objects": 59
+      },
+      "seconds": 15.6
+    },
+    {
+      "aircraft": "Asobo_DA40_NG_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DA40_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DA40NG_cockpit_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 19814170,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 304,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 44,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 47
+      },
+      "seconds": 13.9
+    },
+    {
+      "aircraft": "Asobo_DA40_NG_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DA40_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DA40NG_cockpit_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 19803263,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 302,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 44,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 45
+      },
+      "seconds": 13.8
+    },
+    {
+      "aircraft": "Asobo_DA40_TDI_LiveryAviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DA40_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7156188,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 51,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 0,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 5,
+        "far_disconnected_objects": 32
+      },
+      "seconds": 14.2
+    },
+    {
+      "aircraft": "Asobo_DA62_Livery_Kenmore",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.kenmore",
+      "livery": "KENMORE",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DA62_LOD00.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DA62_INTERIOR_LOD00.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 19782507,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 332,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 42,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 18,
+        "far_disconnected_objects": 48
+      },
+      "seconds": 14.3
+    },
+    {
+      "aircraft": "Asobo_DA62_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DA62_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DA62_INTERIOR_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 20252425,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 338,
+        "same_base_name_groups": 2,
+        "same_local_geometry_groups": 42,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 18,
+        "far_disconnected_objects": 51
+      },
+      "seconds": 14.7
+    },
+    {
+      "aircraft": "Asobo_DA62_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DA62_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DA62_INTERIOR_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 20091462,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 336,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 42,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 18,
+        "far_disconnected_objects": 49
+      },
+      "seconds": 14.4
+    },
+    {
+      "aircraft": "Asobo_DG1001E_Neo_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DG_1001E_Neo_Lod00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DG_1001E_Neo_Cockpit_Lod00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 20577483,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 237,
+        "same_base_name_groups": 5,
+        "same_local_geometry_groups": 21,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 22,
+        "far_disconnected_objects": 33
+      },
+      "seconds": 14.0
+    },
+    {
+      "aircraft": "Asobo_DR400_Livery_Kenmore",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.kenmore",
+      "livery": "kenmore",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DR400_LYCOMING_LOD00.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DR400_cockpit_LYCOMING_LOD00.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 15249683,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 229,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 11,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 10,
+        "far_disconnected_objects": 30
+      },
+      "seconds": 12.8
+    },
+    {
+      "aircraft": "Asobo_DR400_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DR400_LYCOMING_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DR400_cockpit_LYCOMING_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 15205905,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 235,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 11,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 10,
+        "far_disconnected_objects": 33
+      },
+      "seconds": 12.6
+    },
+    {
+      "aircraft": "Asobo_DR400_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DR400_LYCOMING_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "DR400_cockpit_LYCOMING_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 15178830,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 244,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 11,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 10,
+        "far_disconnected_objects": 40
+      },
+      "seconds": 12.9
+    },
+    {
+      "aircraft": "Asobo_DV20_Livery_Xbox_Aviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DV20_LOD0.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7259009,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 45,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 0,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 22
+      },
+      "seconds": 14.3
+    },
+    {
+      "aircraft": "Asobo_DV20_LiveryAviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "DV20_LOD0.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7271462,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 44,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 0,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 21
+      },
+      "seconds": 14.3
+    },
+    {
+      "aircraft": "Asobo_E330_Livery_MicrosoftWindows11",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.W11",
+      "livery": "W11",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "E330_LOD00.gltf",
+          "variant": "model.W11",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "E330_interior_lod00.gltf",
+          "variant": "model.W11",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7120993,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 226,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 37,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 20
+      },
+      "seconds": 10.3
+    },
+    {
+      "aircraft": "Asobo_E330_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "E330_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "E330_interior_lod00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7629446,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 234,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 37,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 24
+      },
+      "seconds": 10.4
+    },
+    {
+      "aircraft": "Asobo_E330_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "E330_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "E330_interior_lod00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7583670,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 240,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 37,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 10,
+        "far_disconnected_objects": 29
+      },
+      "seconds": 10.5
+    },
+    {
+      "aircraft": "Asobo_FA18E_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "FA18E_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "FA18E_cockpit_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 29542335,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 604,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 24,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 87,
+        "far_disconnected_objects": 122
+      },
+      "seconds": 18.2
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT_Livery_Kenmore",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.kenmore",
+      "livery": "kenmore",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "CTSL_LOD00.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "CTSL_Interior_LOD00.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 11314961,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 195,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 4,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 13,
+        "far_disconnected_objects": 45
+      },
+      "seconds": 11.3
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "CTSL_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "CTSL_Interior_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 11462795,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 200,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 4,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 13,
+        "far_disconnected_objects": 48
+      },
+      "seconds": 11.3
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "CTSL_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "CTSL_Interior_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 11457265,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 201,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 4,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 13,
+        "far_disconnected_objects": 48
+      },
+      "seconds": 11.3
+    }
+  ]
+}

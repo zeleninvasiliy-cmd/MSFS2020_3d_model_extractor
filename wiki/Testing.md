@@ -245,3 +245,7 @@ M35 проверил 20 ранее не охваченных вариантов 
 M36 covers 20 more unreported records across B787, Baron, Bonanza, C152 Aerobat/C152, C172, CAP10C and CJ4. Every build created one checkpoint and passed Blender 5.2 structural audit, including partial packages confirmed in the GUI chooser. Report: [headless_live_geometry_sample_m36.json](../compatibility/headless_live_geometry_sample_m36.json).
 
 M36 добавил 20 ранее не охваченных вариантов B787, Baron, Bonanza, C152 Aerobat/C152, C172, CAP10C и CJ4. Все сборки создали по одному checkpoint и прошли структурный аудит Blender 5.2; частичные пакеты подтверждались в GUI-мастере. Отчёт: [headless_live_geometry_sample_m36.json](../compatibility/headless_live_geometry_sample_m36.json).
+
+M37 covers 20 additional records across CJ4, DA40/DA62, DG1001E, DR400, DV20, E330, F/A-18E and Flight Design CT. All geometry checkpoints passed Blender 5.2 structural audit; partial entries used explicit GUI model selection. Report: [headless_live_geometry_sample_m37.json](../compatibility/headless_live_geometry_sample_m37.json).
+
+M37 проверил ещё 20 записей CJ4, DA40/DA62, DG1001E, DR400, DV20, E330, F/A-18E и Flight Design CT. Все геометрические checkpoint прошли структурный аудит Blender 5.2; для частичных пакетов использован GUI-мастер выбора моделей. Отчёт: [headless_live_geometry_sample_m37.json](../compatibility/headless_live_geometry_sample_m37.json).
