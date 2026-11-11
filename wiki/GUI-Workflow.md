@@ -6,6 +6,8 @@ The GUI is a thin, responsive wrapper around the CLI. **Files** contains New, Op
 
 The project wizard selects an aircraft and general settings. The Geometry tab selects the build mode, object composition and editing rules; the Textures tab selects a geometry checkpoint, map replacements and texture search. The Journal tab contains detailed logs. After a successful stage, **Open in Blender** and **Show in Explorer** open the selected result. Back/Next buttons move between steps only when the minimum required fields are present.
 
+The aircraft catalog groups packages by model family. Livery packages remain under their aircraft; related variants such as DA40 NG/TDI or C172 AS1000/Classic share one family group and expand into subtype groups. Family and subtype groups start collapsed; only aircraft leaves can be selected.
+
 The Geometry tab can audit the latest geometry checkpoint (or the selected geometry checkpoint) with Blender, without rendering. The numbered JSON report is stored under `<project>/reports/geometry_audits/` and can be opened from the same tab, including after closing and reopening the project. Report lookup is scoped to the active project and selected/latest geometry checkpoint, and chooses the highest report sequence rather than file modification time. Mesh counts, duplicate world-geometry groups and disconnected-component candidates are review hints only; they do not prove the aircraft geometry is wrong.
 
 In the texture map table, installed-package search groups repeated report URIs by basename, deduplicates candidate paths and marks unique and ambiguous maps separately. Adding suggested search folders prompts for confirmation when ambiguity exists; select an exact file for a per-map override when the intended livery matters.
@@ -46,6 +48,7 @@ When aircraft diagnosis reports an unresolved base-aircraft link, a contextual *
 - список самолётов с пометками `⚠ причина`, `◐ причина`, `⚠ карты не найдены`;
 - строку состояния: сколько найдено, сколько полных, скольким нужен выбор моделей, сколько недоступно;
 - строку причины с рекомендуемым действием, разрешённой базой и происхождением моделей;
+- дерево семей самолётов: ливреи находятся под своим самолётом, а модификации модели — в подгруппах одного семейства; группы и подгруппы изначально свёрнуты;
 - кнопку **«Проверить пакет подробно»** (`inventory --deep`);
 - поле деталей — читаемый структурированный отчёт.
 

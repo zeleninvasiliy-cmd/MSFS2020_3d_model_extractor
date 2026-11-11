@@ -698,6 +698,54 @@ class DesktopRegressionTests(unittest.TestCase):
         self.app.on_aircraft_select()
         self.assertIsNotNone(self.app.selected_aircraft)
 
+    def test_catalog_groups_aircraft_modifications_under_shared_family(self):
+        names = [
+            "Asobo_Pitts_S1_Reno", "Asobo_Pitts_S1_Reno_Common", "Asobo_Pitts_S1_Reno_LiveryAviators",
+            "Asobo_DA40_NG", "Asobo_DA40_NG_Livery_Kenmore", "Asobo_DA40_NG_LiveryAviators",
+            "Asobo_DA40_TDI", "Asobo_DA40_TDI_LiveryAviators",
+            "Asobo_C172sp_AS1000", "Asobo_C172sp_AS1000_LiveryAviators",
+            "Asobo_C172sp_AS1000_Floaters", "Asobo_C172sp_AS1000_Skis", "Asobo_C172sp_AS1000_TowPlane",
+            "Asobo_C172SP_Classic", "Asobo_C172SP_Classic_LiveryAviators",
+        ]
+        self.app.populate_aircraft([{"aircraft": name, "path": f"C:/packages/{name}",
+                                     "can_build_geometry": True, "can_build_textures": True}
+                                    for name in names])
+
+        roots = {self.app.aircraft_list.item(iid, "text").split(" (", 1)[0]: iid
+                 for iid in self.app.aircraft_list.get_children("")}
+        pitts = roots["Asobo_Pitts_S1_Reno"]
+        self.assertEqual(len(self.app.aircraft_list.get_children(pitts)), 3)
+
+        da40 = next(iid for name, iid in roots.items() if name.startswith("Asobo_DA40"))
+        da40_subgroups = {self.app.aircraft_list.item(iid, "text"): iid
+                          for iid in self.app.aircraft_list.get_children(da40)}
+        self.assertEqual(set(da40_subgroups), {"NG", "TDI"})
+        self.assertEqual(len(self.app.aircraft_list.get_children(da40_subgroups["NG"])), 3)
+        self.assertEqual(len(self.app.aircraft_list.get_children(da40_subgroups["TDI"])), 2)
+
+        c172 = next(iid for name, iid in roots.items() if name.startswith("Asobo_C172"))
+        sp = next(iid for iid in self.app.aircraft_list.get_children(c172)
+                  if self.app.aircraft_list.item(iid, "text").casefold() == "sp")
+        sp_subgroups = {self.app.aircraft_list.item(iid, "text"): iid
+                        for iid in self.app.aircraft_list.get_children(sp)}
+        self.assertEqual(set(sp_subgroups), {"AS1000", "Classic"})
+        as1000_children = self.app.aircraft_list.get_children(sp_subgroups["AS1000"])
+        self.assertEqual(sum(iid in self.app._aircraft_tree_entries for iid in as1000_children), 2)
+        self.assertEqual({self.app.aircraft_list.item(iid, "text") for iid in as1000_children
+                          if iid not in self.app._aircraft_tree_entries}, {"Floaters", "Skis", "TowPlane"})
+        self.assertEqual(len(self.app.aircraft_list.get_children(sp_subgroups["Classic"])), 2)
+        all_groups = [pitts, da40, *da40_subgroups.values(), c172, sp, *sp_subgroups.values(),
+                      *[iid for iid in as1000_children if iid not in self.app._aircraft_tree_entries]]
+        self.assertTrue(all(not self.app.aircraft_list.item(iid, "open") for iid in all_groups))
+
+        towplane = next(iid for iid, entry in self.app._aircraft_tree_entries.items()
+                        if entry["aircraft"] == "Asobo_C172sp_AS1000_TowPlane")
+        self.app._select_catalog_entry(towplane)
+        self.assertTrue(self.app.aircraft_list.item(c172, "open"))
+        self.assertTrue(self.app.aircraft_list.item(sp, "open"))
+        self.assertTrue(self.app.aircraft_list.item(sp_subgroups["AS1000"], "open"))
+        self.assertEqual(self.app.selected_aircraft["aircraft"], "Asobo_C172sp_AS1000_TowPlane")
+
     def test_index_summary_reaches_the_log(self):
         self.app.report_index({"packages": 5, "aircraft_names": 7, "cached": 5, "scanned": 0,
                                "errors": [{"path": "C:/missing", "detail": "каталог не найден"}]})

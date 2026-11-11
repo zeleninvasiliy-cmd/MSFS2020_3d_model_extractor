@@ -767,7 +767,7 @@
     {
       "id": "M58",
       "name": "Aircraft family and subtype grouping in catalog",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "recognize both `_Livery_*` and `_LiveryAviators` suffix forms",
         "group engine/model modifications under one aircraft family",
@@ -776,7 +776,8 @@
         "add GUI regressions and bilingual workflow documentation"
       ],
       "acceptance": "Pitts base/Common/LiveryAviators share one group; DA40 NG and TDI are subgroups under DA40; C172 AS1000/Classic/Floaters/Skis/TowPlane share C172; all groups start collapsed; leaf selection/navigation/filter tests pass.",
-      "next": "M59: resume texture coverage with ten next unsampled OK records after the grouping correction is verified."
+      "next": "M59: texture-build the next ten unsampled OK catalog records (DG1001E Neo, DR400, E330) and refresh the exact coverage index; do not commit texture-only reports.",
+      "result": "Aircraft family grouping now strips both underscored and concatenated `_Livery...` suffixes plus `_Common`; related packages with numeric model identifiers share a family group and preserve remaining model/physical tokens as collapsed nested subgroups. This groups Pitts base/Common/LiveryAviators together, DA40 NG/TDI under DA40, and C172SP/AS1000/Classic/Floaters/Skis/TowPlane under C172. Leaf selection remains path-based; focusing a leaf opens all ancestors. Regression covers the supplied examples and all groups initially collapsed. 209 tests, GUI self-test, compileall, and git diff check passed. English/Russian guides updated."
     },
     {
       "id": "M59",
@@ -789,6 +790,19 @@
         "continue until every OK entry has been sampled"
       ],
       "acceptance": "Ten unique records pass the final audit or have a reproducible blocker; coverage report remains path-free."
+    },
+    {
+      "id": "M59",
+      "name": "Full catalog texture coverage, seventh tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "sample the next ten OK records from the M57 coverage index",
+        "run standard geometry, textures and Blender audit",
+        "record missing maps and recovery matches",
+        "refresh the local exact coverage index"
+      ],
+      "acceptance": "Ten unique records create checkpoints and pass audit or show a reproducible blocker; outputs and coverage remain path-free.",
+      "next": "Continue remaining OK records in ten-aircraft batches; commit only when a program-code change accompanies the stage."
     }
   ],
   "rolling_roadmap": [
@@ -945,8 +959,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M58-aircraft-family-hierarchy"
+    "next_stage": "M59-full-catalog-texture-coverage-seventh-tranche"
   },
-  "next_stage": "M58-aircraft-family-hierarchy",
-  "updated_utc": "2026-11-11T10:15:35Z"
+  "next_stage": "M59-full-catalog-texture-coverage-seventh-tranche",
+  "updated_utc": "2026-11-11T10:20:00Z"
 }

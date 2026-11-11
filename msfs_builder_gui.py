@@ -47,11 +47,50 @@ FOREIGN_ORIGINS = {"scan", "base_container", "aircraft_index", "base_package", "
 AIRCRAFT_FILTERS = ("Все", "Полностью доступные", "Частично доступные", "Недоступные")
 
 
-def aircraft_group_name(name):
-    """Return a stable base name for livery/physical variants in the catalog."""
+def aircraft_group_stem(name):
+    """Remove package suffixes that describe a livery or shared common files."""
     text = str(name or "?").strip() or "?"
-    match = re.match(r"^(.*?)(?:_livery(?:_|$).*)$", text, re.IGNORECASE)
-    return (match.group(1) or text) if match else text
+    text = re.sub(r"_Livery.*$", "", text, flags=re.IGNORECASE)
+    return re.sub(r"_Common$", "", text, flags=re.IGNORECASE)
+
+
+def aircraft_family_prefix(stem):
+    """Find a broad model-family key and the remaining subtype path."""
+    tokens = stem.split("_")
+    for index in range(1, len(tokens)):
+        match = re.match(r"^([A-Za-z-]*\d+)", tokens[index])
+        if not match:
+            continue
+        core = match.group(1)
+        prefix = "_".join([*tokens[:index], core])
+        suffix = [tokens[index][len(core):], *tokens[index + 1:]]
+        return prefix, tuple(token for token in suffix if token)
+    return stem, ()
+
+
+def group_aircraft_entries(entries):
+    """Group liveries and related model subtypes beneath one aircraft family."""
+    prepared = []
+    family_stems = {}
+    for entry in entries:
+        name = entry.get("aircraft", entry.get("name", "?"))
+        stem = aircraft_group_stem(name)
+        prefix, subtype = aircraft_family_prefix(stem)
+        key = prefix.casefold()
+        family_stems.setdefault(key, set()).add(stem.casefold())
+        prepared.append((entry, stem, prefix, subtype))
+
+    groups = {}
+    for entry, stem, prefix, subtype in prepared:
+        family_key = prefix.casefold()
+        # A numeric core is only broad enough when sibling package stems
+        # actually exist. Keep names such as the unique Grand Caravan intact.
+        use_family = len(family_stems[family_key]) > 1
+        group_name = prefix if use_family else stem
+        path = subtype if use_family else ()
+        group = groups.setdefault(group_name, {"entries": []})
+        group["entries"].append((entry, path))
+    return groups
 
 
 def aircraft_status(entry):
@@ -1164,8 +1203,9 @@ class BuilderApp(tk.Tk):
 
     def _select_catalog_entry(self, item_id):
         group_id = self.aircraft_list.parent(item_id)
-        if group_id:
+        while group_id:
             self.aircraft_list.item(group_id, open=True)
+            group_id = self.aircraft_list.parent(group_id)
         self.aircraft_list.selection_set(item_id)
         self.aircraft_list.focus(item_id)
         self.aircraft_list.see(item_id)
@@ -1953,26 +1993,34 @@ class BuilderApp(tk.Tk):
         tree.delete(*tree.get_children())
         self._aircraft_tree_entries.clear()
         self._aircraft_tree_paths.clear()
-        grouped = {}
-        for entry in visible:
-            name = entry.get("aircraft", entry.get("name", "?"))
-            grouped.setdefault(aircraft_group_name(name), []).append(entry)
+        grouped = group_aircraft_entries(visible)
         group_counter = 0
         child_counter = 0
         for group_name in sorted(grouped, key=str.casefold):
-            group_entries = sorted(grouped[group_name],
-                                   key=lambda item: (str(item.get("aircraft", "")).casefold(),
-                                                     str(item.get("path", "")).casefold()))
+            group_entries = grouped[group_name]["entries"]
             group_counter += 1
             group_iid = f"aircraft-group-{group_counter}"
             suffix = f" ({len(group_entries)} варианта)" if len(group_entries) > 1 else ""
             tree.insert("", "end", iid=group_iid, text=f"{group_name}{suffix}", open=False)
-            for entry in group_entries:
+            subtype_ids = {}
+            for entry, subtype_path in sorted(
+                    group_entries,
+                    key=lambda item: (str(item[0].get("aircraft", "")).casefold(),
+                                      str(item[0].get("path", "")).casefold())):
+                parent_id = group_iid
+                for depth in range(1, len(subtype_path) + 1):
+                    path = subtype_path[:depth]
+                    path_key = tuple(token.casefold() for token in path)
+                    if path_key not in subtype_ids:
+                        subgroup_id = f"{group_iid}-sub-{len(subtype_ids) + 1}"
+                        tree.insert(parent_id, "end", iid=subgroup_id, text=path[-1], open=False)
+                        subtype_ids[path_key] = subgroup_id
+                    parent_id = subtype_ids[path_key]
                 child_counter += 1
                 child_iid = f"aircraft-entry-{child_counter}"
                 name = entry.get("aircraft", entry.get("name", "?"))
                 label = f"{name}{self._aircraft_marker(entry)}  —  {entry.get('path', '')}"
-                tree.insert(group_iid, "end", iid=child_iid, text=label)
+                tree.insert(parent_id, "end", iid=child_iid, text=label)
                 self._aircraft_tree_entries[child_iid] = entry
                 path = str(entry.get("path", ""))
                 if path:
