@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M33-live-geometry-sample-second-tranche",
-  "active_stage": "M34-live-geometry-sample-third-tranche",
-  "working_branch": "codex/live-geometry-sample-second-tranche",
-  "last_commit": "b678973",
+  "last_completed_stage": "M34-live-geometry-sample-third-tranche",
+  "active_stage": "M35-live-geometry-sample-fourth-tranche",
+  "working_branch": "codex/live-geometry-sample-third-tranche",
+  "last_commit": "pending M34 commit",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -48,7 +48,9 @@
     "m31_report": "compatibility/headless_texture_stage_sample_m31.json; JSON path-free, 11 records",
     "m32_base_gap_guidance": "Warning and recovery shown for real Baron, Pipistrel and SR22 partial liveries; hidden for complete CJ4. 205 tests passed, GUI self-test/compileall/diff check passed.",
     "m33_geometry_sample": "33/33 new catalog entries built one checkpoint and passed Blender 5.2 audit; 27 OK, 6 partial confirmed in GUI chooser; no renders/source modifications; all temp outputs cleaned.",
-    "m33_report": "compatibility/headless_live_geometry_sample_m33.json; path-free, coverage now 86 unique catalog records"
+    "m33_report": "compatibility/headless_live_geometry_sample_m33.json; path-free, coverage now 86 unique catalog records",
+    "m34_geometry_sample": "30/30 newly unreported catalog entries built one geometry checkpoint and passed Blender 5.2 audit; 21 OK, 9 partial confirmed through GUI model chooser; no renders/source modifications; temporary outputs cleaned; report compatibility/headless_live_geometry_sample_m34.json.",
+    "m34_report": "JSON path-free; 30 records, all build_exit=0, checkpoint_count=1 and audit_passed=true; coverage 116 unique catalog records."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -159,14 +161,15 @@
       "rendered": false,
       "temporary_outputs_cleaned": true,
       "path_free_report": "compatibility/headless_import_sample.json"
-    }
+    },
+    "unique_real_import_report_records": 116
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M34: choose another deterministic sample from geometry-buildable live catalog rows absent from all earlier import reports; prioritize distinct model source files, model folders and partial inheritance cases.",
+  "next_step": "M35: review remaining uncovered live-catalog entries; audit GUI workflow/usability, then select another varied import tranche.",
   "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T06:35:00Z"
+  "updated_utc": "2026-11-11T06:48:30Z"
 }

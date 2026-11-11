@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/live-geometry-sample-second-tranche",
+  "working_branch": "codex/live-geometry-sample-third-tranche",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -445,14 +445,16 @@
     {
       "id": "M34",
       "name": "Live-catalog geometry import sample, third tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "derive uncovered geometry-buildable records by comparing all prior import reports",
         "prioritize distinct model source files, variant folders and unresolved partial inheritance patterns",
         "run GUI-configured geometry build and normal Blender audit on a bounded deterministic set",
         "publish path-free results, coverage delta and next tranche"
       ],
-      "acceptance": "Every attempted aircraft has one recorded normal build and audit result; all new reports cover records absent from earlier tranches; no source or project changes; all temporary checkpoints are removed."
+      "acceptance": "Every attempted aircraft has one recorded normal build and audit result; all new reports cover records absent from earlier tranches; no source or project changes; all temporary checkpoints are removed.",
+      "result": "A third deterministic tranche of 30 previously unreported live-catalog records covered C152, C172 TowPlane, Caravan and A320 variants, B787, Baron, Bonanza, C172 Aerobat, CAP10C, CJ4, DA40/DA62, DG1001E, DR400, DV20, E330, F/A-18E, Flight Design CT, generic aircraft, King Air 350, Longitude, LS8, Pipistrel, Pitts and Volocity. All 30 produced one geometry checkpoint and passed Blender 5.2 structural audit; 21 were catalog-OK and nine partial packages used explicit GUI role confirmation. Per-record elapsed time was 8.0–25.1 seconds. Temporary outputs cleaned; no renders or source changes. Unique real-import report coverage is now 116 catalog records. Report: compatibility/headless_live_geometry_sample_m34.json.",
+      "next": "M35: independently review compatibility evidence and the remaining uncovered live catalog; select the next bounded tranche by distinct model source and unresolved format/resource families, while auditing GUI project/object editing usability and publishing findings before the next implementation stage."
     }
   ],
   "rolling_roadmap": [
@@ -611,6 +613,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M34-live-geometry-sample-third-tranche",
-  "updated_utc": "2026-11-11T06:35:00Z"
+  "next_stage": "M35-live-geometry-sample-fourth-tranche",
+  "updated_utc": "2026-11-11T06:48:30Z"
 }
