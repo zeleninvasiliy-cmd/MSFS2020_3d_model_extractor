@@ -2,7 +2,7 @@
 
 ## English version
 
-A release build is made on Windows with Python 3.13 x64 and Inno Setup 7:
+A local release build is made on Windows with Python 3.13 x64 and Inno Setup 7:
 
 1. Create a virtual environment and install `release/build_requirements.txt`.
 2. Run `release/build_release.ps1` with the build Python and optional `-ISCC`.
@@ -10,6 +10,8 @@ A release build is made on Windows with Python 3.13 x64 and Inno Setup 7:
 4. Upload only the Setup, Portable ZIP and checksum file to the GitHub Release.
 
 Blender and MSFS packages are never bundled. A portable build must keep both executables and the shared `_internal` directory together. The installer is per-user and does not delete projects or settings.
+
+The repository's `Build and publish release` workflow runs only for `v*` tags. It requires the tag to match `VERSION` and point to a commit already merged into `main`, then runs tests, builds and smoke-installs Setup, and publishes Setup, Portable and SHA256SUMS to GitHub Releases. A feature branch must never be tagged as a release.
 
 ---
 
@@ -50,12 +52,12 @@ powershell -ExecutionPolicy Bypass -File .\release\build_release.ps1 -Python C:\
 6. Компилирует установщик Inno Setup с `/DAppVersion` из `VERSION`.
 7. Создаёт portable ZIP и `SHA256SUMS.txt`.
 
-Результаты:
+Результаты (`X.Y.Z` берётся из `VERSION`):
 
 ```
 release/dist/MSFSBuilder/                          автономная переносимая папка
-release/output/MSFSModelBuilder-1.2.1-Setup.exe    установщик
-release/output/MSFSModelBuilder-1.2.1-Portable.zip переносимая версия
+release/output/MSFSModelBuilder-X.Y.Z-Setup.exe    установщик
+release/output/MSFSModelBuilder-X.Y.Z-Portable.zip переносимая версия
 release/output/SHA256SUMS.txt                      контрольные суммы
 ```
 
@@ -97,6 +99,8 @@ powershell -File .\release\verify_installer.ps1
 ## Публикация
 
 Установщик и portable ZIP загружаются как файлы **GitHub Release**, а не в историю исходников. К тегу версии прикладываются `Setup.exe`, `Portable.zip` и `SHA256SUMS.txt`. Исходные документы и wiki остаются в основном репозитории.
+
+Workflow **Build and publish release** запускается только для тега `v*`. Он проверяет совпадение тега с `VERSION` и требует, чтобы отмеченный коммит уже входил в `main`. Затем выполняются тесты, сборка, смоук-тест установщика и публикация трёх артефактов. Не помечайте feature-ветку release-тегом.
 
 Установщик не подписан цифровым сертификатом. Для публичного распространения следует подписать `.exe` и установщик доверенным сертификатом и проверить чистую Windows VM с выбранной версией Blender. Лицензия распространения исходников пока не выбрана: [LICENSE_NOTICE](../LICENSE_NOTICE.md).
 

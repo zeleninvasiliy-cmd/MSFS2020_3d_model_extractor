@@ -2,8 +2,8 @@
   "version": "1.2.1",
   "last_completed_stage": "D-release-1.2.1",
   "active_stage": "M8-compatibility-measurement-and-release",
-  "working_branch": "codex/gltf-feature-matrix",
-  "last_commit": "e43bb21",
+  "working_branch": "codex/release-pipeline",
+  "last_commit": "pending-M8-release-workflow-checkpoint",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -14,7 +14,8 @@
     "compileall": "passed",
     "release_build": "not run; changes are unmerged",
     "git_diff_check": "passed",
-    "blender_worker_checks": "passed on Blender 5.2.3 LTS"
+    "blender_worker_checks": "passed on Blender 5.2.3 LTS",
+    "release_workflow": "added tag and merged-main gates; syntax not yet checked with actionlint (not installed)"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -56,12 +57,12 @@
     "draco_models": 0,
     "meshopt_models": 0
   },
-  "current_blocker": "Published branches: M5 codex/package-resource-graph (2581ecd), M6 codex/gui-dependency-actions (983d501), M7 codex/gltf-feature-matrix (e43bb21). PR creation was retried for M7 with base M6 and again denied by the connected GitHub integration: HTTP 403 'Resource not accessible by integration'. GitHub CLI is absent. Feature branch pushes work; no direct merge or release from unmerged code.",
-  "next_step": "M8: audit the existing release pipeline and artifact contents, ensure the path-free compatibility snapshot is reproducible, and prepare release automation/docs. Do not tag or upload a release until the feature branches are integrated; continue compatibility/UI work if release automation is otherwise complete.",
+  "current_blocker": "GitHub release automation can be prepared on a feature branch. Public release is intentionally gated to tags on commits already merged into main; current feature PR creation is denied to the connected integration with HTTP 403, so no release can be published safely yet.",
+  "next_step": "Validate release workflow syntax and guards, audit artifact naming/checksum behavior and current path-free snapshot; then continue with the highest-impact remaining catalog blocker while PR access remains unavailable.",
   "next_stage": "M8-compatibility-measurement-and-release",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T02:25:23Z"
+  "updated_utc": "2026-11-11T02:29:15Z"
 }
