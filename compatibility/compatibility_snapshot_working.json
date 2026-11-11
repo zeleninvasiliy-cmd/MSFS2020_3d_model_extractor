@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_utc": "2026-11-11T02:45:08+00:00",
+  "generated_utc": "2026-11-11T03:08:32+00:00",
   "source": {
     "kind": "catalog_json",
-    "name": "installed-msfs-deep-catalog-after-M8"
+    "name": "installed-msfs-deep-catalog-after-M10"
   },
   "counts": {
     "aircraft": 233,
@@ -53,7 +53,8 @@
     "unresolved_by_reason": {
       "base_aircraft_missing": 89,
       "declared_model_file_missing": 4,
-      "optional_texture_fallback_missing": 60
+      "optional_texture_fallback_missing": 9,
+      "optional_texture_target_aircraft_missing": 51
     },
     "affected_aircraft_by_kind": {
       "base_container": 45,

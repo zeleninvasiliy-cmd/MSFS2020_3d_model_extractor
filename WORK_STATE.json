@@ -1,21 +1,23 @@
 {
   "version": "1.2.1",
   "last_completed_stage": "D-release-1.2.1",
-  "active_stage": "M9-GUI-model-source-decision-flow",
-  "working_branch": "codex/gui-model-source-recovery",
-  "last_commit": "4c16254",
+  "active_stage": "M10-texture-fallback-source-audit",
+  "working_branch": "codex/texture-fallback-audit",
+  "last_commit": "pending-M10-checkpoint",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "171 passed",
+    "unittest": "174 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
-    "real_catalog": "Pitts livery queried through catalog/models CLI; missing S1_Interior.xml shown and available S1_Interior_LOD01.gltf candidate returned from base package",
+    "deep_catalog": "233 aircraft; 226 geometry-buildable; 48 partial; 526 packages indexed; 0 index errors",
+    "fallback_audit": "60 unresolved (51 absent target aircraft packages, 9 generic missing folders); 0 target aircraft folders missed by index",
+    "real_gui_diagnosis": "C172 AS1000 names missing Asobo_C172SP_Classic package and explains optional fallback does not block geometry",
     "release_build": "not run; feature branch is unmerged and VERSION remains 1.2.1",
-    "release_workflow": "statically reviewed; GitHub Actions syntax and release job still need server-side CI"
+    "release_workflow": "statically reviewed; no actionlint/YAML parser installed; server-side CI pending"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -59,14 +61,20 @@
     "missing_base_reason_instances": 89,
     "declared_model_file_missing": 4,
     "texture_fallback_affected_aircraft": 58,
-    "ambiguous_dependency_count": 0
+    "ambiguous_dependency_count": 0,
+    "texture_fallback_target_aircraft_missing": 51,
+    "texture_fallback_generic_target_missing": 9,
+    "texture_fallback_false_negative_index_count": 0,
+    "fallback_on_unresolved_base_aircraft": 47,
+    "fallback_on_resolved_base_aircraft": 13,
+    "unit_tests": 174
   },
-  "current_blocker": "GitHub integration returns HTTP 403 on PR creation; branches can be pushed but not merged or released. Release workflow is gated to merged-main tags.",
-  "next_step": "Commit and push M9. Then inspect all unresolved optional texture fallbacks through the program CLI, look for false misses in installed package roots, and add a regression test for any reproducible resolver issue.",
-  "next_stage": "M10-compatibility-source-audit",
+  "current_blocker": "GitHub integration still returns HTTP 403 when creating PRs; pushed feature branches are preserved, but merge and release are pending. Release workflow requires CI on GitHub Actions.",
+  "next_step": "Commit and push M10. Then implement M11 GUI root visibility/management after reviewing existing settings and diagnostics; keep compatibility vs GUI stages alternating.",
+  "next_stage": "M11-GUI-package-root-visibility",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T03:00:00Z"
+  "updated_utc": "2026-11-11T03:20:00Z"
 }

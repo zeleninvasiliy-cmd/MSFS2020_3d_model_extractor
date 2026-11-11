@@ -679,9 +679,17 @@ def collect_dependencies(folder, roots=(), index=None):
             if folder not in target.parents:
                 found, origin, ambiguous = rebase(target, folder, index, allow_global=True)
                 resolved_path = found if found is not None else target
+                target_parts = target.parts
+                airplane_index = next((position for position, part in enumerate(target_parts)
+                                       if part.casefold() == "airplanes"
+                                       and position + 1 < len(target_parts)), None)
+                target_aircraft = (target_parts[airplane_index + 1]
+                                   if airplane_index is not None else None)
                 entry = {"kind": "texture_fallback", "name": key, "path": str(resolved_path),
                          "resolved": bool(found is not None and found.is_dir()), "optional": True,
-                         "source": str(cfg)}
+                         "source": str(cfg), "target_aircraft": target_aircraft,
+                         "target_aircraft_installed": (None if target_aircraft is None or index is None
+                                                        else bool(index.aircraft_folders(target_aircraft)))}
                 if ambiguous:
                     entry["problem_code"] = "ambiguous_owner"
                     entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)

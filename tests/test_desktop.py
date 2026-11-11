@@ -47,6 +47,17 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertIn("отчёте текстурирования", detail)
         self.assertNotIn("fallback.1", detail)
 
+    def test_detail_names_absent_optional_fallback_aircraft_and_action(self):
+        dependency = {"kind": "texture_fallback", "name": "fallback.9", "resolved": False,
+                      "optional": True, "path": "C:/livery/texture", "target_aircraft": "Base_Plane",
+                      "target_aircraft_installed": False}
+        detail = self.app.format_detail({"dependencies": [dependency]})
+        self.assertIn("Base_Plane (1)", detail)
+        self.assertIn("необязателен для геометрии", detail)
+        advice = self.app._dependency_next_step(dependency)
+        self.assertIn("добавьте его каталог в настройках", advice)
+        self.assertIn("необязателен для геометрии", advice)
+
     def test_unresolved_dependencies_include_next_steps(self):
         report = {"dependencies": [
             {"kind": "base_container", "name": "Base_Plane", "resolved": False,

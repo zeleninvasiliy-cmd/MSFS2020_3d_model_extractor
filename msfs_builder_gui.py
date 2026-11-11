@@ -1469,6 +1469,21 @@ class BuilderApp(tk.Tk):
                 found = sum(bool(item.get("resolved")) for item in fallback_dependencies)
                 lines.append(f"  • texture.cfg fallback: найдено папок {found} из {len(fallback_dependencies)}; "
                              "проверяйте отсутствующие карты в отчёте текстурирования.")
+                absent_targets = {}
+                for item in fallback_dependencies:
+                    target = item.get("target_aircraft")
+                    if target and item.get("target_aircraft_installed") is False:
+                        absent_targets[target] = absent_targets.get(target, 0) + 1
+                if absent_targets:
+                    examples = list(sorted(absent_targets.items(), key=lambda pair: pair[0].casefold()))
+                    summary = ", ".join(f"{name} ({count})" for name, count in examples[:4])
+                    if len(examples) > 4:
+                        summary += f" и ещё {len(examples) - 4}"
+                    lines.append("      Целевые самолёты не найдены в выбранных Packages-каталогах: " + summary + ".")
+                for dependency in [item for item in fallback_dependencies if not item.get("resolved")][:4]:
+                    advice = BuilderApp._dependency_next_step(dependency)
+                    if advice:
+                        lines.append(f"      Следующий шаг: {advice}")
                 ambiguous = [item for item in fallback_dependencies
                              if "несколько установленных пакетов" in str(item.get("detail") or "")]
                 for dependency in ambiguous[:3]:
@@ -1492,6 +1507,13 @@ class BuilderApp(tk.Tk):
             if "базовый самолёт установлен" in detail:
                 return "проверьте вариант самолёта; если нужный glTF найден, назначьте его кнопкой «Выбрать модели…»."
             return "если это ливрея, установите её базовый самолёт; затем повторите подробную проверку."
+        if kind == "texture_fallback" and dependency.get("target_aircraft_installed") is False:
+            target = dependency.get("target_aircraft")
+            return (f"папка {target} не найдена в выбранных Packages-каталогах; "
+                    "установите пакет с этой текстурой или добавьте его каталог в настройках. "
+                    "Fallback необязателен для геометрии.")
+        if kind == "texture_fallback" and dependency.get("target_aircraft_installed") is True:
+            return "самолёт найден, но целевая fallback-папка отсутствует; проверьте имя и состав texture-варианта."
         return "проверьте выбранные каталоги MSFS и повторите диагностику."
 
     def diagnose_selected(self):

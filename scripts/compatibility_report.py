@@ -26,10 +26,12 @@ def _dependency_problem(dependency: dict[str, Any]) -> str:
     New resolver output carries ``problem_code``. The text fallback is retained
     only for catalog JSON files produced by older program versions.
     """
+    kind = str(dependency.get("kind") or "UNKNOWN")
+    if kind == "texture_fallback" and dependency.get("target_aircraft_installed") is False:
+        return "optional_texture_target_aircraft_missing"
     problem_code = dependency.get("problem_code")
     if problem_code:
         return str(problem_code)
-    kind = str(dependency.get("kind") or "UNKNOWN")
     detail = str(dependency.get("detail") or "").casefold()
     if "несколько установленных пакетов" in detail:
         return "ambiguous_owner"

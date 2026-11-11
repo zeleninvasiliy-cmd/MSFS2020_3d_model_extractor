@@ -394,6 +394,17 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         self.assertEqual(entry["origin"], "base_package")
         self.assert_path_equal(Path(entry["path"]), gauges)
 
+    def test_missing_texture_target_reports_absent_aircraft_package(self):
+        _, livery = self.base_and_livery()
+        (livery / "texture.TEST" / "texture.cfg").write_text(
+            "[fltsim]\nfallback.1=..\\..\\Ghost_Plane\\texture\\", encoding="utf-8")
+        result = resolver.resolve_aircraft(livery, index=PackageIndex.build([self.root]))
+        entry = next(d for d in result["dependencies"] if d["kind"] == "texture_fallback")
+        self.assertFalse(entry["resolved"])
+        self.assertEqual(entry["target_aircraft"], "Ghost_Plane")
+        self.assertFalse(entry["target_aircraft_installed"])
+        self.assertEqual(entry["problem_code"], "optional_texture_fallback_missing")
+
     def test_manifest_dependency_resolves_to_resource_only_package(self):
         folder = aircraft(self.root, "owner-package", "Owner_Plane")
         owner_manifest = self.root / "owner-package" / "manifest.json"

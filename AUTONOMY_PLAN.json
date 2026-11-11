@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/gui-model-source-recovery",
+  "working_branch": "codex/texture-fallback-audit",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -126,13 +126,15 @@
     {
       "id": "M10",
       "name": "Compatibility audit and resolver gaps",
-      "status": "planned",
+      "status": "complete",
       "deliverables": [
         "re-measure all installed model references after M9",
         "separate genuinely absent source from resolver gaps",
         "fix highest-impact reproducible package-resolution issue with fixtures"
       ],
-      "acceptance": "Deep catalog has no unexplained false missing dependency among resolvable installed packages; every remaining blocked class has a concrete user action or explicit unsupported-source diagnosis."
+      "acceptance": "Deep catalog has no unexplained false missing dependency among resolvable installed packages; every remaining blocked class has a concrete user action or explicit unsupported-source diagnosis.",
+      "result": "Deep-catalog audit checked all 60 unresolved texture fallbacks against the installed package index: 51 explicitly target aircraft folders absent from all scanned roots; 9 reference generic fallback folders with no installed owner. 47 of 60 are attached to aircraft with an unresolved base_container; 13 are attached to an aircraft with a base present but refer to another missing optional target. No exact target aircraft folder existed in the index, so no false negative in VFS rebase was found. Added target_aircraft and target_aircraft_installed metadata, a dedicated optional_texture_target_aircraft_missing compatibility class and GUI next-step guidance. Real C172 AS1000 diagnosis now says Asobo_C172SP_Classic is absent from selected roots and the fallback does not block geometry. 174 tests, GUI self-test and compileall pass.",
+      "next": "Push M10 then begin M11 on a fresh GUI branch: make scanned package roots visible/manageable so a user can tell which Official, Community, and custom roots participated in dependency resolution; audit branch/release workflow and existing GUI behavior before settling implementation."
     },
     {
       "id": "M11",

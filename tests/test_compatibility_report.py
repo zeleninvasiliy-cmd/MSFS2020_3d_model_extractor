@@ -12,6 +12,18 @@ spec.loader.exec_module(compatibility_report)
 
 
 class CompatibilityReportTests(unittest.TestCase):
+    def test_texture_fallback_reason_distinguishes_missing_target_package(self):
+        catalog = {"aircraft": [{
+            "dependencies": [{"kind": "texture_fallback", "resolved": False,
+                              "problem_code": "optional_texture_fallback_missing",
+                              "target_aircraft": "Base_Plane", "target_aircraft_installed": False}]
+        }]}
+
+        report = compatibility_report.summarise(catalog)
+
+        self.assertEqual(report["dependencies"]["unresolved_by_reason"],
+                         {"optional_texture_target_aircraft_missing": 1})
+
     def test_summary_counts_records_and_nested_blockers(self):
         catalog = {
             "index": {"packages": 2},
