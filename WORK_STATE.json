@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M32-partial-livery-source-gap-warning",
-  "active_stage": "M33-live-geometry-sample-second-tranche",
-  "working_branch": "codex/partial-livery-recovery-guidance",
-  "last_commit": "4b4a033",
+  "last_completed_stage": "M33-live-geometry-sample-second-tranche",
+  "active_stage": "M34-live-geometry-sample-third-tranche",
+  "working_branch": "codex/live-geometry-sample-second-tranche",
+  "last_commit": "b678973",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -46,7 +46,9 @@
     "m30_variant_visibility": "Model-selection dialog now shows the model folder beside each candidate and lists selected folder/file pairs in the live summary; 203 full tests passed, GUI self-test and compileall passed.",
     "m31_texture_stage_sample": "11/11 geometry and texture checkpoints created and final audits passed; 8 texture reports complete, 3 incomplete because base aircraft packages are missing; find-textures verified 27/28 Baron, 21/22 Pipistrel and 203/206 SR22 unique required maps absent; all temp output cleaned.",
     "m31_report": "compatibility/headless_texture_stage_sample_m31.json; JSON path-free, 11 records",
-    "m32_base_gap_guidance": "Warning and recovery shown for real Baron, Pipistrel and SR22 partial liveries; hidden for complete CJ4. 205 tests passed, GUI self-test/compileall/diff check passed."
+    "m32_base_gap_guidance": "Warning and recovery shown for real Baron, Pipistrel and SR22 partial liveries; hidden for complete CJ4. 205 tests passed, GUI self-test/compileall/diff check passed.",
+    "m33_geometry_sample": "33/33 new catalog entries built one checkpoint and passed Blender 5.2 audit; 27 OK, 6 partial confirmed in GUI chooser; no renders/source modifications; all temp outputs cleaned.",
+    "m33_report": "compatibility/headless_live_geometry_sample_m33.json; path-free, coverage now 86 unique catalog records"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -160,11 +162,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M33: build and audit another broad tranche of previously unbuilt aircraft and variants through the normal GUI-generated project path; select examples with unique source families and model folders.",
-  "next_stage": "M33-live-geometry-sample-second-tranche",
+  "next_step": "M34: choose another deterministic sample from geometry-buildable live catalog rows absent from all earlier import reports; prioritize distinct model source files, model folders and partial inheritance cases.",
+  "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T06:23:14Z"
+  "updated_utc": "2026-11-11T06:35:00Z"
 }

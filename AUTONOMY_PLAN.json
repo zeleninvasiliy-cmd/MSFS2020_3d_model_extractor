@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/partial-livery-recovery-guidance",
+  "working_branch": "codex/live-geometry-sample-second-tranche",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -431,14 +431,28 @@
     {
       "id": "M33",
       "name": "Live-catalog geometry import sample, second tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "select previously unbuilt aircraft and variant records using the live deep catalog",
         "exercise GUI project/model selection followed by normal geometry build and Blender audit",
         "preserve one result per aircraft with reason, model source and audit counts",
         "record remaining coverage count and next tranche without personal paths"
       ],
-      "acceptance": "Every attempted record has an explicit CLI/build/audit result; no user files or sources are modified; temporary outputs are removed; actionable failures are investigated or assigned a stable blocker code."
+      "acceptance": "Every attempted record has an explicit CLI/build/audit result; no user files or sources are modified; temporary outputs are removed; actionable failures are investigated or assigned a stable blocker code.",
+      "result": "A second deterministic tranche of 33 previously unreported catalog records covered Icon, NXCub, Savage Cub, C172 Classic, E330, Flight Design CT, VL3, DA62, DR400, Bonanza G36, Pitts S2, DA40 TDI, 208B and C172 AS1000. All 33 produced exactly one checkpoint and passed Blender 5.2 audit; 27 were complete and six partial packages used explicit GUI model selection. End-to-end time was 10.5–16.6 seconds per record. No renders/source changes; temporary outputs cleaned. This brings unique real-import report coverage to 86 catalog aircraft records. Report: compatibility/headless_live_geometry_sample_m33.json.",
+      "next": "M34: select a third batch from the still-uncovered live catalog, preferring different glTF source references/model folders and more partial livery packages; continue normal GUI-configured build and Blender audit."
+    },
+    {
+      "id": "M34",
+      "name": "Live-catalog geometry import sample, third tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "derive uncovered geometry-buildable records by comparing all prior import reports",
+        "prioritize distinct model source files, variant folders and unresolved partial inheritance patterns",
+        "run GUI-configured geometry build and normal Blender audit on a bounded deterministic set",
+        "publish path-free results, coverage delta and next tranche"
+      ],
+      "acceptance": "Every attempted aircraft has one recorded normal build and audit result; all new reports cover records absent from earlier tranches; no source or project changes; all temporary checkpoints are removed."
     }
   ],
   "rolling_roadmap": [
@@ -595,8 +609,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M33-live-geometry-sample-second-tranche"
+    "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M33-live-geometry-sample-second-tranche",
-  "updated_utc": "2026-11-11T06:23:14Z"
+  "next_stage": "M34-live-geometry-sample-third-tranche",
+  "updated_utc": "2026-11-11T06:35:00Z"
 }
