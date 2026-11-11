@@ -282,6 +282,23 @@ class RuleEditorTests(EditorTestCase):
         run.assert_not_called()
         self.assertNotIn("mirror_objects", self.app.project_extra)
 
+    def test_object_rule_warns_when_checkpoint_inventory_is_not_loaded(self):
+        self.app.object_include.clear()
+        self.app.object_details.clear()
+        editor = self.editor()
+        self.choose_kind(editor, "Зеркальная копия")
+        editor.add_rule()
+        dialog = self.top(editor)
+        combos = widgets(dialog, ttk.Combobox)
+        set_combo(combos[0], "Wing_L")
+        set_combo(combos[1], "Wing_R")
+        with patch.object(gui.messagebox, "askyesno", return_value=False) as ask, \
+                patch.object(self.app, "run_command") as run:
+            click(dialog, "Сохранить")
+        self.assertEqual(ask.call_args[0][0], "Список объектов не загружен")
+        run.assert_not_called()
+        self.assertNotIn("mirror_objects", self.app.project_extra)
+
     def test_placement_offset_accepts_a_comma_decimal(self):
         editor = self.editor()
         self.choose_kind(editor, "Привязка к якорю")

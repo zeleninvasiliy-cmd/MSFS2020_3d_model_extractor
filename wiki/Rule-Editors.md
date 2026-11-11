@@ -4,6 +4,8 @@
 
 The graphical rule editor covers skin split, spatial split, mirror, placement, collection override and pivot preservation. Object and joint choices come from the actual glTF/checkpoint, and the form calls the shared CLI validator before saving.
 
+When an object rule references names but no geometry checkpoint inventory has been loaded, the editor warns that names cannot yet be checked and recommends loading the object list. Saving without that check requires explicit confirmation.
+
 The texture table is on the Textures tab. It shows map state and material, searches installed packages for candidates and stores replacements by the original glTF map name. Rules are applied in the saved order. No direct JSON editing is required for these operations.
 
 ---
@@ -24,6 +26,8 @@ The texture table is on the Textures tab. It shows map state and material, searc
 Сверху — список «Тип правила» и кнопка **«Прочитать объекты из checkpoint»**. Под ними пояснение к выбранному типу, таблица правил и кнопки «Добавить...», «Изменить...», «Удалить», «Выше», «Ниже», «Проверить все правила», «Закрыть». Двойной клик по строке открывает её форму. Внизу — счётчик правил по всем шести типам.
 
 Список объектов берётся из дерева вкладки «Геометрия». Если дерево пустое, нажмите «Прочитать объекты из checkpoint»: программа вызовет CLI `objects` на последнем `01_geometry*.blend` и заполнит имена, коллекции, исходные узлы glTF и **мировые границы** объектов. Границы нужны редактору разделения по координатам, исходные узлы — разделению по костям и списку pivot.
+
+Если правило ссылается на имена, но список объектов ещё не загружен, редактор предупреждает, что проверить имена пока невозможно, и предлагает сначала прочитать дерево объектов. Сохранить правило без проверки можно только после отдельного подтверждения.
 
 Порядок строк важен: правила применяются сверху вниз, поэтому «Выше» и «Ниже» меняют результат, а не только вид таблицы.
 

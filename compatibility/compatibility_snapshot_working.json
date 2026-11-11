@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T01:30:39+00:00",
+  "source": {
+    "kind": "catalog_json",
+    "name": "installed-msfs-deep-catalog"
+  },
+  "counts": {
+    "aircraft": 233,
+    "geometry_buildable": 226,
+    "textures_buildable": 226,
+    "partial": 48,
+    "needs_model_selection": 52,
+    "with_texture_images": 230,
+    "duplicate_names": 0,
+    "suppressed_history_stubs": 1
+  },
+  "reason_codes": {
+    "COMMON_RESOURCES_ONLY": 6,
+    "INVALID_MODEL_CFG": 2,
+    "MISSING_MODEL_CFG": 2,
+    "OK": 174,
+    "SUPPORTED_PARTIAL": 48,
+    "UNRESOLVED_ALIAS": 1
+  },
+  "missing_resource_kinds": {
+    "base_container": 49,
+    "gltf": 96,
+    "model": 50,
+    "model_cfg": 37,
+    "model_xml": 118
+  },
+  "nested_model_reason_codes": {},
+  "index": {
+    "packages": 223,
+    "aircraft_names": 233,
+    "cached": 223,
+    "scanned": 0,
+    "errors": []
+  },
+  "notes": [
+    "Counts describe the selected local MSFS installation, not a guarantee for every third-party package.",
+    "A shallow catalog checks structure and declared files; use catalog --deep for glTF/GLB and BIN validation.",
+    "Missing source geometry is reported, not reconstructed or guessed."
+  ],
+  "measurement_context": "Working tree after M2 catalog identity changes; pre-release measurement, not a claim about other installations."
+}

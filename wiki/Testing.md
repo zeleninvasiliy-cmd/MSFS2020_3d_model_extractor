@@ -14,6 +14,8 @@ The Windows GitHub Actions job repeats compilation, GUI startup and the regressi
 
 The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts and blocker kinds only; machine-specific paths are discarded.
 
+The shared configuration validator rejects unknown fields in both the graphical rule preflight and the build command. The catalog suppresses only a non-buildable `fs-base-history` placeholder shadowed by a same-name geometry-buildable package, and records the suppressed path for diagnostics.
+
 ---
 
 Три уровня проверки. Игровые ресурсы не используются нигде: все входы синтетические, поэтому набор проходит на GitHub Actions без MSFS и Blender.
@@ -29,7 +31,7 @@ python msfs_builder_gui.py --self-test
 
 Текущий набор содержит 140 проверок. В CI используется Python 3.13; тесты не сканируют установленный MSFS и не пишут в пользовательский кэш. Реальные самолёты и визуальная приёмка Blender остаются ручной проверкой пользователя.
 
-### `tests/test_resolver.py` — 25 сценариев
+### `tests/test_resolver.py` — 29 сценариев
 
 Диагностика пакетов до сборки. Каждый сценарий создаёт минимальное дерево во временном каталоге.
 
@@ -51,7 +53,7 @@ python msfs_builder_gui.py --self-test
 
 `PlanDiagnosisTests`: частичный пакет требует явных `models` (ошибка содержит «Диагностика пакета» и `SUPPORTED_PARTIAL`, затем сборка проходит с заданным составом); common-only отклоняется с причиной.
 
-### `tests/test_index.py` — 25 сценариев
+### `tests/test_index.py` — 27 сценариев
 
 [Индекс пакетов](Package-Index) и его влияние на диагностику. Тоже синтетическое дерево во временном каталоге, без bpy и без MSFS.
 
@@ -70,7 +72,7 @@ python msfs_builder_gui.py --self-test
 | причины | «базовый самолёт не установлен» против «базовый самолёт установлен, но объявленный файл в нём отсутствует» |
 | сборка | `model_from_cfg` возвращает перенесённый путь с `origin=aircraft_index`; `texture.cfg fallback.*` разрешается через базовый пакет с `origin=base_package` |
 
-### `tests/test_pipeline.py` — 10 проверок
+### `tests/test_pipeline.py` — 15 проверок
 
 Оркестратор; Blender подменён только на границе процесса.
 
@@ -79,11 +81,13 @@ python msfs_builder_gui.py --self-test
 - legacy-checkpoint без номера распознаётся;
 - устаревшая блокировка снимается, живая уважается;
 - невалидный конфиг отклоняется, включая `build_sequence: true`;
+- неизвестный ключ проекта отклоняется общей проверкой `validate`, до запуска Blender;
 - сканирование одного локального пакета **не вытесняет** кэш индекса установленного симулятора;
 - сканирование внутри установленных Packages кэш использует и повторно берёт записи из него;
 - stdout команды `objects` — чистый JSON, баннер Blender не загрязняет вывод;
 - неверные правила всех шести типов (`split_by_skin`, `split_spatial`, `mirror_objects`, `placements`, `collection_overrides`, `texture_overrides`) отклоняются `validate_config` до запуска Blender — отдельный подсценарий на каждый вид ошибки;
 - корректный набор правил всех шести типов плюс замена карты принимается.
+- пустая запись `fs-base-history` скрывается только при наличии собираемого одноимённого пакета; уникальная заглушка остаётся видимой.
 
 ### `tests/test_model_choices.py` — 14 проверок
 
@@ -98,7 +102,7 @@ python msfs_builder_gui.py --self-test
 | отказ | нечитаемый glTF показывается с причиной, а не исчезает из списка |
 | CLI | команда `models` возвращает обе роли и имя самолёта |
 
-### `tests/test_desktop.py` — 24 проверки
+### `tests/test_desktop.py` — 30 проверок
 
 Настоящее Tk-приложение, свёрнутое в `withdraw()`.
 
@@ -126,7 +130,7 @@ python msfs_builder_gui.py --self-test
 - подтверждение записывает `models`, сохраняет суффикс `_partial`, очищает дерево объектов и закрывает окно;
 - мастер запрашивает команду `models` с путём выбранного самолёта.
 
-### `tests/test_editors.py` — 33 проверки
+### `tests/test_editors.py` — 34 проверки
 
 [Редакторы правил и таблица карт](Rule-Editors). Настоящие виджеты Tk и настоящий CLI отдельным процессом; синтетический glTF с skin-узлами и синтетический отчёт текстур.
 

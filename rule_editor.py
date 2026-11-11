@@ -332,7 +332,15 @@ class RuleEditor(tk.Toplevel):
             return False
         config[self.kind] = value_of(self.kind, rows)
         known = set(self.node_names() if self.kind == "manual_keep_pivots" else self.object_names())
-        unknown = sorted(referenced_names(self.kind, rows) - known) if known else []
+        references = referenced_names(self.kind, rows)
+        unknown = sorted(references - known) if known else []
+        if close and references and not known and not messagebox.askyesno(
+                "Список объектов не загружен",
+                "Имена объектов ещё нельзя проверить: сначала загрузите их из geometry checkpoint кнопкой "
+                "«Прочитать объекты из checkpoint». Сохранить правило без проверки имён?", parent=self):
+            if ok_button is not None:
+                ok_button.configure(state="normal")
+            return False
         if close and unknown and not messagebox.askyesno(
                 "Имя не найдено",
                 "В загруженном списке объектов нет имён: " + ", ".join(unknown) + ".\n\n"

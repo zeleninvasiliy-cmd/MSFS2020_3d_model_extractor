@@ -82,19 +82,42 @@
     {
       "id": "M3",
       "name": "GUI diagnostics and recovery",
-      "status": "in_progress",
+      "status": "complete",
       "focus": ["show dependency provenance and ambiguity clearly", "validate edits before Blender starts", "audit checkpoint selection and error recovery"],
-      "exit_criteria": ["actionable errors for invalid rules", "no raw traceback for expected user input", "self-test covers navigation and recovery"]
+      "exit_criteria": ["actionable errors for invalid rules", "no raw traceback for expected user input", "self-test covers navigation and recovery"],
+      "result": "Unified unknown-key validation between rule preflight and build; the rule editor now warns and asks before saving named rules when the geometry object inventory is not loaded. GUI regression test covers the warning. All bilingual wiki pages now place English before Russian; stale module test counts were corrected. 155 tests, GUI self-test, compileall, diff check, and headless Blender checks passed."
     },
     {
       "id": "M4",
-      "name": "Format compatibility matrix",
-      "status": "planned",
-      "focus": ["glTF/GLB buffers and extensions", "skin and primitive variants", "texture decoding edge cases"],
-      "exit_criteria": ["each supported/rejected feature has a fixture and clear diagnosis", "no unsupported feature is silently guessed"]
+      "name": "Installed model configuration and role coverage",
+      "status": "complete",
+      "focus": ["two INVALID_MODEL_CFG packages", "two MISSING_MODEL_CFG packages", "manual role/LOD selection behavior", "keep shared-resource packages distinct from selectable aircraft"],
+      "exit_criteria": ["all four installed package records have actionable candidates or exact blocker reasons", "manual selection remains explicit", "no role is silently inferred as fact", "synthetic and real catalog checks pass"],
+      "result": "Both INVALID_MODEL_CFG and both MISSING_MODEL_CFG aircraft expose available exterior/interior candidates; explicit selection produced valid geometry build plans for all four. The six COMMON_RESOURCES_ONLY entries are shared-resource packages, not standalone model sources. RSP_R44_EC-NIK declares base_container=..\\r44, but no r44 folder or indexed aircraft exists in the installed packages. Deep scan found no nested errors in selected glTF/GLB models. A path-free working snapshot records 233 selectable entries, 226 geometry-buildable, 48 partial and one suppressed history stub."
     },
     {
       "id": "M5",
+      "name": "Add-on inheritance and resource graph",
+      "status": "in_progress",
+      "focus": ["base_container and model.cfg links across installed roots", "fallback texture resolution and ambiguity", "unresolved alias diagnosis for third-party packages", "separate absent source files from resolver misses"],
+      "exit_criteria": ["every unresolved dependency is classified as absent, ambiguous or layout mismatch", "synthetic regressions cover each class", "no dependency is silently guessed"]
+    },
+    {
+      "id": "M6",
+      "name": "GUI dependency diagnosis",
+      "status": "planned",
+      "focus": ["show dependency provenance and unresolved reason in the aircraft detail panel", "provide a next action for absent vs ambiguous resources", "keep the catalog usable for large add-on sets"],
+      "exit_criteria": ["users can act on each displayed dependency state without editing JSON", "GUI tests cover each state"]
+    },
+    {
+      "id": "M7",
+      "name": "Community format compatibility",
+      "status": "planned",
+      "focus": ["GLB buffers and extensions", "skin and primitive variants", "texture decoding edge cases"],
+      "exit_criteria": ["features are measured against installed add-ons", "each supported/rejected feature has a fixture and clear diagnosis"]
+    },
+    {
+      "id": "M8",
       "name": "Compatibility measurement and next release",
       "status": "planned",
       "focus": ["repeatable catalog compatibility snapshot", "prioritize blockers by affected aircraft", "package bilingual docs and release artifacts"],

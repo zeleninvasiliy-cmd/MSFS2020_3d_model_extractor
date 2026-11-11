@@ -121,6 +121,33 @@ def inventory(source, deep=False, roots=(), index=None):
             for folder in aircraft_folders(source)]
 
 
+def _suppress_shadowed_history_stubs(entries):
+    """Separate empty history placeholders from buildable same-name aircraft.
+
+    Keep unique history records and real same-name package candidates visible;
+    only a non-buildable placeholder with a buildable peer is shadowed.
+    """
+    grouped = {}
+    for item in entries:
+        grouped.setdefault(item.get("aircraft", "").casefold(), []).append(item)
+    visible, suppressed = [], []
+    for candidates in grouped.values():
+        buildable = [item for item in candidates if item.get("can_build_geometry")]
+        for item in candidates:
+            path_parts = {part.casefold() for part in Path(item.get("path", "")).parts}
+            is_history_stub = "fs-base-history" in path_parts and not item.get("can_build_geometry")
+            if is_history_stub and buildable:
+                suppressed.append({
+                    "aircraft": item.get("aircraft"),
+                    "path": item.get("path"),
+                    "reason_code": item.get("reason_code"),
+                    "shadowed_by": [candidate.get("path") for candidate in buildable],
+                })
+            else:
+                visible.append(item)
+    return visible, suppressed
+
+
 def catalog(extra_roots=(), matches=(), deep=False):
     """Return the aircraft catalog.
 
@@ -152,30 +179,7 @@ def catalog(extra_roots=(), matches=(), deep=False):
                         "dependencies": [], "best_models": [], "detail": str(error)}
             item["package_root"] = str(root)
             entries.append(item)
-    # ``fs-base-history`` can contain empty SimObjects placeholders for an
-    # aircraft whose real model is installed in another Official package.
-    # Keep genuine same-name candidates visible, but keep these non-buildable
-    # history records in diagnostics instead of presenting them as aircraft.
-    grouped = {}
-    for item in entries:
-        grouped.setdefault(item.get("aircraft", "").casefold(), []).append(item)
-    visible_entries = []
-    suppressed_history_stubs = []
-    for candidates in grouped.values():
-        buildable = [item for item in candidates if item.get("can_build_geometry")]
-        for item in candidates:
-            path_parts = {part.casefold() for part in Path(item.get("path", "")).parts}
-            is_history_stub = ("fs-base-history" in path_parts
-                               and not item.get("can_build_geometry"))
-            if is_history_stub and buildable:
-                suppressed_history_stubs.append({
-                    "aircraft": item.get("aircraft"),
-                    "path": item.get("path"),
-                    "reason_code": item.get("reason_code"),
-                    "shadowed_by": [candidate.get("path") for candidate in buildable],
-                })
-            else:
-                visible_entries.append(item)
+    visible_entries, suppressed_history_stubs = _suppress_shadowed_history_stubs(entries)
 
     name_counts = {}
     for item in visible_entries:
@@ -405,6 +409,9 @@ def validate_config(config):
     """Validate user-editable values before filesystem or Blender operations."""
     if not isinstance(config, dict):
         raise ValueError("Конфигурация должна быть JSON-объектом.")
+    unknown = config.keys() - CONFIG_KEYS
+    if unknown:
+        raise ValueError(f"Неизвестные параметры JSON: {', '.join(sorted(unknown))}")
     for key in ("source", "output_dir"):
         if not isinstance(config.get(key), str) or not config[key].strip():
             raise ValueError(f"Укажите непустой путь {key}.")
@@ -489,9 +496,6 @@ def validate_draw_mode_models(models, draw_mode):
 def make_plan(config_file, stage=None):
     config = json.loads(config_file.read_text(encoding="utf-8-sig"))
     validate_config(config)
-    unknown = config.keys() - CONFIG_KEYS
-    if unknown:
-        raise ValueError(f"Неизвестные параметры JSON: {', '.join(sorted(unknown))}")
     base = config_file.parent
     source = resolve(base, config["source"])
     output = resolve(base, config["output_dir"])

@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
   "last_completed_stage": "D-release-1.2.1",
-  "active_stage": "M3-gui-diagnostics-and-recovery",
-  "working_branch": "codex/catalog-history-stubs",
-  "last_commit": "c85614e",
+  "active_stage": "M5-addon-inheritance-and-resource-graph",
+  "working_branch": "codex/gui-validation-contract",
+  "last_commit": "c3e1527",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -19,15 +19,19 @@
   "measurements": {
     "catalog_visible_aircraft": 233,
     "suppressed_shadowed_history_stubs": 1,
+    "geometry_buildable": 226,
+    "partial": 48,
+    "manual_model_choice_plans_validated": 4,
+    "selected_model_nested_errors": 0,
     "status_codes": {"OK": 174, "SUPPORTED_PARTIAL": 48, "COMMON_RESOURCES_ONLY": 6, "INVALID_MODEL_CFG": 2, "MISSING_MODEL_CFG": 2, "UNRESOLVED_ALIAS": 1},
     "duplicate_names_after_policy": 0
   },
-  "current_blocker": null,
-  "next_step": "Continue M3 by independently reviewing GUI validation and recovery paths, then improve the highest-impact issue through graphical controls and tests. Review the whole touched flow, update architecture/docs, and only then open a PR. GitHub Wiki first-page setup is external and must not block independent maintenance.",
-  "next_stage": "M3-gui-diagnostics-and-recovery",
+  "current_blocker": "GitHub PR creation returned 403 Resource not accessible by integration; GitHub CLI is not installed. The M2 branch is pushed, and local work continues. Do not let PR creation block independent stages.",
+  "next_step": "Audit base_container/model.cfg/texture fallback dependencies across the installed roots, starting from RSP_R44_EC-NIK. Classify each unresolved link as truly absent source, ambiguous owner, or resolver/layout miss; only implement fixable resolver cases and test them with synthetic fixtures. Keep the original package read-only. GitHub PR creation is still blocked by connector permission; continue local work and do not force-push.",
+  "next_stage": "M5-addon-inheritance-and-resource-graph",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T01:02:43Z"
+  "updated_utc": "2026-11-11T01:30:39Z"
 }

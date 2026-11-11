@@ -1,43 +1,5 @@
 # MSFS Model Builder — wiki
 
-
----
-
-## Русская версия
-
-Эта wiki описывает текущую версию **1.2.1** — Windows-конвейер для извлечения доступной статической геометрии MSFS 2020 в Blender. Программа импортирует геометрию и PBR-текстуры, распределяет объекты по коллекциям и сохраняет варианты `.blend`. Анимации не импортируются.
-
-### Быстрый путь
-
-| Страница | Назначение |
-|---|---|
-| [Getting Started](Getting-Started) | требования, установка и первый проект |
-| [GUI Workflow](GUI-Workflow) | вкладки, кнопки и порядок работы |
-| [Package Diagnosis](Package-Diagnosis) | причины недоступности и частичные пакеты |
-| [Package Index](Package-Index) | наследование ливрей и происхождение ресурсов |
-| [Model Selection](Model-Selection) | выбор exterior/interior и LOD |
-| [Rule Editors](Rule-Editors) | split, mirror, placement, коллекции и карты |
-| [Troubleshooting](Troubleshooting) | типовые ошибки и безопасные действия |
-
-### Справочники
-
-| Страница | Назначение |
-|---|---|
-| [CLI Reference](CLI-Reference) | команды и аргументы CLI |
-| [Configuration Reference](Configuration-Reference) | JSON-конфигурация и проверки |
-| [Build Modes](Build-Modes) | режимы геометрии и текстур |
-| [Textures and Materials](Textures-and-Materials) | карты, DDS и материалы |
-| [Object Organization](Object-Organization) | коллекции, исключения и разделение |
-| [Architecture](Architecture) | процессы и границы модулей |
-| [MSFS glTF Format](MSFS-glTF-Format) | поддерживаемые данные glTF |
-| [Building and Release](Building-and-Release) | пересборка Windows-пакета |
-| [Testing](Testing) | локальные и CI-проверки |
-| [Known Issues](Known-Issues) | ограничения и известные дефекты |
-
-Исходники MSFS открываются только для чтения. Нужны реальные локальные glTF/GLB, BIN, XML и карты. Закрытые или отсутствующие файлы программа не восстанавливает; визуальную приёмку выполняет пользователь в Blender.
-
-Документы верхнего уровня: [README](../README.md), [руководство пользователя](../USER_GUIDE.md), [английское руководство](../USER_GUIDE_EN.md), [лицензия](../LICENSE), [пояснение к лицензии](../LICENSE_NOTICE.md).
-
 ## English version
 
 This wiki documents the current **1.2.1** release: a Windows pipeline that imports available static MSFS 2020 geometry into Blender. It imports geometry and PBR textures, organizes objects into collections and saves separate `.blend` variants. Animations are not imported.
@@ -72,3 +34,40 @@ This wiki documents the current **1.2.1** release: a Windows pipeline that impor
 MSFS sources are read-only. Real local glTF/GLB, BIN, XML and texture files are required. Protected or missing files are not reconstructed; the user performs visual acceptance in Blender.
 
 Top-level documents: [README](../README.md), [Russian user guide](../USER_GUIDE.md), [English user guide](../USER_GUIDE_EN.md), [license](../LICENSE), and [license notice](../LICENSE_NOTICE.md).
+
+---
+
+## Русская версия
+
+Эта wiki описывает текущую версию **1.2.1** — Windows-конвейер для импорта доступной статической геометрии MSFS 2020 в Blender. Программа импортирует геометрию и PBR-текстуры, распределяет объекты по коллекциям и сохраняет отдельные варианты `.blend`. Анимации не импортируются.
+
+### Быстрый путь
+
+| Страница | Назначение |
+|---|---|
+| [Getting Started](Getting-Started) | требования, установка и первый проект |
+| [GUI Workflow](GUI-Workflow) | вкладки, кнопки и порядок работы |
+| [Package Diagnosis](Package-Diagnosis) | причины недоступности и частичные пакеты |
+| [Package Index](Package-Index) | наследование ливрей и происхождение ресурсов |
+| [Model Selection](Model-Selection) | выбор exterior/interior и LOD |
+| [Rule Editors](Rule-Editors) | split, mirror, placement, коллекции и карты |
+| [Troubleshooting](Troubleshooting) | типовые ошибки и безопасные действия |
+
+### Справочники
+
+| Страница | Назначение |
+|---|---|
+| [CLI Reference](CLI-Reference) | команды и аргументы CLI |
+| [Configuration Reference](Configuration-Reference) | JSON-конфигурация и проверки |
+| [Build Modes](Build-Modes) | режимы геометрии и текстур |
+| [Textures and Materials](Textures-and-Materials) | карты, DDS и материалы |
+| [Object Organization](Object-Organization) | коллекции, исключения и разделение |
+| [Architecture](Architecture) | процессы и границы модулей |
+| [MSFS glTF Format](MSFS-glTF-Format) | поддерживаемые данные glTF |
+| [Building and Release](Building-and-Release) | пересборка Windows-пакета |
+| [Testing](Testing) | локальные и CI-проверки |
+| [Known Issues](Known-Issues) | ограничения и известные дефекты |
+
+Исходники MSFS открываются только для чтения. Нужны реальные локальные glTF/GLB, BIN, XML и карты. Закрытые или отсутствующие файлы программа не восстанавливает; визуальную приёмку выполняет пользователь в Blender.
+
+Документы верхнего уровня: [README](../README.md), [руководство пользователя](../USER_GUIDE.md), [английское руководство](../USER_GUIDE_EN.md), [лицензия](../LICENSE), [пояснение к лицензии](../LICENSE_NOTICE.md).
