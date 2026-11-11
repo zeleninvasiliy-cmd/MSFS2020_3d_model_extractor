@@ -1426,12 +1426,28 @@ class BuilderApp(tk.Tk):
         if other_dependencies or fallback_dependencies:
             lines.append("")
             lines.append("Зависимости:")
-            for dependency in other_dependencies[:12]:
-                mark = "OK" if dependency.get("resolved") else "НЕ разрешена"
-                origin = f", {origin_text(dependency['origin'])}" if dependency.get("origin") else ""
-                detail = f" — {dependency['detail']}" if dependency.get("detail") else ""
-                lines.append(f"  • {dependency.get('kind')}: {dependency.get('path') or dependency.get('name')}"
-                             f" — {mark}{origin}{detail}")
+            labels = {"manifest": "Пакеты-зависимости", "base_container": "Базовый самолёт",
+                      "model": "Ссылки на модели", "texture_fallback": "texture.cfg fallback"}
+            grouped = {}
+            for dependency in other_dependencies:
+                grouped.setdefault(dependency.get("kind", "other"), []).append(dependency)
+            for kind, items in sorted(grouped.items()):
+                resolved = [item for item in items if item.get("resolved")]
+                unresolved = [item for item in items if not item.get("resolved")]
+                lines.append(f"  • {labels.get(kind, kind)}: найдено {len(resolved)} из {len(items)}")
+                for dependency in resolved[:2]:
+                    source = dependency.get("path") or dependency.get("name")
+                    origin = f", {origin_text(dependency['origin'])}" if dependency.get("origin") else ""
+                    lines.append(f"      ✓ {dependency.get('name') or kind}: {source} — OK{origin}")
+                for dependency in unresolved[:4]:
+                    source = dependency.get("path") or dependency.get("name") or "путь не указан"
+                    detail = f" — {dependency['detail']}" if dependency.get("detail") else ""
+                    lines.append(f"      ! {dependency.get('name') or kind}: {source}{detail}")
+                    advice = BuilderApp._dependency_next_step(dependency)
+                    if advice:
+                        lines.append(f"        Следующий шаг: {advice}")
+                if len(unresolved) > 4:
+                    lines.append(f"      … ещё не разрешено: {len(unresolved) - 4}")
             if fallback_dependencies:
                 found = sum(bool(item.get("resolved")) for item in fallback_dependencies)
                 lines.append(f"  • texture.cfg fallback: найдено папок {found} из {len(fallback_dependencies)}; "
@@ -1441,6 +1457,25 @@ class BuilderApp(tk.Tk):
                 for dependency in ambiguous[:3]:
                     lines.append(f"      {dependency.get('name')}: {dependency['detail']}")
         return "\n".join(lines)
+
+    @staticmethod
+    def _dependency_next_step(dependency):
+        """Give a concrete user action for unresolved package links."""
+        kind = dependency.get("kind")
+        detail = str(dependency.get("detail") or "")
+        if "несколько установленных пакетов" in detail:
+            if kind == "model":
+                return "сравните кандидатов; назначьте найденный файл через «Выбрать модели…» в настройках проекта."
+            return "уточните корень Packages или убедитесь, что выбран нужный пакет/вариант."
+        if kind == "manifest":
+            return "проверьте, установлен ли этот пакет, и добавлен ли его Packages-каталог в «Пути и настройки»."
+        if kind == "base_container":
+            return "установите базовый самолёт и добавьте его Packages-каталог в «Пути и настройки»."
+        if kind == "model":
+            if "базовый самолёт установлен" in detail:
+                return "проверьте вариант самолёта; если нужный glTF найден, назначьте его кнопкой «Выбрать модели…»."
+            return "если это ливрея, установите её базовый самолёт; затем повторите подробную проверку."
+        return "проверьте выбранные каталоги MSFS и повторите диагностику."
 
     def diagnose_selected(self):
         if self.busy:

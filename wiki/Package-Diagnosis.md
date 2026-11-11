@@ -32,6 +32,8 @@ For `SUPPORTED_PARTIAL`, the `models` command and GUI wizard display exterior an
 
 The `index` command builds a cached index of installed packages and resolves livery VFS links to base aircraft. The GUI shows `base_container`, whether the base is installed and any ambiguous candidates. An inaccessible package does not stop the rest of the scan.
 
+The detailed GUI report groups dependencies by type and shows resolved counts, a few unresolved examples and a next step. For a missing manifest package, verify the package installation and scan roots. For a missing `base_container`, install the base aircraft or add its Packages root. For an ambiguous model file, compare the listed candidates and assign the intended file with **Choose models**. Texture fallbacks are optional; use the texturing report to check whether a material map is actually missing.
+
 ---
 
 ## Русская версия
@@ -65,3 +67,5 @@ The `index` command builds a cached index of installed packages and resolves liv
 ### Индекс пакетов
 
 Команда `index` строит кэш индекса установленных пакетов и разрешает VFS-ссылки ливрей на базовые самолёты. В GUI видны `base_container`, статус базы и неоднозначные кандидаты. Ошибка одного каталога не останавливает сканирование остальных.
+
+Подробный отчёт GUI группирует зависимости по типу, показывает число найденных ссылок, несколько примеров проблем и следующий шаг. Если не найден пакет из manifest, проверьте его установку и выбранные каталоги сканирования. Для отсутствующего `base_container` установите базовый самолёт или добавьте его корень Packages. При неоднозначной ссылке на модель сравните кандидатов и назначьте нужный файл кнопкой **«Выбрать модели…»**. Texture fallback необязателен: наличие реально пропущенной карты проверяйте в отчёте текстурирования.

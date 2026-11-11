@@ -24,7 +24,7 @@
     ],
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release."
   },
-  "working_branch": "codex/package-resource-graph",
+  "working_branch": "codex/gui-dependency-actions",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -185,7 +185,7 @@
     {
       "id": "M6",
       "name": "GUI dependency diagnosis",
-      "status": "in_progress",
+      "status": "complete",
       "focus": [
         "show package dependency counts and provenance without overwhelming detail",
         "surface actionable absent vs ambiguous vs unresolved paths",
@@ -196,12 +196,13 @@
         "GUI gives a next action for each displayed dependency state without editing JSON",
         "ambiguous package candidates can be selected explicitly or are clearly documented as requiring configuration",
         "GUI tests cover resolved, absent and ambiguous dependencies"
-      ]
+      ],
+      "result": "Detailed GUI diagnosis now groups dependency counts by type, lists up to four unresolved examples and gives next steps for missing manifest/base/model links; ambiguous model links direct the user to the existing graphical model chooser. Optional texture fallbacks remain a compact non-blocking summary. Verified against real RSP_R44_EC-NIK: its declared r44 base is genuinely absent and the GUI says how to fix the source path. 165 unit tests, GUI self-test, compileall and diff check passed. Updated bilingual diagnosis/testing docs and corrected local warm-index timing (3.3 s for 526 packages)."
     },
     {
       "id": "M7",
       "name": "Community format compatibility",
-      "status": "planned",
+      "status": "in_progress",
       "focus": [
         "GLB buffers and extensions",
         "skin and primitive variants",

@@ -47,6 +47,22 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertIn("отчёте текстурирования", detail)
         self.assertNotIn("fallback.1", detail)
 
+    def test_unresolved_dependencies_include_next_steps(self):
+        report = {"dependencies": [
+            {"kind": "base_container", "name": "Base_Plane", "resolved": False,
+             "detail": "базовый самолёт не установлен"},
+            {"kind": "model", "name": "interior", "resolved": False,
+             "detail": "несколько установленных пакетов: C:/base-a; C:/base-b"},
+            {"kind": "manifest", "name": "shared-assets", "resolved": False},
+        ]}
+
+        detail = self.app.format_detail(report)
+
+        self.assertIn("Базовый самолёт: найдено 0 из 1", detail)
+        self.assertIn("установите базовый самолёт", detail)
+        self.assertIn("Выбрать модели", detail)
+        self.assertIn("Packages-каталог в «Пути и настройки»", detail)
+
     def test_save_preserves_tab_and_advanced_operations(self):
         self.project()
         self.app.project_extra = {"placements": {"Rudder": {"anchor": "Tail", "offset_m": [0, 1, 0]}}}
@@ -172,7 +188,8 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertIn("bad json", detail)
         self.assertIn("ext_LOD01.gltf", detail)
         self.assertIn("LOD без файла: 1", detail)
-        self.assertIn("НЕ разрешена", detail)
+        self.assertIn("найдено 0 из 1", detail)
+        self.assertIn("Следующий шаг", detail)
         self.assertNotIn('"aircraft"', detail)
 
     def test_index_provenance_is_visible_without_json(self):

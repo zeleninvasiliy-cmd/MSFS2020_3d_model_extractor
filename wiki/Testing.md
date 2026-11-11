@@ -12,7 +12,7 @@ python -c "import compileall; raise SystemExit(0 if compileall.compile_dir('.', 
 
 The Windows GitHub Actions job repeats compilation, GUI startup and the regression suite. Tests cover package resolution, inheritance, model selection, GUI state, editing rules, texture tables, glTF metadata and pipeline locks. Real aircraft and Blender acceptance remain user checks.
 
-The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts and blocker kinds only; machine-specific paths are discarded.
+The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts and blocker kinds only; machine-specific paths are discarded. The detailed GUI diagnosis groups dependency states and gives a next step for missing or ambiguous links; optional texture fallbacks point users to the texturing report.
 
 The shared configuration validator rejects unknown fields in both the graphical rule preflight and the build command. The catalog suppresses only a non-buildable `fs-base-history` placeholder shadowed by a same-name geometry-buildable package, and records the suppressed path for diagnostics. Package-index fixtures also cover resource-only packages, manifest dependency resolution and ambiguity-safe VFS rebasing.
 
@@ -102,7 +102,7 @@ python msfs_builder_gui.py --self-test
 | отказ | нечитаемый glTF показывается с причиной, а не исчезает из списка |
 | CLI | команда `models` возвращает обе роли и имя самолёта |
 
-### `tests/test_desktop.py` — 30 проверок
+### `tests/test_desktop.py` — 32 проверки
 
 Настоящее Tk-приложение, свёрнутое в `withdraw()`.
 
@@ -113,7 +113,7 @@ python msfs_builder_gui.py --self-test
 - guard занятости предотвращает второй запуск;
 - каталог объектов переживает исключения;
 - суффикс `_partial` сохраняется при смене режима и повторной синхронизации, снимается при удалении `models`;
-- диагностика читаема без JSON: `format_diagnosis` и `format_detail` показывают BIN, неподдерживаемые возможности, ошибки чтения, кандидатов и неразрешённые ссылки;
+- диагностика читаема без JSON: `format_diagnosis` и `format_detail` показывают BIN, неподдерживаемые возможности, ошибки чтения, кандидатов и неразрешённые ссылки; подробный отчёт группирует зависимости и предлагает следующий шаг;
 - происхождение из индекса видно словами («источник: пакет базового самолёта»), а не кодом `aircraft_index`; в деталях показан каталог-источник;
 - неоднозначная база перечисляет пакеты-кандидаты;
 - отсутствующая база называется по имени, а не длинным путём;
