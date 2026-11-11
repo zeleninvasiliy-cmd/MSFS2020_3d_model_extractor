@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/a320neo-model-choice-import",
+  "working_branch": "codex/broad-live-import-sample",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -375,14 +375,16 @@
     {
       "id": "M29",
       "name": "Broad remaining live-catalog geometry import sample",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "derive a deterministic sample from live catalog records not covered by previous reports",
         "run normal CLI geometry builds and Blender checkpoint audits in temporary project directories",
         "classify import/audit failures by source feature and preserve minimized regressions where actionable",
         "update bilingual user-facing compatibility guidance and the next-stage roadmap"
       ],
-      "acceptance": "Every attempted record has one normal geometry outcome and audit result; no source package or user project is modified; each software defect is fixed or documented with a stable blocker code; reports contain no personal absolute paths."
+      "acceptance": "Every attempted record has one normal geometry outcome and audit result; no source package or user project is modified; each software defect is fixed or documented with a stable blocker code; reports contain no personal absolute paths.",
+      "result": "A deterministic 17-aircraft sample from previously unimported installed catalog records covered the 208B, Baron G58 livery, CAP 10C, CJ4, DA40 NG, DG1001E, DV20 livery, F/A-18E, generic private jet, King Air 350, Longitude livery, LS8, Pipistrel livery, TBM 930, Wright Flyer, 103 Solo livery and SR22 livery. All 17 produced one geometry checkpoint and passed Blender 5.2 audit through GUI-generated configs and the normal CLI; elapsed per package was 7.8–30.2 seconds including chooser/config/audit. Four partial packages used the normal GUI model chooser to confirm a candidate. No renders/source modifications; temporary outputs cleaned. Audit duplicate/disconnected counts are triage hints only. Path-free report: compatibility/headless_broad_import_sample_m29.json.",
+      "next": "M30 usability: make model-folder/variant provenance visible in the GUI model chooser before confirmation, with a compact selected-source summary. A320neo M28 exposed 15 similarly named choices whose differentiator currently lives in row details; verify no regression for declared model.cfg roles and partial packages."
     }
   ],
   "rolling_roadmap": [
@@ -539,7 +541,7 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M29-broad-live-catalog-import-sample"
+    "next_stage": "M30-model-choice-variant-clarity"
   },
-  "next_stage": "M29-broad-live-catalog-import-sample"
+  "next_stage": "M30-model-choice-variant-clarity"
 }
