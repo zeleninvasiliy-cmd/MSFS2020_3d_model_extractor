@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/float-ski-variant-coverage",
+  "working_branch": "codex/one-step-base-root-recovery",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -331,18 +331,31 @@
       ],
       "acceptance": "Each selected variant has one recorded plan/build/audit result with no source modifications or renders; the report records any missing-source blocker precisely.",
       "result": "Selected nine installed sources: C172 floats/skis, XCub floats/skis, Pilatus PC-6 G950 floats/wheels, PC-6 Gauge skis/wheels, and Hughes H-4 Hercules. Each normal GUI-generated config built through CLI with Blender 5.2, produced exactly one geometry checkpoint and passed the checkpoint audit. Build times: 7.1–17.0 s. `model.floats` was selected for XCub floats; the other variants used their declared `model` folder. All sources were JSON glTF with one local buffer and MSFT_texture_dds. No render or source writes; temporary outputs cleaned. Path-free evidence is compatibility/headless_float_ski_large_aircraft_m25.json. Visual float/ski placement remains outside this structural audit.",
-      "next": "M26 GUI recovery: selecting an additional root from the contextual missing-base action should save it and automatically rescan the catalog, so users do not have to return to a separate scan button. Preserve existing Package folders management for general use."
+      "next": "M26 completed: missing-base recovery now picks a Packages root, saves it, and rescans automatically; cancellation and duplicate roots are covered. Next, rerun the full build-plan audit against the live catalog and classify all current non-buildable entries."
     },
     {
       "id": "M26",
       "name": "One-step missing-base root recovery",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "open a folder picker from the contextual missing-base action",
         "persist the chosen Packages root without editing project JSON",
         "rescan the catalog automatically after adding the root and show the refreshed diagnosis"
       ],
-      "acceptance": "GUI tests cover cancellation, deduplicated root, saved new root, scan invocation and rescan failure; existing multi-root manager remains unchanged."
+      "acceptance": "GUI tests cover cancellation, deduplicated root, saved new root, scan invocation and rescan failure; existing multi-root manager remains unchanged.",
+      "result": "The contextual base-recovery action now opens a Packages/Community directory picker, stores the selected root through the existing settings layer, and rescans the aircraft catalog automatically. When used from an open project it reruns inventory for the project source. Cancel leaves settings unchanged; duplicate roots are not saved again. Updated bilingual guides. 202 tests, GUI self-test, compileall and diff check pass.",
+      "next": "M27 compatibility baseline: run audit-plans and current deep catalog on the live install; list each remaining non-buildable record by stable reason code, identify if any are false blockers, and select another useful real-world batch."
+    },
+    {
+      "id": "M27",
+      "name": "Full live catalog build-plan remeasurement",
+      "status": "in_progress",
+      "deliverables": [
+        "run the user-facing audit-plans command over every installed Package root",
+        "reconcile catalog statuses and plan failures with the current compatibility snapshot",
+        "identify actionable false blockers or exact missing-source reasons"
+      ],
+      "acceptance": "Every geometry-buildable row receives a plan outcome; all rejected and non-buildable rows have stable reason codes and a documented next action."
     }
   ],
   "rolling_roadmap": [
@@ -501,5 +514,5 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M19-GUI-checkpoint-audit-and-review-hints"
   },
-  "next_stage": "M26-one-step-base-root-recovery"
+  "next_stage": "M27-full-live-catalog-build-plan-remeasurement"
 }

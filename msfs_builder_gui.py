@@ -1887,8 +1887,23 @@ class BuilderApp(tk.Tk):
             button.grid_remove()
 
     def open_package_root_recovery(self):
-        if not self.busy:
-            self.manage_package_roots()
+        if self.busy:
+            return
+        folder = self.directory_dialog(
+            "Выберите Packages/Community с базовым самолётом", self.catalog_root_var.get())
+        if not folder:
+            return
+        self.catalog_root_var.set(folder)
+        self._remember_package_root(folder)
+        if self.project_open:
+            source = self.source_var.get().strip()
+            if not source:
+                messagebox.showwarning("Исходный самолёт не найден", "Укажите папку самолёта перед повторной диагностикой.")
+                return
+            command = self.append_package_roots(cli_command("inventory", source), self.package_roots())
+            self.run_command(command, self.on_open_project_inventory)
+        else:
+            self.scan_custom()
 
     @staticmethod
     def _aircraft_marker(entry):

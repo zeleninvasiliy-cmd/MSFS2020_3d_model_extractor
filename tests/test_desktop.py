@@ -376,9 +376,52 @@ class DesktopRegressionTests(unittest.TestCase):
         self.app.update_package_root_recovery(entry)
 
         self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "grid")
-        with patch.object(self.app, "manage_package_roots") as manage:
+        folder = self.folder / "base_packages"
+        folder.mkdir()
+        with patch.object(self.app, "directory_dialog", return_value=str(folder)), \
+             patch.object(self.app, "_remember_package_root") as remember, \
+             patch.object(self.app, "scan_custom") as scan:
             self.app.package_root_recovery_button.invoke()
-        manage.assert_called_once()
+        remember.assert_called_once_with(str(folder))
+        scan.assert_called_once()
+
+    def test_base_package_recovery_cancel_has_no_side_effects(self):
+        with patch.object(self.app, "directory_dialog", return_value=None), \
+             patch.object(self.app, "_remember_package_root") as remember, \
+             patch.object(self.app, "scan_custom") as scan:
+            self.app.open_package_root_recovery()
+
+        remember.assert_not_called()
+        scan.assert_not_called()
+
+    def test_base_package_recovery_does_not_save_duplicate_root(self):
+        folder = self.folder / "base_packages"
+        folder.mkdir()
+        self.app.settings["msfs_roots"] = [str(folder)]
+        with patch.object(self.app, "directory_dialog", return_value=str(folder)), \
+             patch.object(self.app, "save_package_roots") as save, \
+             patch.object(self.app, "scan_custom") as scan:
+            self.app.open_package_root_recovery()
+
+        save.assert_not_called()
+        scan.assert_called_once()
+
+    def test_base_package_recovery_rescans_open_project_inventory(self):
+        self.project()
+        folder = self.folder / "base_packages"
+        folder.mkdir()
+        self.app.source_var.set(self.app.selected_aircraft["path"])
+        with patch.object(self.app, "directory_dialog", return_value=str(folder)), \
+             patch.object(self.app, "_remember_package_root") as remember, \
+             patch.object(self.app, "package_roots", return_value=[str(folder)]), \
+             patch.object(self.app, "run_command") as runner:
+            self.app.open_package_root_recovery()
+
+        remember.assert_called_once_with(str(folder))
+        command = runner.call_args.args[0]
+        self.assertIn("inventory", command)
+        self.assertIn(self.app.selected_aircraft["path"], command)
+        self.assertEqual(command.count("--root"), 1)
 
     def test_unresolved_base_dependency_shows_package_root_action(self):
         entry = {"reason_code": "SUPPORTED_PARTIAL", "dependencies": [
