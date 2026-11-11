@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T04:22:09+00:00",
+  "mode": "normal_cli_geometry_build_in_temporary_output_no_render",
+  "blender_major": "5.2",
+  "catalog_aircraft": 237,
+  "index_errors": 0,
+  "results": [
+    {
+      "aircraft": "AS-33",
+      "catalog_reason": "OK",
+      "build_exit": 0,
+      "seconds": 12.4,
+      "checkpoint_count": 1,
+      "audit": {
+        "mesh_objects": 124,
+        "same_base_name_groups": 4,
+        "same_local_geometry_groups": 7,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 26
+      },
+      "failure": null
+    },
+    {
+      "aircraft": "Asobo_C172sp_AS1000",
+      "catalog_reason": "OK",
+      "build_exit": 0,
+      "seconds": 7.9,
+      "checkpoint_count": 1,
+      "audit": {
+        "mesh_objects": 299,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 60,
+        "same_world_geometry_groups": 1,
+        "gear_candidates": 21,
+        "far_disconnected_objects": 37
+      },
+      "failure": null
+    },
+    {
+      "aircraft": "Microsoft_Antonov2_Wheels",
+      "catalog_reason": "OK",
+      "build_exit": 0,
+      "seconds": 7.7,
+      "checkpoint_count": 1,
+      "audit": {
+        "mesh_objects": 704,
+        "same_base_name_groups": 3,
+        "same_local_geometry_groups": 32,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 19,
+        "far_disconnected_objects": 105
+      },
+      "failure": null
+    },
+    {
+      "aircraft": "microsoft_a310_300",
+      "catalog_reason": "MISSING_MODEL_CFG",
+      "build_exit": 0,
+      "seconds": 15.9,
+      "checkpoint_count": 1,
+      "audit": {
+        "mesh_objects": 2184,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 191,
+        "same_world_geometry_groups": 19,
+        "gear_candidates": 78,
+        "far_disconnected_objects": 300
+      },
+      "failure": null
+    },
+    {
+      "aircraft": "Asobo_B747_8i",
+      "catalog_reason": "OK",
+      "build_exit": 0,
+      "seconds": 17.6,
+      "checkpoint_count": 1,
+      "audit": {
+        "mesh_objects": 2099,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 199,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 92,
+        "far_disconnected_objects": 261
+      },
+      "failure": null
+    }
+  ]
+}

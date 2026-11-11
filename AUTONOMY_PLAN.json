@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/gui-plan-audit-recovery",
+  "working_branch": "codex/headless-aircraft-import-audit",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -231,24 +231,26 @@
     {
       "id": "M18",
       "name": "Representative headless Blender import audit",
-      "status": "planned",
+      "status": "complete",
       "deliverables": [
         "select a diverse installed/add-on sample using catalog diagnostics",
         "run the user-facing build command for geometry in isolated temporary outputs",
         "audit resulting checkpoints and classify worker/import failures without rendering"
       ],
-      "acceptance": "The sample builds through the normal CLI with no source package modifications; each Blender failure has a reproducible input and a concrete compatibility classification."
+      "acceptance": "The sample builds through the normal CLI with no source package modifications; each Blender failure has a reproducible input and a concrete compatibility classification.",
+      "result": "Ran the normal `build --stage geometry` CLI with Blender 5.2 on five real sources: AS-33, C172 AS1000, An-2 Wheels, A310 (MISSING_MODEL_CFG) and B747-8i. All 5 returned exit 0, wrote one temporary geometry checkpoint, and passed the Blender checkpoint audit; no renders were made and all temporary outputs were removed. Times: 7.7–17.6 s per geometry build. The A310 audit reported 19 exact world-geometry groups and high far-disconnected counts; these are audit signals, not import failures or proof of visual defects, so they remain explicitly unclassified for visual review. Path-free results are in `compatibility/headless_import_sample.json`. 191 tests, GUI self-test, compileall and diff checks pass.",
+      "next": "Bring the existing Blender checkpoint audit into the GUI: select a geometry checkpoint, run the audit, show mesh count, duplicate geometry groups and disconnected-object candidates with clear wording that these are review hints, not automatic failures. Keep the saved report inside the project workspace."
     },
     {
       "id": "M19",
-      "name": "Compatibility recovery GUI review",
+      "name": "GUI checkpoint audit and review hints",
       "status": "planned",
       "deliverables": [
-        "review sample failures surfaced by M18",
-        "provide GUI guidance for unsupported or missing-source cases",
-        "remove stale assumptions from diagnostics and bilingual docs"
+        "allow a user to audit the selected geometry checkpoint from the GUI",
+        "display compact counts and open the detailed JSON report from the project workspace",
+        "label duplicate/disconnected findings as review hints rather than build failures"
       ],
-      "acceptance": "A failed geometry import produces a clear actionable category and does not leave a partial checkpoint reported as successful."
+      "acceptance": "A successful build can be audited without console/JSON edits; the report is project-local and no Blender render is created."
     }
   ],
   "rolling_roadmap": [
@@ -405,6 +407,6 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M18-representative-headless-blender-import-audit"
+    "next_stage": "M19-GUI-checkpoint-audit-and-review-hints"
   }
 }

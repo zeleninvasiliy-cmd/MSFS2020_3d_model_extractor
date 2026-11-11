@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M17-GUI-recovery-actions-for-plan-audit-failures",
-  "active_stage": "M17-GUI-recovery-actions-for-plan-audit-failures",
-  "working_branch": "codex/gui-plan-audit-recovery",
-  "last_commit": "pending M17 checkpoint commit",
+  "last_completed_stage": "M18-representative-headless-blender-import-audit",
+  "active_stage": "M18-representative-headless-blender-import-audit",
+  "working_branch": "codex/headless-aircraft-import-audit",
+  "last_commit": "pending M18 checkpoint commit",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -20,7 +20,8 @@
     "release_workflow": "static review only; GitHub Actions CI still required",
     "deep_catalog": "passed; 233 aircraft, 226 geometry-buildable, 48 partial, 526 packages, 0 index errors",
     "audit_plans": "passed; 226/226 geometry-buildable installed entries; 0 rejected; Blender not launched",
-    "community_mod_audit": "An-2 package root: 230/230 plans; direct Wheels aircraft root: 227/227; missing requested root exits 2 and scope_complete=false"
+    "community_mod_audit": "An-2 package root: 230/230 plans; direct Wheels aircraft root: 227/227; missing requested root exits 2 and scope_complete=false",
+    "headless_geometry_builds": "5/5 passed through normal CLI and Blender 5.2; 5/5 checkpoint audits passed; outputs cleaned from temporary folder"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -111,14 +112,34 @@
       "direct_aircraft_root_plans_validated": 227,
       "index_errors": 0,
       "missing_root_exit_code": 2
+    },
+    "headless_import_sample": {
+      "aircraft_count": 5,
+      "aircraft": [
+        "AS-33",
+        "Asobo_C172sp_AS1000",
+        "Microsoft_Antonov2_Wheels",
+        "microsoft_a310_300",
+        "Asobo_B747_8i"
+      ],
+      "builds_succeeded": 5,
+      "checkpoint_audits_passed": 5,
+      "build_seconds_range": [
+        7.7,
+        17.6
+      ],
+      "blender": "5.2",
+      "rendered": false,
+      "temporary_outputs_cleaned": true,
+      "path_free_report": "compatibility/headless_import_sample.json"
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Commit/push M17 GUI recovery flow. Then create codex/headless-aircraft-import-audit and run geometry through the normal CLI for a diverse installed/mod sample, keeping all generated files in a temporary output folder.",
-  "next_stage": "M18-representative-headless-blender-import-audit",
+  "next_step": "Commit/push the M18 report and checkpoint. Then create codex/gui-checkpoint-audit and expose existing `audit` in the geometry window with project-local report output and clear informational wording.",
+  "next_stage": "M19-GUI-checkpoint-audit-and-review-hints",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T04:12:00Z"
+  "updated_utc": "2026-11-11T04:25:00Z"
 }
