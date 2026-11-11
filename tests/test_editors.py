@@ -282,6 +282,23 @@ class RuleEditorTests(EditorTestCase):
         run.assert_not_called()
         self.assertNotIn("mirror_objects", self.app.project_extra)
 
+    def test_object_rule_warns_when_checkpoint_inventory_is_not_loaded(self):
+        self.app.object_include.clear()
+        self.app.object_details.clear()
+        editor = self.editor()
+        self.choose_kind(editor, "Зеркальная копия")
+        editor.add_rule()
+        dialog = self.top(editor)
+        combos = widgets(dialog, ttk.Combobox)
+        set_combo(combos[0], "Wing_L")
+        set_combo(combos[1], "Wing_R")
+        with patch.object(gui.messagebox, "askyesno", return_value=False) as ask, \
+                patch.object(self.app, "run_command") as run:
+            click(dialog, "Сохранить")
+        self.assertEqual(ask.call_args[0][0], "Список объектов не загружен")
+        run.assert_not_called()
+        self.assertNotIn("mirror_objects", self.app.project_extra)
+
     def test_placement_offset_accepts_a_comma_decimal(self):
         editor = self.editor()
         self.choose_kind(editor, "Привязка к якорю")
@@ -605,6 +622,64 @@ class TextureTableTests(EditorTestCase):
             click(window, "Добавить найденные папки в поиск")
         self.assertIn("уже есть", info.call_args[0][1])
         self.assertEqual(self.app.extra_text.get("1.0", "end").count(str(found)), 1)
+
+    def test_package_search_labels_ambiguity_and_requires_choice_before_adding_folders(self):
+        self.report(self.payload())
+        table = self.table()
+        found = self.folder / "found"
+        found.mkdir()
+        first, second = found / "first.png", found / "second.png"
+        payload = {"matches": {"BODY_ALBD.PNG": [str(first), str(second)]},
+                   "searched_roots": ["C:/Packages"], "suggested_extra_texture_dirs": [str(found)],
+                   "missing": []}
+
+        with patch.object(self.app, "run_command", side_effect=lambda _command, callback:
+                          (callback(0, json.dumps(payload)), True)[1]):
+            table.search_packages()
+
+        window = self.top(table)
+        box = widgets(window, ttk.Frame)[0]
+        tree = widgets(box, ttk.Treeview)[0]
+        rows = tree.get_children()
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(tree.item(rows[0], "values")[2], "Неоднозначно (2)")
+        self.assertEqual(tree.item(rows[1], "values")[2], "Неоднозначно (2)")
+        labels = widgets(window, ttk.Label)
+        self.assertIn("неоднозначно: 1", labels[0].cget("text"))
+
+        with patch.object(gui.messagebox, "askyesno", return_value=False) as ask:
+            click(window, "Добавить найденные папки в поиск")
+        ask.assert_called_once()
+        self.assertNotIn(str(found), self.app.extra_text.get("1.0", "end"))
+
+        tree.selection_set(rows[1])
+        click(window, "Использовать выбранный файл")
+        self.assertEqual(self.app.project_extra["texture_overrides"]["body_albd.png"], str(second))
+
+    def test_package_search_merges_uri_aliases_by_map_basename(self):
+        self.report(self.payload())
+        table = self.table()
+        found = self.folder / "found"
+        found.mkdir()
+        first, second = found / "first.png", found / "second.png"
+        payload = {"matches": {"..\\TEXTURE1\\BODY_ALBD.PNG": [str(first), str(second)],
+                               "..\\TEXTURE2\\body_albd.png": [str(second)]},
+                   "searched_roots": ["C:/Packages"], "suggested_extra_texture_dirs": [str(found)],
+                   "missing": ["..\\TEXTURE1\\BODY_ALBD.PNG", "..\\TEXTURE2\\body_albd.png"]}
+        with patch.object(self.app, "run_command", side_effect=lambda _command, callback:
+                          (callback(0, json.dumps(payload)), True)[1]):
+            table.search_packages()
+
+        window = self.top(table)
+        box = widgets(window, ttk.Frame)[0]
+        tree = widgets(box, ttk.Treeview)[0]
+        rows = tree.get_children()
+        self.assertEqual(len(rows), 2)  # repeated candidate path is removed
+        self.assertEqual({tree.item(row, "values")[0] for row in rows}, {"body_albd.png"})
+        self.assertEqual({tree.item(row, "values")[2] for row in rows}, {"Неоднозначно (2)"})
+        labels = widgets(window, ttk.Label)
+        self.assertIn("однозначно: 0, неоднозначно: 1", labels[0].cget("text"))
+        self.assertIn("Не найдено: 1.", labels[0].cget("text"))
 
     def test_saved_project_keeps_the_replacement(self):
         self.report(self.payload())

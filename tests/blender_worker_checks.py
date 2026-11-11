@@ -117,6 +117,22 @@ def main():
         filtered_path.write_text(json.dumps(filtered), encoding="utf-8")
         message = raises_value_error(lambda: geometry.prepare_gltf(filtered_path, import_dir, draw_mode="msfs"))
         assert "primitive 1" in message, message
+        compressed_cases = (
+            ("meshopt", "EXT_meshopt_compression", "Meshopt compression", "buffer_view"),
+            ("draco", "KHR_draco_mesh_compression", "Draco compression", "primitive"),
+        )
+        for name, extension, label, location in compressed_cases:
+            compressed_path = folder / f"{name}.gltf"
+            compressed_doc = dict(doc, extensionsUsed=[extension])
+            if location == "buffer_view":
+                compressed_doc["bufferViews"] = [{"extensions": {extension: {"buffer": 0}}}]
+            else:
+                compressed_doc["meshes"] = [{"primitives": [{"attributes": {"POSITION": 0},
+                                                               "extensions": {extension: {"bufferView": 0}}}]}]
+            compressed_path.write_text(json.dumps(compressed_doc), encoding="utf-8")
+            message = raises_value_error(lambda: geometry.prepare_gltf(
+                compressed_path, import_dir, draw_mode="auto"))
+            assert label in message, message
         # Sparse POSITION data and a non-indexed triangle strip are normalized
         # before Blender import, so common glTF exporters do not need a
         # hand-written conversion step.
@@ -145,7 +161,7 @@ def main():
                 "output": str(folder / "geometry.blend"), "exclude_objects": ["WHEEL_LEFT"],
                 "mirror_objects": [{"source": "WING_LEFT", "target": "WHEEL_LEFT", "axis": "X"}],
                 "texture_dirs": [], "texture_overrides": {}, "converted_normal_dir": None,
-                "missing_fallback_dirs": []}
+                "missing_fallback_dirs": ["optional/base/texture"]}
         review = []
         report = worker.build_geometry(spec, review)
         catalog = {item["name"]: item for item in report["object_catalog"]}
@@ -154,8 +170,22 @@ def main():
         assert "WHEEL_LEFT" not in bpy.data.objects
         assert "WHEEL_LEFT" in report["geometry_fixes"]
         assert bpy.data.objects["WING_LEFT"].hide_get()
-        texture_report = worker.build_textures(spec, [])
+        texture_review = []
+        texture_report = worker.build_textures(spec, texture_review)
         assert texture_report["applied_materials"]
+        assert texture_report["missing_fallback_dirs"] == ["optional/base/texture"]
+        assert not any("fallback" in message.casefold() for message in texture_review)
+        original_builder = worker.pbr.build_material
+        def record_missing(material, entry, _unused, missing, **kwargs):
+            missing.append({"filename": "MISSING_TEST_MAP.DDS"})
+        try:
+            worker.pbr.build_material = record_missing
+            incomplete_review = []
+            incomplete_report = worker.build_textures(spec, incomplete_review)
+            assert incomplete_report["missing_textures"]
+            assert any("fallback" in message.casefold() for message in incomplete_review)
+        finally:
+            worker.pbr.build_material = original_builder
         assert not bpy.data.objects["WING_LEFT"].hide_get()
         # A zero-scale animation driver must not cause manual mode to invert
         # a singular transform: manual preserves aircraft-space positions.

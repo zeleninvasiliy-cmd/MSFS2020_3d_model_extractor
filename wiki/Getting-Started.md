@@ -22,7 +22,7 @@ Create a project from **Files → New project**, choose a workspace and an aircr
 
 ## Установка
 
-1. Запустите `MSFSModelBuilder-1.2.1-Setup.exe`.
+1. Запустите `MSFSModelBuilder-1.3.0-Setup.exe`.
 2. При желании укажите папку `Packages` MSFS и `blender.exe`. Поля необязательны: пути задаются и в программе.
 3. Откройте MSFS Model Builder из меню «Пуск».
 

@@ -1,48 +1,16 @@
 # Known Issues / Известные ограничения
 
-
----
-
-## Русская версия
-
-Список относится к версии **1.2.1**. Это рабочие ограничения, а не исторический аудит старых этапов.
-
-### Ограничения исходных данных
-
-- Без доступного glTF/GLB и соседнего BIN точная геометрия невозможна.
-- Общие пакеты с XML, звуками или текстурами без модели получают статус `COMMON_RESOURCES_ONLY`.
-- Ливрея без установленного `base_container` остаётся частичной.
-- Пакеты с несколькими кандидатами требуют ручного выбора роли и LOD.
-- Draco, KTX2 и другие неподдержанные расширения glTF диагностируются до Blender; программа не подменяет геометрию догадкой.
-- Закрытые или зашифрованные ресурсы не расшифровываются.
-
-### Ограничения сборки
-
-- Анимации намеренно не импортируются.
-- Результат может потребовать проверки симметрии, шасси, управляющих поверхностей и стекла в Blender.
-- Определение роли по имени файла является только подсказкой; окончательное решение принимает пользователь.
-- DDS-нормали нестандартного формата могут потребовать ручной проверки.
-- Встроенного 3D-просмотра нет.
-
-### Безопасные действия
-
-1. Запустите подробную диагностику пакета.
-2. Проверьте происхождение выбранных glTF и наличие BIN.
-3. Для частичного пакета подтвердите состав в мастере моделей.
-4. Для смещения детали используйте графический placement или mirror, затем сравните новый вариант в Blender.
-5. Не редактируйте исходные файлы MSFS и не удаляйте активный checkpoint.
-
 ## English version
 
-This list applies to **1.2.1**. These are current operating limits, not a historical audit of earlier milestones.
+This list describes the current development state based on release **1.3.0**; changes on feature branches are not release artifacts.
 
 ### Source-data limits
 
-- Exact geometry is impossible without an available glTF/GLB and its BIN buffer.
+- Exact geometry requires an available glTF/GLB and every referenced BIN buffer.
 - Shared packages containing only XML, sounds or textures are reported as `COMMON_RESOURCES_ONLY`.
 - A livery without an installed `base_container` remains partial.
 - Packages with multiple candidates require an explicit role and LOD selection.
-- Draco, KTX2 and other unsupported glTF extensions are diagnosed before Blender; the program never silently invents geometry.
+- Draco- and Meshopt-compressed geometry (`KHR_draco_mesh_compression`, `EXT_meshopt_compression`) is detected but not decoded; use another LOD or decompress it in the source exporter. Other features reported as unsupported by deep diagnosis are not guessed.
 - Protected or encrypted resources are not decrypted.
 
 ### Build limits
@@ -60,3 +28,34 @@ This list applies to **1.2.1**. These are current operating limits, not a histor
 3. Confirm the model composition in the wizard for a partial package.
 4. Use the graphical placement or mirror rule for an offset part, then compare a new Blender variant.
 5. Do not edit MSFS source files or remove an active checkpoint.
+
+---
+
+## Русская версия
+
+Список относится к версии **1.3.0** и описывает действующие ограничения программы.
+
+### Ограничения исходных данных
+
+- Для точной геометрии нужны доступные glTF/GLB и все указанные в них BIN-буферы.
+- Общие пакеты только с XML, звуками или текстурами получают статус `COMMON_RESOURCES_ONLY`.
+- Ливрея без установленного `base_container` остаётся частичной.
+- Для пакетов с несколькими кандидатами пользователь явно выбирает роль и LOD.
+- Геометрия, сжатая Draco или Meshopt (`KHR_draco_mesh_compression`, `EXT_meshopt_compression`), распознаётся, но не декодируется; выберите другой LOD или распакуйте её в исходном экспортёре. Другие отмеченные диагностикой возможности программа не подменяет догадкой.
+- Защищённые или зашифрованные ресурсы не расшифровываются.
+
+### Ограничения сборки
+
+- Анимации намеренно не импортируются.
+- Результат может потребовать проверки симметрии, шасси, управляющих поверхностей и остекления в Blender.
+- Определение роли по имени файла является только подсказкой; окончательное решение подтверждает пользователь.
+- DDS-нормали нестандартного формата могут потребовать ручной проверки.
+- Встроенного 3D-просмотра нет.
+
+### Безопасные действия
+
+1. Запустите подробную диагностику пакета.
+2. Проверьте происхождение выбранных glTF и наличие BIN.
+3. Для частичного пакета подтвердите состав в мастере моделей.
+4. Для смещения детали используйте графический placement или mirror и сравните новый вариант в Blender.
+5. Не редактируйте исходные файлы MSFS и не удаляйте активный checkpoint.

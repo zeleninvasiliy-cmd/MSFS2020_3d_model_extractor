@@ -22,6 +22,10 @@ GLB_MAGIC = b"glTF"
 GLB_VERSION = 2
 JSON_CHUNK = 0x4E4F534A
 BIN_CHUNK = 0x004E4942
+UNSUPPORTED_GEOMETRY_EXTENSIONS = {
+    "KHR_draco_mesh_compression": "Draco compression",
+    "EXT_meshopt_compression": "Meshopt compression",
+}
 
 
 @dataclass
@@ -30,6 +34,20 @@ class GltfAsset:
     document: dict
     buffers: list[bytes]
     source_format: str
+
+
+def unsupported_geometry_extensions(document: dict) -> list[str]:
+    """List compression extensions whose geometry this pipeline cannot decode."""
+    used = set(document.get("extensionsUsed") or [])
+    found = set(used & UNSUPPORTED_GEOMETRY_EXTENSIONS.keys())
+    for buffer_view in document.get("bufferViews") or []:
+        found.update((buffer_view.get("extensions") or {}).keys()
+                     & UNSUPPORTED_GEOMETRY_EXTENSIONS.keys())
+    for mesh in document.get("meshes") or []:
+        for primitive in mesh.get("primitives") or []:
+            found.update((primitive.get("extensions") or {}).keys()
+                         & UNSUPPORTED_GEOMETRY_EXTENSIONS.keys())
+    return [f"{UNSUPPORTED_GEOMETRY_EXTENSIONS[name]} ({name})" for name in sorted(found)]
 
 
 def _decode_data_uri(uri: str) -> bytes:

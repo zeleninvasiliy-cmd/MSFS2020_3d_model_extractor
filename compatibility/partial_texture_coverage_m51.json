@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "mode": "deep_catalog_partial_texture_coverage_reconciliation",
+  "catalog_partial_geometry_buildable": 48,
+  "distinct_texture_report_records": 64,
+  "partial_records_texture_sampled": 48,
+  "partial_records_unsampled": 0,
+  "coverage_complete": true,
+  "unsampled_partial_aircraft": [],
+  "texture_reports_reconciled": [
+    "headless_texture_stage_sample_m31.json",
+    "headless_texture_sample_m38.json",
+    "headless_texture_partial_sample_m44.json",
+    "headless_texture_partial_sample_m46.json",
+    "headless_texture_partial_sample_m48.json",
+    "headless_texture_partial_sample_m50.json",
+    "headless_texture_partial_sample_m51.json"
+  ],
+  "source_paths_included": false
+}

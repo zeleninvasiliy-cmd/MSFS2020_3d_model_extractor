@@ -331,11 +331,13 @@ class TextureTable(tk.Toplevel):
         box.grid(row=1, column=0, sticky="nsew")
         box.columnconfigure(0, weight=1)
         box.rowconfigure(0, weight=1)
-        tree = ttk.Treeview(box, columns=("name", "path"), show="headings", selectmode="browse")
+        tree = ttk.Treeview(box, columns=("name", "path", "match"), show="headings", selectmode="browse")
         tree.heading("name", text="Карта")
         tree.heading("path", text="Найденный файл")
+        tree.heading("match", text="Совпадение")
         tree.column("name", width=240, anchor="w")
-        tree.column("path", width=700, anchor="w")
+        tree.column("path", width=590, anchor="w")
+        tree.column("match", width=150, anchor="w")
         tree.grid(row=0, column=0, sticky="nsew")
         scroll = ttk.Scrollbar(box, orient="vertical", command=tree.yview)
         scroll.grid(row=0, column=1, sticky="ns")
@@ -362,16 +364,31 @@ class TextureTable(tk.Toplevel):
                 label.configure(text="Не удалось разобрать ответ find-textures.")
                 return
             state["data"] = data
-            matches = data.get("matches") or {}
+            raw_matches = data.get("matches") or {}
+            matches = {}
+            for name, paths in raw_matches.items():
+                basename = map_name(name)
+                candidates = matches.setdefault(basename, [])
+                known_paths = {path.casefold() for path in candidates}
+                for path in paths or []:
+                    path = str(path)
+                    if path.casefold() not in known_paths:
+                        candidates.append(path)
+                        known_paths.add(path.casefold())
+            ambiguous = sum(len(paths) > 1 for paths in matches.values())
             tree.delete(*tree.get_children())
+            found.clear()
             for name, paths in sorted(matches.items(), key=lambda pair: str.casefold(pair[0])):
                 for path in paths:
-                    item_id = tree.insert("", "end", values=(map_name(name), path))
+                    match_text = "Уникальное" if len(paths) == 1 else f"Неоднозначно ({len(paths)})"
+                    item_id = tree.insert("", "end", values=(map_name(name), path, match_text))
                     found[item_id] = (map_name(name), path)
-            missing = data.get("missing") or []
+            missing = sorted({map_name(name) for name in (data.get("missing") or []) if name}, key=str.casefold)
             label.configure(text=f"Просмотрено корней: {len(data.get('searched_roots') or [])}. "
                                  f"Карт найдено: {sum(len(paths) for paths in matches.values())} "
-                                 f"для {sum(1 for paths in matches.values() if paths)} имён. "
+                                 f"для {sum(1 for paths in matches.values() if paths)} имён "
+                                 f"(однозначно: {sum(len(paths) == 1 for paths in matches.values())}, "
+                                 f"неоднозначно: {ambiguous}). "
                                  f"Не найдено: {len(missing)}." + (" Не найдены: " + ", ".join(missing[:8]) if missing else ""))
             use_button.configure(state="normal" if found else "disabled")
             folders_button.configure(state="normal" if data.get("suggested_extra_texture_dirs") else "disabled")
@@ -387,6 +404,13 @@ class TextureTable(tk.Toplevel):
             data = state["data"] or {}
             folders = data.get("suggested_extra_texture_dirs") or []
             if not folders:
+                return
+            ambiguous = sum(len(paths) > 1 for paths in (data.get("matches") or {}).values())
+            if ambiguous and not messagebox.askyesno(
+                    "Есть неоднозначные карты",
+                    f"Для {ambiguous} имён найдено несколько файлов. Добавление папок сделает их доступными, "
+                    "но автоматический выбор может взять другую ливрею. Продолжить? Для точной замены выберите "
+                    "один файл и нажмите «Использовать выбранный файл».", parent=window):
                 return
             current = self.app.extra_text.get("1.0", "end").splitlines()
             known = {line.strip().casefold() for line in current if line.strip()}

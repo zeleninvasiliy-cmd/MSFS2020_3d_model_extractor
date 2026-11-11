@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -79,6 +80,31 @@ class ResolverTests(unittest.TestCase):
         self.assertFalse(report["needs_model_selection"])
         self.assertEqual({m["role"] for m in report["best_models"]}, {"exterior", "interior"})
         self.assertEqual(report["missing_resources"], [])
+
+    def test_shared_exterior_interior_gltf_is_not_imported_twice(self):
+        folder = aircraft(self.root)
+        model = folder / "model"
+        model.mkdir()
+        gltf(model / "body.gltf")
+        (model / "model.cfg").write_text(
+            "[models]\nexterior=body.gltf\ninterior=body.gltf\n", encoding="utf-8")
+        (folder / "texture.TEST").mkdir()
+
+        report = resolver.resolve_aircraft(folder, deep=True)
+        models = resolver.model_from_cfg(model)
+        config_path = self.root / "config.json"
+        config_path.write_text(json.dumps({"source": str(folder), "output_dir": str(self.root / "output"),
+                                           "blender": sys.executable, "aircraft": folder.name,
+                                           "livery": "TEST", "model_folder": "model"}), encoding="utf-8")
+        plan = pipeline.make_plan(config_path, "geometry")
+
+        self.assertTrue(report["can_build_geometry"])
+        self.assertEqual([(item["role"], Path(item["path"]).name) for item in report["best_models"]],
+                         [("exterior", "body.gltf")])
+        self.assertEqual([(item["role"], Path(item["path"]).name) for item in models],
+                         [("exterior", "body.gltf")])
+        self.assertEqual([(item["role"], Path(item["path"]).name) for item in plan["models"]],
+                         [("exterior", "body.gltf")])
 
     def test_common_resources_only(self):
         folder = aircraft(self.root, package="test-aircraft-common", name="Test_Common")
@@ -188,6 +214,8 @@ class ResolverTests(unittest.TestCase):
     def test_unsupported_gltf_features(self):
         cases = [
             ({"extensionsUsed": ["KHR_draco_mesh_compression"]}, ("model.bin",)),
+            ({"extensionsUsed": ["EXT_meshopt_compression"],
+              "bufferViews": [{"extensions": {"EXT_meshopt_compression": {"buffer": 0}}}]}, ("model.bin",)),
             ({"meshes": [{"primitives": [{"mode": 1}]}]}, ("model.bin",)),
         ]
         for index, (extra, buffers) in enumerate(cases):
@@ -199,6 +227,21 @@ class ResolverTests(unittest.TestCase):
                 self.assertIn(report["reason_code"], {"UNSUPPORTED_GLTF_FEATURE", "SUPPORTED_PARTIAL"})
                 self.assertTrue(report["variants"][0]["models"][0]["unsupported"])
                 self.assertIn("gltf_feature", {item["kind"] for item in report["missing_resources"]})
+
+    def test_deep_inventory_preserves_format_metadata_for_compatibility_report(self):
+        folder = complete_aircraft(self.root / "metadata")
+        path = folder / "model" / "ext_LOD00.gltf"
+        gltf(path, ("model.bin",), extensionsUsed=["ASOBO_test"],
+             accessors=[{"sparse": {"count": 1}}], meshes=[{"primitives": [{"mode": 5}]}])
+
+        report = resolver.resolve_aircraft(folder, deep=True)
+        model = report["variants"][0]["models"][0]
+
+        self.assertEqual(model["source_format"], "gltf")
+        self.assertEqual(model["extensions_used"], ["ASOBO_test"])
+        self.assertEqual(model["primitive_modes"], [5])
+        self.assertEqual(model["sparse_accessors"], 1)
+        self.assertEqual(model["buffer_count"], 1)
 
     def test_sparse_accessor_is_supported_by_geometry_adapter(self):
         path = self.root / "sparse.gltf"
@@ -368,6 +411,27 @@ class PlanDiagnosisTests(unittest.TestCase):
         plan = pipeline.make_plan(self.config(folder, model_folder="model",
                                               models=[{"path": exterior, "role": "exterior"}]), "geometry")
         self.assertEqual([m["role"] for m in plan["models"]], ["exterior"])
+
+    def test_audit_plans_checks_geometry_without_starting_blender(self):
+        packages = self.root / "Packages"
+        complete_aircraft(packages)
+
+        with patch.object(pipeline, "installed_package_roots", return_value=[packages]):
+            result = pipeline.audit_build_plans([packages])
+
+        self.assertEqual(result["geometry_buildable"], 1)
+        self.assertEqual(result["plans_validated"], 1)
+        self.assertEqual(result["plans_rejected"], 0)
+        self.assertEqual(result["mode"], "preflight_only_blender_not_started")
+
+    def test_audit_plans_marks_missing_roots_as_incomplete_scope(self):
+        missing = self.root / "missing-community"
+        with patch.object(pipeline, "build_index", return_value=object()), \
+             patch.object(pipeline, "catalog", return_value={"aircraft": [], "index": {"errors": []}}):
+            result = pipeline.audit_build_plans([missing])
+
+        self.assertFalse(result["scope_complete"])
+        self.assertEqual(result["missing_roots"], [str(missing.resolve())])
 
     def test_glb_model_is_accepted_by_build_plan(self):
         folder = complete_aircraft(self.root / "src")

@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T08:18:00Z",
+  "mode": "normal_gui_generated_config_cli_geometry_build_and_blender_audit",
+  "blender_major": "5.2",
+  "sample_size": 12,
+  "builds_succeeded": 12,
+  "checkpoint_audits_passed": 12,
+  "reason_codes": {
+    "OK": 11,
+    "SUPPORTED_PARTIAL": 1
+  },
+  "manual_gui_model_confirmations": 1,
+  "elapsed_seconds_including_gui_build_audit_range": [
+    15.9,
+    33.5
+  ],
+  "temporary_outputs_cleaned": true,
+  "rendered": false,
+  "source_modified": false,
+  "interpretation": "Catalog reconciliation found these final 12 unreported geometry-buildable entries: six Douglas DC-3 liveries, five Pilatus PC-6 configurations and one partial Volocity livery. All twelve produced one checkpoint and passed Blender 5.2 structural audit; Volocity used explicit GUI model selection. This closes the measured set of 226 geometry-buildable records. Structural audit does not guarantee visual correctness.",
+  "personal_paths_included": false,
+  "results": [
+    {
+      "aircraft": "douglas-dc3-livery-dcdirect",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.DCDIRECT",
+      "livery": "DCDIRECT",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "dc3_Cargo_LOD00.gltf",
+          "variant": "model.DCDIRECT",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "dc3_Cargo_interior_LOD00.gltf",
+          "variant": "model.DCDIRECT",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 32012211,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1624,
+        "same_base_name_groups": 43,
+        "same_local_geometry_groups": 224,
+        "same_world_geometry_groups": 9,
+        "gear_candidates": 71,
+        "far_disconnected_objects": 244
+      },
+      "seconds": 27.5
+    },
+    {
+      "aircraft": "douglas-dc3-livery-emerald",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.emerald",
+      "livery": "emerald",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "dc3_PaxCargo_LOD00.gltf",
+          "variant": "model.emerald",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "dc3_PaxCargo_interior_LOD00.gltf",
+          "variant": "model.emerald",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 37401211,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1973,
+        "same_base_name_groups": 41,
+        "same_local_geometry_groups": 248,
+        "same_world_geometry_groups": 9,
+        "gear_candidates": 81,
+        "far_disconnected_objects": 331
+      },
+      "seconds": 33.0
+    },
+    {
+      "aircraft": "douglas-dc3-livery-oledusty",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.cargostd",
+      "livery": "OleDusty",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "dc3_Cargo_LOD00.gltf",
+          "variant": "model.cargostd",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "dc3_Cargo_interior_LOD00.gltf",
+          "variant": "model.cargostd",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 32123266,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1613,
+        "same_base_name_groups": 43,
+        "same_local_geometry_groups": 224,
+        "same_world_geometry_groups": 9,
+        "gear_candidates": 71,
+        "far_disconnected_objects": 235
+      },
+      "seconds": 27.5
+    },
+    {
+      "aircraft": "douglas-dc3-livery-PLmetal",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.PAXL",
+      "livery": "PLmetal",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "dc3PAXL_LOD00.gltf",
+          "variant": "model.PAXL",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "dc3PAXL_interior_LOD00.gltf",
+          "variant": "model.PAXL",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 37306472,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1945,
+        "same_base_name_groups": 42,
+        "same_local_geometry_groups": 249,
+        "same_world_geometry_groups": 9,
+        "gear_candidates": 82,
+        "far_disconnected_objects": 317
+      },
+      "seconds": 32.8
+    },
+    {
+      "aircraft": "douglas-dc3-livery-redyellow",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.cargostd",
+      "livery": "RedYellow",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "dc3_Cargo_LOD00.gltf",
+          "variant": "model.cargostd",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "dc3_Cargo_interior_LOD00.gltf",
+          "variant": "model.cargostd",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 32377167,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1640,
+        "same_base_name_groups": 43,
+        "same_local_geometry_groups": 224,
+        "same_world_geometry_groups": 9,
+        "gear_candidates": 71,
+        "far_disconnected_objects": 239
+      },
+      "seconds": 27.7
+    },
+    {
+      "aircraft": "douglas-dc3-livery-worldtravel",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.PAXL",
+      "livery": "WorldTravel",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "dc3PAXL_LOD00.gltf",
+          "variant": "model.PAXL",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "dc3PAXL_interior_LOD00.gltf",
+          "variant": "model.PAXL",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 36959209,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1965,
+        "same_base_name_groups": 42,
+        "same_local_geometry_groups": 249,
+        "same_world_geometry_groups": 9,
+        "gear_candidates": 82,
+        "far_disconnected_objects": 318
+      },
+      "seconds": 33.5
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels_Livery_01",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.01",
+      "livery": "01",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "PC6_LOD00.gltf",
+          "variant": "model.01",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "PC6_INTERIOR_LOD00.gltf",
+          "variant": "model.01",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 29000895,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 481,
+        "same_base_name_groups": 6,
+        "same_local_geometry_groups": 32,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 11,
+        "far_disconnected_objects": 60
+      },
+      "seconds": 17.5
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels_Livery_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "PC6_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "PC6_INTERIOR_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 29477079,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 483,
+        "same_base_name_groups": 6,
+        "same_local_geometry_groups": 32,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 11,
+        "far_disconnected_objects": 57
+      },
+      "seconds": 17.8
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "PC6_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "PC6_INTERIOR_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 29642047,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 483,
+        "same_base_name_groups": 6,
+        "same_local_geometry_groups": 32,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 11,
+        "far_disconnected_objects": 57
+      },
+      "seconds": 18.1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Wheels_Livery_01",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.01",
+      "livery": "01",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "PC6_LOD00.gltf",
+          "variant": "model.01",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "PC6_INTERIOR_LOD00.gltf",
+          "variant": "model.01",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 23276892,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 456,
+        "same_base_name_groups": 11,
+        "same_local_geometry_groups": 22,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 10,
+        "far_disconnected_objects": 56
+      },
+      "seconds": 15.9
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Wheels_Livery_02",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.02",
+      "livery": "02",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "PC6_LOD00.gltf",
+          "variant": "model.02",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "PC6_INTERIOR_LOD00.gltf",
+          "variant": "model.02",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 24068496,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 460,
+        "same_base_name_groups": 11,
+        "same_local_geometry_groups": 22,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 10,
+        "far_disconnected_objects": 60
+      },
+      "seconds": 16.3
+    },
+    {
+      "aircraft": "Microsoft_Volocity_Livery_Xbox_Aviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Volocity_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "Volocity_Interior_LOD01.gltf",
+          "variant": "model",
+          "lod": 1,
+          "role_source": "имя файла"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 18201020,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 218,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 0,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 0,
+        "far_disconnected_objects": 32
+      },
+      "seconds": 17.3
+    }
+  ]
+}

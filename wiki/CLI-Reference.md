@@ -8,7 +8,18 @@ Run the source CLI with:
 python .\scripts\msfs_universal.py <command> [arguments]
 ```
 
-The important commands are `inventory`, `catalog`, `index`, `models`, `find-textures`, `build`, `audit`, `objects`, `validate` and `bones`. Machine-readable commands print JSON to stdout; diagnostics and failures use a non-zero exit code. `inventory --deep` validates one package; `catalog --deep` applies the same validation to every discovered aircraft before project creation. `index` resolves livery inheritance. `build --stage geometry|textures|final|all` writes numbered checkpoints into the project output folder. The installed package accepts the same arguments through `MSFSBuilderCLI.exe`.
+The important commands are `roots`, `inventory`, `catalog`, `audit-plans`, `index`, `models`, `find-textures`, `build`, `audit`, `objects`, `validate` and `bones`. Machine-readable commands print JSON to stdout; diagnostics and failures use a non-zero exit code. `roots` shows detected and additional package roots. The repeatable `--root` option can combine multiple libraries. `inventory --deep` validates one package; `catalog --deep` applies the same validation to every discovered aircraft before project creation. `audit-plans` preflights geometry plans for every geometry-buildable catalog record and never starts Blender. `index` resolves livery inheritance. `build --stage geometry|textures|final|all` writes numbered checkpoints into the project output folder. The installed package accepts the same arguments through `MSFSBuilderCLI.exe`.
+
+### `audit-plans`
+
+Preflights the standard geometry build plan for every aircraft marked buildable by the catalog. It checks glTF/BIN sources, reuses one package index, and does not start Blender, create `.blend` files, or modify aircraft packages. A successful result confirms the source/configuration preflight only; it does not confirm Blender import or visual geometry quality.
+
+```powershell
+python .\scripts\msfs_universal.py audit-plans
+python .\scripts\msfs_universal.py audit-plans --root "D:\MSFS\Community"
+```
+
+The JSON response reports buildable, validated and rejected plan counts, index errors and each rejected aircraft's path and problem code. Requested roots that do not exist appear in `missing_roots`; `scope_complete` becomes `false`, and the command exits with code 2 so a partial scan cannot look like full success. Inspect a rejected package with `inventory --deep` or the GUI.
 
 ---
 
@@ -19,6 +30,21 @@ python .\scripts\msfs_universal.py <command> [args]
 ```
 
 ## Команды
+
+### `roots`
+
+Показывает корни Packages, которые программа находит автоматически, дополнительные пути и итоговый набор поиска. Команду использует GUI-окно **«Каталоги Packages...»**.
+
+| Аргумент | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `--root` | путь, **повторяемый** | `[]` | дополнительный каталог Packages, Community, Official или модов |
+
+```powershell
+python .\scripts\msfs_universal.py roots
+python .\scripts\msfs_universal.py roots --root "D:\MSFS\Community" --root "E:\CustomPackages"
+```
+
+Ответ содержит `automatic_roots`, `additional_roots`, `searched_roots` и `missing_additional_roots`. Дополнительные пути хранятся в `%LOCALAPPDATA%\MSFSModelBuilder\settings.json`; редактировать файл вручную не нужно.
 
 ### `inventory`
 
@@ -91,7 +117,23 @@ The default catalog scan is shallow and fast. Add `--deep` when you need an exac
 ```powershell
 python .\scripts\msfs_universal.py catalog --match c152 --match bonanza
 python .\scripts\msfs_universal.py catalog --deep --match c152
+python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Official" --root "E:\MSFS\Community"
 ```
+
+### `audit-plans`
+
+Проверяет, что стандартный план сборки геометрии может быть подготовлен для каждого самолёта, который каталог пометил как доступный. Команда использует глубокую проверку glTF/BIN, переиспользует один индекс пакетов и не запускает Blender, не создаёт `.blend` и не изменяет пакеты. Успех означает, что источники и параметры прошли preflight; фактический импорт в Blender и правильность геометрии этим не подтверждаются. Если один из явно запрошенных `--root` отсутствует, путь возвращается в `missing_roots`, `scope_complete` будет `false`, а код завершения станет 2 — частичная проверка не выглядит как полная.
+
+| Аргумент | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `--root` | путь, повторяемый | `[]` | дополнительный корень Packages или модов |
+
+```powershell
+python .\scripts\msfs_universal.py audit-plans
+python .\scripts\msfs_universal.py audit-plans --root "D:\MSFS\Community"
+```
+
+JSON содержит количества доступных записей, валидных и отклонённых планов, ошибки индекса и причину каждого отказа. При отказе проверьте конкретный пакет командой `inventory --deep` или через GUI.
 
 ### `find-textures`
 

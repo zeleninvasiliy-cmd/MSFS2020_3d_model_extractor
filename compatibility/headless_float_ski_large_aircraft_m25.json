@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T05:22:00Z",
+  "mode": "float_ski_variants_and_large_aircraft_cli_build_audit_no_render",
+  "blender_major": "5.2",
+  "catalog_aircraft": 233,
+  "sample_size": 9,
+  "builds_succeeded": 9,
+  "checkpoint_audits_passed": 9,
+  "build_seconds_range": [
+    7.1,
+    17.0
+  ],
+  "source_format_profile": {
+    "source_format": "gltf",
+    "required_extensions": [
+      "MSFT_texture_dds"
+    ],
+    "buffer_count": 1
+  },
+  "temporary_outputs_cleaned": true,
+  "rendered": false,
+  "interpretation": "Audit counts are structural review hints, not visual acceptance. This sample tests model-folder selection and import, not gear placement or silhouette.",
+  "results": [
+    {
+      "aircraft": "Asobo_C172sp_AS1000_Floaters",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["Cessna172SP_LOD00.gltf", "Cessna172SP_AS1000_interior_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 8.4,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 341, "same_world_geometry_groups": 1, "far_disconnected_objects": 39}
+    },
+    {
+      "aircraft": "Asobo_C172sp_AS1000_Skis",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["Cessna172SP_LOD00.gltf", "Cessna172SP_AS1000_interior_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 8.1,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 328, "same_world_geometry_groups": 1, "far_disconnected_objects": 45}
+    },
+    {
+      "aircraft": "Asobo_XCub_Floats",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model.floats",
+      "models": ["Xcub_LOD00.gltf", "XCub_interior_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 7.1,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 298, "same_world_geometry_groups": 0, "far_disconnected_objects": 45}
+    },
+    {
+      "aircraft": "Asobo_XCub_Skis",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["Xcub_LOD00.gltf", "XCub_interior_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 7.1,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 277, "same_world_geometry_groups": 0, "far_disconnected_objects": 39}
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Floats",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["PC6_LOD00.gltf", "PC6_INTERIOR_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 9.0,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 502, "same_world_geometry_groups": 0, "far_disconnected_objects": 59}
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["PC6_LOD00.gltf", "PC6_INTERIOR_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 8.8,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 486, "same_world_geometry_groups": 0, "far_disconnected_objects": 66}
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Skis",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["PC6_LOD00.gltf", "PC6_INTERIOR_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 8.5,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 496, "same_world_geometry_groups": 0, "far_disconnected_objects": 68}
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Wheels",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["PC6_LOD00.gltf", "PC6_INTERIOR_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 8.3,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 457, "same_world_geometry_groups": 0, "far_disconnected_objects": 57}
+    },
+    {
+      "aircraft": "Microsoft_Hughes_H4_Hercules",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "models": ["HH4_Hercules_Exterior_LOD00.gltf", "HH4_Hercules_Interior_LOD00.gltf"],
+      "build_exit": 0,
+      "seconds": 17.0,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {"mesh_objects": 1719, "same_world_geometry_groups": 1, "far_disconnected_objects": 462}
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+name: Build and publish release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require a version tag on main
+        shell: pwsh
+        run: |
+          $version = (Get-Content VERSION -Raw).Trim()
+          if ($env:GITHUB_REF_NAME -ne "v$version") {
+            throw "Tag $env:GITHUB_REF_NAME does not match VERSION $version."
+          }
+          git fetch origin main
+          git merge-base --is-ancestor $env:GITHUB_SHA origin/main
+          if ($LASTEXITCODE -ne 0) {
+            throw "Release tags must point to a commit already merged into main."
+          }
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Run release regression checks
+        shell: pwsh
+        run: |
+          python -m compileall -q msfs_builder_gui.py app_support.py rule_editor.py texture_table.py scripts tests
+          if ($LASTEXITCODE -ne 0) { throw "Compilation failed." }
+          python msfs_builder_gui.py --self-test
+          if ($LASTEXITCODE -ne 0) { throw "GUI self-test failed." }
+          python -m unittest discover -s tests -p "test_*.py" -v
+          if ($LASTEXITCODE -ne 0) { throw "Regression suite failed." }
+
+      - name: Install pinned Python build dependencies
+        run: python -m pip install -r release/build_requirements.txt
+
+      - name: Install Inno Setup compiler
+        run: choco install innosetup --yes --no-progress
+
+      - name: Build installer and portable package
+        shell: pwsh
+        run: |
+          $python = (Get-Command python).Source
+          $isccCandidates = @(
+            "${env:ProgramFiles}\Inno Setup 7\ISCC.exe",
+            "${env:ProgramFiles(x86)}\Inno Setup 7\ISCC.exe",
+            "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+            "${env:ProgramFiles}\Inno Setup 6\ISCC.exe"
+          )
+          $iscc = $isccCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          if (-not $iscc) { throw "ISCC.exe was not installed." }
+          & .\release\build_release.ps1 -Python $python -ISCC $iscc
+          if ($LASTEXITCODE -ne 0) { throw "Release build failed." }
+
+      - name: Smoke test the installer
+        shell: pwsh
+        run: |
+          $version = (Get-Content VERSION -Raw).Trim()
+          & .\release\verify_installer.ps1 -Installer ".\release\output\MSFSModelBuilder-$version-Setup.exe"
+          if ($LASTEXITCODE -ne 0) { throw "Installer verification failed." }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MSFSModelBuilder-${{ github.ref_name }}
+          path: release/output/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $version = (Get-Content VERSION -Raw).Trim()
+          $assets = @(
+            ".\release\output\MSFSModelBuilder-$version-Setup.exe",
+            ".\release\output\MSFSModelBuilder-$version-Portable.zip",
+            ".\release\output\SHA256SUMS.txt"
+          )
+          gh release create $env:GITHUB_REF_NAME @assets --title "MSFS Model Builder $version" --generate-notes --verify-tag

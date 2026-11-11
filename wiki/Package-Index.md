@@ -2,9 +2,13 @@
 
 ## English version
 
-The package index is a no-`bpy` cache built from selected MSFS roots. It maps aircraft names to folders, packages to roots and livery `base_container` declarations to their installed bases. Configuration mtimes and the index version invalidate stale records.
+The package index is a no-`bpy` cache built from selected MSFS roots. It maps aircraft names to folders, all installed packages (including resource-only packages) to roots, and livery `base_container` declarations to their installed bases. Manifest dependencies are resolved by package name. Configuration mtimes and the index version invalidate stale records.
 
-When a relative VFS path does not exist in the livery, the resolver tries the indexed aircraft or base package. The origin is preserved in diagnostics. If two packages can own the same resource, the index reports ambiguity and the user must choose; an inaccessible package does not abort the scan.
+When a buildable same-name aircraft exists, a non-buildable `fs-base-history` placeholder is excluded from inheritance lookup so it cannot create a false ambiguous base. Unique history-only aircraft remain available as diagnostic records.
+
+Unresolved dependencies include a stable `problem_code` such as `ambiguous_owner`, `base_aircraft_missing`, `declared_model_file_missing`, `manifest_package_missing` or `optional_texture_fallback_missing`. User-facing Russian `detail` text remains separate; reports can classify blockers without depending on translated wording.
+
+When a relative VFS path does not exist in the livery, the resolver tries the indexed aircraft or base package, then optionally searches resource packages for shared paths. The origin is preserved in diagnostics. If two packages can own the same resource, the index reports ambiguity and the user must choose; an inaccessible package does not abort the scan.
 
 Texture fallback diagnostics keep the original unresolved path when no package matches. If multiple base packages contain the fallback directory, the dependency stays unresolved and lists all candidates instead of returning an empty path.
 
@@ -34,13 +38,19 @@ interior = ..\..\Asobo_208B_GRAND_CARAVAN_EX\model\208B_GRAND_CARAVAN_EX_INTERIO
 
 ## Что индексируется
 
-`PackageIndex.build(roots, cache_path=…)` обходит корни `Packages` (Official/Steam и Community) и дополнительные моды:
+`PackageIndex.build(roots, cache_path=…)` обходит корни `Packages` (Official/Steam и Community) и дополнительные моды. Индекс версии 5 находит пакеты по `manifest.json`/`layout.json`, включая пакеты общих ресурсов без `SimObjects/Airplanes`, и исключает из поиска баз подавленные history-заглушки:
 
 | Источник | Что берётся |
 |---|---|
 | `SimObjects/Airplanes/*` | имена самолётов и их каталоги |
 | `manifest.json` пакета | `package_version`, `content_type`, `title` |
 | `aircraft.cfg`, `[VARIATION]` | объявленная база (`base_container`) |
+| `manifest.json` dependencies | имена зависимых пакетов |
+| ресурсные каталоги в пакетах | кандидаты для переноса общих VFS-путей |
+
+При поиске базового самолёта индекс игнорирует не собираемую заглушку `fs-base-history`, если для того же имени есть собираемый самолёт. Уникальные history-записи остаются в каталоге и диагностике; это предотвращает ложную неоднозначность у ливрей.
+
+Для неразрешённых зависимостей resolver также выдаёт стабильный `problem_code` (`ambiguous_owner`, `base_aircraft_missing`, `declared_model_file_missing`, `manifest_package_missing`, `optional_texture_fallback_missing`). Поле `detail` предназначено для человека и может переводиться; машинная классификация от его текста не зависит.
 
 Содержимое `model.cfg`, model XML и glTF на этом шаге **не читается** — индекс должен строиться быстро. Их разбирает resolver, уже зная, где искать.
 
@@ -57,7 +67,7 @@ interior = ..\..\Asobo_208B_GRAND_CARAVAN_EX\model\208B_GRAND_CARAVAN_EX_INTERIO
 | якорь по имени самолёта | сегмент пути совпадает с именем установленного самолёта; префикс заменяется на его каталог, хвост сохраняется | `aircraft_index` |
 | якорь по корню пакета | путь лежит внутри корня собственного пакета; хвост переносится в корень базового пакета | `base_package` |
 
-Второе правило нужно для `texture.cfg`: `fallback.1=..\..\..\..\texture\Gauges` указывает не на именованный самолёт, а на каталог внутри пакета.
+Второе правило нужно для `texture.cfg`: `fallback.1=..\..\..\..\texture\Gauges` указывает не на именованный самолёт, а на каталог внутри пакета. Если локальный и базовый пакет не содержат путь, поиск может охватить все проиндексированные пакеты ресурсов. Однозначное совпадение возвращается с `origin=package_index`; несколько совпадений остаются неоднозначными.
 
 Если подходящих пакетов **несколько**, возвращается `path=None`, `origin="ambiguous"` и список кандидатов. Resolver не угадывает: он показывает список, а выбор остаётся за пользователем. Диагностика `texture.cfg` сохраняет исходный путь fallback, помечает зависимость неразрешённой и перечисляет все найденные варианты. Если база объявлена, но не установлена, путь не выдумывается.
 
@@ -83,9 +93,9 @@ interior = ..\..\Asobo_208B_GRAND_CARAVAN_EX\model\208B_GRAND_CARAVAN_EX_INTERIO
 | Инвалидация | изменилась сигнатура, версия индекса или список корней; повреждённый JSON игнорируется |
 | Ошибка доступа | корень попадает в `errors`, остальные продолжают сканироваться |
 
-Сигнатура не читает содержимое файлов, поэтому прогретый индекс строится примерно за 0.4 с. Добавили самолёт в пакет — изменился mtime `SimObjects/Airplanes`, пакет пересканируется. Изменили `base_container` внутри существующего `aircraft.cfg` — изменился mtime самого файла, поэтому пакет также пересканируется. При изменении схемы сигнатуры версия индекса увеличивается, и старый кэш игнорируется.
+Сигнатура не читает содержимое файлов. На локальной установке с 526 пакетами команда `index` с прогретым кэшем заняла около 3.3 с; время зависит от диска и числа пакетов. Добавили самолёт в пакет — изменился mtime `SimObjects/Airplanes`, пакет пересканируется. Изменили `base_container` внутри существующего `aircraft.cfg` — изменился mtime самого файла, поэтому пакет также пересканируется. При изменении схемы сигнатуры версия индекса увеличивается, и старый кэш игнорируется.
 
-Сканирование **одного локального пакета** (корень вне установленных `Packages`) кэш не использует. Иначе каждый открытый проект и каждый тест вытеснял бы индекс установленного симулятора: список корней не совпал бы, и следующая реальная проверка пересканировала бы все 223 пакета.
+Сканирование **одного локального пакета** (корень вне установленных `Packages`) кэш не использует. Иначе каждый открытый проект и каждый тест вытеснял бы индекс установленного симулятора: список корней не совпал бы, и следующая реальная проверка пересканировала бы все пакеты.
 
 ## Команда CLI
 
@@ -121,6 +131,8 @@ python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages\Com
 - для неразрешённой ссылки на модель — «базовый самолёт не установлен» или «базовый самолёт установлен, но объявленный файл в нём отсутствует». Это разные действия пользователя: установить пакет или выбрать модель вручную.
 
 Строка состояния под списком разделяет полные пакеты, требующие выбора моделей и недоступные.
+
+В подробном отчёте зависимости сгруппированы по типу: показывается число найденных ссылок, до четырёх проблемных примеров и следующий шаг. Для неоднозначной model-ссылки можно назначить glTF в мастере **«Выбрать модели…»** в настройках проекта; отсутствующую базу или manifest-пакет нужно установить либо добавить его корень Packages в настройках. Необязательные texture fallback не блокируют сборку — отсутствующие карты проверяются отдельно на этапе текстурирования.
 
 ## Производительность
 

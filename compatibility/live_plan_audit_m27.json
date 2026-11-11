@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T05:30:54Z",
+  "mode": "normal_cli_audit_plans_and_catalog_deep",
+  "default_install_scope": {
+    "scope_complete": true,
+    "catalog_aircraft": 233,
+    "geometry_buildable": 226,
+    "plans_validated": 226,
+    "plans_rejected": 0,
+    "index_errors": 0,
+    "missing_roots": [],
+    "catalog_reason_codes": {
+      "OK": 174,
+      "SUPPORTED_PARTIAL": 48,
+      "COMMON_RESOURCES_ONLY": 6,
+      "INVALID_MODEL_CFG": 2,
+      "MISSING_MODEL_CFG": 2,
+      "UNRESOLVED_ALIAS": 1
+    }
+  },
+  "with_user_supplied_antonov2_package_root": {
+    "scope_complete": true,
+    "catalog_aircraft": 237,
+    "geometry_buildable": 230,
+    "plans_validated": 230,
+    "plans_rejected": 0,
+    "index_errors": 0,
+    "antonov2_variants": [
+      {"aircraft": "Microsoft_Antonov2_Floats", "reason_code": "OK", "can_build_geometry": true},
+      {"aircraft": "Microsoft_Antonov2_Skies", "reason_code": "OK", "can_build_geometry": true},
+      {"aircraft": "Microsoft_Antonov2_Wheels", "reason_code": "OK", "can_build_geometry": true},
+      {"aircraft": "Microsoft_Antonov2_Wheels_New", "reason_code": "OK", "can_build_geometry": true}
+    ]
+  },
+  "interpretation": "All geometry-buildable catalog entries passed plan validation. This is not a Blender import or visual-geometry guarantee; the headless import samples are tracked separately. Remaining catalog records are classified as partial, shared-resource-only, invalid/missing model configuration, or unresolved base alias.",
+  "personal_paths_included": false
+}

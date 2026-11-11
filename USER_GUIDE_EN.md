@@ -1,10 +1,10 @@
 # MSFS Model Builder — User Guide (English)
 
-This guide matches **1.2.1**. Blender is installed separately; animations are outside the current workflow.
+This guide matches **1.3.0**. Blender is installed separately; animations are outside the current workflow.
 
 ## 1. Installation
 
-Download the Setup or Portable package from the [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.2.1). End users do not need Python or Inno Setup. Install Blender 5.x with the glTF importer and NumPy.
+Download the Setup or Portable package from the [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.3.0). End users do not need Python or Inno Setup. Install Blender 5.x with the glTF importer and NumPy.
 
 To run from source, use Windows, Python 3.13 x64 and a separate Blender installation:
 
@@ -20,6 +20,10 @@ python .\msfs_builder_gui.py
 3. Select an MSFS package, `Community`, `Official`, an unpacked mod, or a specific aircraft folder.
 4. If several entries share a name, select the required package and livery.
 5. In the general settings choose Blender and the output directory. Work outside an open project is disabled.
+
+The aircraft picker keeps liveries under their aircraft. Model and physical modifications are grouped under a shared family, with subgroups where useful (for example, DA40 NG/TDI or C172 variants). Groups start collapsed; choose a specific aircraft entry inside them.
+
+MSFS roots are detected from `UserCfg.opt` and common install locations. If an aircraft or its base is in another library, click **Package folders...** and add the required folders. The window separates automatically detected roots from manual entries and shows how many folders take part in search and how many saved paths are missing. Missing paths have a ⚠ marker; remove them and add the correct folder again. If the list cannot be refreshed, technical details are written to the **Log** tab. **Choose catalog** also adds the selected path and starts a scan.
 
 Projects store settings, selected models, rules, map replacements and the `.blend` variant history. The original aircraft folder is never modified.
 
@@ -37,6 +41,8 @@ When an aircraft is missing or marked partial, click **Deep package check**. The
 | `UNRESOLVED_ALIAS` | `base_container` was not found | add the root containing the base aircraft |
 | `UNSUPPORTED_GLTF_FEATURE` | the format or primitive is unsupported | choose another LOD or keep the package for a separate adapter |
 
+If diagnosis reports `UNRESOLVED_ALIAS` or a missing base aircraft, click **Add base package folder** beside the message and choose a Packages/Community folder. It is saved as an additional root and the catalog is rescanned automatically. In an open project, the source package inventory is refreshed instead.
+
 The package index resolves livery references to a base aircraft. Ambiguous matches are shown to the user instead of guessed.
 
 ## 4. Model wizard
@@ -52,6 +58,8 @@ On the **Geometry** tab choose `draw_mode`, `split_by_skin`, `split_spatial`, mi
 Every build mode has its own sequence. Repeating a mode creates the next numbered file in the project `blend` folder instead of overwriting an earlier result. After a successful build, use **Open in Blender** or **Show in Explorer**.
 
 Inspect the result in Blender: left/right symmetry, landing gear, control surfaces, cockpit and unexpected objects. Use **Editing rules** for corrections instead of changing MSFS source files.
+
+For a structural check, click **Audit checkpoint**. The program runs Blender without rendering and writes a JSON report to `<project folder>/reports/geometry_audits/`. **Open audit report** finds the latest report for the selected (or latest) geometry checkpoint, including after reopening the project. Mesh-object, identical world-geometry and disconnected-component counts are review hints, not an automatic verdict that the model is wrong.
 
 ## 6. Editing rules
 
@@ -76,6 +84,8 @@ If a map is missing, search installed packages first. DDS normal maps may requir
 ```powershell
 python .\scripts\msfs_universal.py inventory "C:\Path\To\Aircraft" --deep
 python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Packages"
+python .\scripts\msfs_universal.py catalog --root "D:\Official" --root "E:\Community"
+python .\scripts\msfs_universal.py roots --root "D:\Mods"
 python .\scripts\msfs_universal.py catalog --deep --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py models "C:\Path\To\Aircraft"
@@ -84,6 +94,12 @@ python .\scripts\msfs_universal.py build .\project.json --stage geometry
 ```
 
 `inventory` checks one package; `catalog` lists aircraft; add `--deep` to validate every glTF/GLB and BIN before project creation. `index` resolves package inheritance, `models` prints role candidates, `validate` checks configuration without Blender, and `build` runs a stage. The GUI exposes the same option as **Deep glTF/BIN check**. See [wiki/CLI-Reference.md](wiki/CLI-Reference.md) for the complete reference.
+
+To check the installed set without creating Blender files, run `python .\scripts\msfs_universal.py audit-plans`. It preflights a geometry plan for every entry marked buildable and reports plans that need a manual model choice or a source fix. It does not check visual output in Blender. A requested root that does not exist is listed in the result and returns exit code 2, so an incomplete scan cannot appear successful.
+
+The same check is available from the **Check plans** button in the top toolbar. The result shows the number of validated and rejected plans; rejected aircraft are listed with their problem code. After confirmation, the app selects the first affected aircraft and runs its detailed package diagnosis. If a requested root is missing, you can open the root manager immediately.
+
+`roots` lists automatically detected roots, added roots and the effective search set. Repeat `--root` to pass multiple directories.
 
 ## 9. When the result is wrong
 

@@ -30,9 +30,73 @@ class DesktopRegressionTests(unittest.TestCase):
         source.mkdir()
         self.app.project_open = True
         self.app.project_var.set(str(self.folder / "project.json"))
+        self.app.output_var.set(str(self.folder / "blend"))
         self.app.selected_aircraft = {"aircraft": "Test", "path": str(source)}
         self.app.model_var.set("model")
         self.app.blender_var.set(sys.executable)
+
+    def test_detail_summarizes_optional_texture_fallbacks(self):
+        report = {"dependencies": [
+            {"kind": "texture_fallback", "name": f"fallback.{i}", "resolved": i < 7,
+             "optional": True, "path": f"C:/pkg/texture/{i}"}
+            for i in range(10)
+        ]}
+
+        detail = self.app.format_detail(report)
+
+        self.assertIn("найдено папок 7 из 10", detail)
+        self.assertIn("отчёте текстурирования", detail)
+        self.assertNotIn("fallback.1", detail)
+
+    def test_detail_names_absent_optional_fallback_aircraft_and_action(self):
+        dependency = {"kind": "texture_fallback", "name": "fallback.9", "resolved": False,
+                      "optional": True, "path": "C:/livery/texture", "target_aircraft": "Base_Plane",
+                      "target_aircraft_installed": False}
+        detail = self.app.format_detail({"dependencies": [dependency]})
+        self.assertIn("Base_Plane (1)", detail)
+        self.assertIn("необязателен для геометрии", detail)
+        advice = self.app._dependency_next_step(dependency)
+        self.assertIn("добавьте его каталог в настройках", advice)
+        self.assertIn("необязателен для геометрии", advice)
+
+    def test_unresolved_dependencies_include_next_steps(self):
+        report = {"dependencies": [
+            {"kind": "base_container", "name": "Base_Plane", "resolved": False,
+             "detail": "базовый самолёт не установлен"},
+            {"kind": "model", "name": "interior", "resolved": False,
+             "detail": "несколько установленных пакетов: C:/base-a; C:/base-b"},
+            {"kind": "manifest", "name": "shared-assets", "resolved": False},
+        ]}
+
+        detail = self.app.format_detail(report)
+
+        self.assertIn("Базовый самолёт: найдено 0 из 1", detail)
+        self.assertIn("установите базовый самолёт", detail)
+        self.assertIn("Выбрать модели", detail)
+        self.assertIn("Packages-каталог в «Пути и настройки»", detail)
+
+    def test_missing_base_diagnosis_explains_geometry_and_texture_consequences(self):
+        report = {"reason_code": "SUPPORTED_PARTIAL", "dependencies": [
+            {"kind": "base_container", "name": "Base_Plane", "resolved": False,
+             "problem_code": "base_aircraft_missing", "detail": "базовый самолёт не установлен"}
+        ]}
+
+        diagnosis = self.app.format_diagnosis(report)
+        detail = self.app.format_detail(report)
+
+        self.assertIn("Базовый самолёт: Base_Plane", diagnosis)
+        self.assertIn("доступны только найденные модели", diagnosis)
+        self.assertIn("отсутствующие интерьер и базовые текстуры не появятся", diagnosis)
+        self.assertIn("Добавить каталог базы", diagnosis)
+        self.assertIn("текстурный этап укажет пропущенные карты", detail)
+
+    def test_optional_texture_fallback_does_not_trigger_missing_base_warning(self):
+        report = {"reason_code": "OK", "dependencies": [
+            {"kind": "texture_fallback", "name": "fallback.1", "resolved": False,
+             "optional": True, "target_aircraft": "Other_Plane", "target_aircraft_installed": False}
+        ]}
+
+        self.assertNotIn("Базовая модель", self.app.format_diagnosis(report))
 
     def test_save_preserves_tab_and_advanced_operations(self):
         self.project()
@@ -78,11 +142,330 @@ class DesktopRegressionTests(unittest.TestCase):
 
     def test_deep_catalog_toggle_is_forwarded_to_cli(self):
         self.app.catalog_deep_var.set(True)
-        self.app.settings["msfs_root"] = str(self.folder)
+        first = self.folder / "packages_a"
+        second = self.folder / "packages_b"
+        self.app.settings["msfs_roots"] = [str(first), str(second)]
         with patch.object(self.app, "run_command") as runner:
             self.app.scan_installed()
         command = runner.call_args.args[0]
         self.assertEqual(command[-1], "--deep")
+        self.assertEqual([command[i + 1] for i, value in enumerate(command[:-1])
+                          if value == "--root"], [str(first), str(second)])
+
+    def test_package_roots_migrate_legacy_setting_and_deduplicate(self):
+        self.app.settings["msfs_roots"] = [r"C:\MSFS\Packages", r"C:\msfs\packages"]
+        self.app.settings["msfs_root"] = r"D:\Community"
+
+        roots = self.app.package_roots()
+
+        self.assertEqual(roots, [r"C:\MSFS\Packages", r"D:\Community"])
+
+    def test_saving_package_roots_preserves_legacy_compatibility(self):
+        roots = [str(self.folder / "official"), str(self.folder / "community")]
+        with patch.object(gui, "save_settings") as save:
+            self.app.save_package_roots(roots)
+
+        self.assertEqual(self.app.settings["msfs_roots"], [os.path.abspath(path) for path in roots])
+        self.assertEqual(self.app.settings["msfs_root"], os.path.abspath(roots[0]))
+        save.assert_called_once()
+
+    def test_texture_search_receives_all_package_roots(self):
+        self.app.project_open = True
+        self.app.settings["msfs_roots"] = [r"D:\Official", r"E:\Community"]
+        with patch.object(gui, "TextureTable") as table:
+            self.app.open_texture_table()
+
+        factory = table.call_args.args[1]
+        command = factory("find-textures", "report.json")
+        self.assertEqual([command[i + 1] for i, value in enumerate(command[:-1])
+                          if value == "--root"], [r"D:\Official", r"E:\Community"])
+
+    def test_root_manager_lists_detected_and_warns_on_missing_custom_path(self):
+        with patch.object(self.app, "run_command", return_value=False):
+            self.app.manage_package_roots()
+        self.app.settings["msfs_roots"] = [r"D:\Custom\Packages"]
+        self.app.render_package_roots({"automatic_roots": [r"C:\MSFS\Packages"],
+                                       "missing_additional_roots": [r"D:\Custom\Packages"]})
+
+        self.assertIn(r"C:\MSFS\Packages", self.app.package_roots_auto_list.get(0))
+        self.assertIn("каталог не найден", self.app.package_roots_custom_list.get(0))
+        self.assertIn("Каталогов в поиске: 2", self.app.package_roots_summary_var.get())
+        self.app.render_package_roots(None)
+        self.app.render_package_roots({"missing_additional_roots": None})
+        self.app.package_roots_window.destroy()
+
+    def test_root_manager_removes_only_selected_manual_path(self):
+        roots = [r"D:\Official", r"E:\Community"]
+        self.app.settings["msfs_roots"] = roots
+        with patch.object(self.app, "run_command", return_value=False):
+            self.app.manage_package_roots()
+        self.app.package_roots_custom_list.selection_set(1)
+        with patch.object(self.app, "save_package_roots") as save, \
+             patch.object(self.app, "refresh_package_roots"):
+            self.app.remove_package_root()
+
+        save.assert_called_once_with([r"D:\Official"])
+        self.app.package_roots_window.destroy()
+
+    def test_root_manager_shows_actionable_refresh_error(self):
+        callbacks = []
+        def capture_callback(_command, callback=None):
+            callbacks.append(callback)
+
+        with patch.object(self.app, "run_command", side_effect=capture_callback):
+            self.app.manage_package_roots()
+        with patch.object(self.app, "append_log") as append_log, \
+             patch.object(gui.messagebox, "showerror") as showerror:
+            callbacks[0](1, "internal scan failure")
+
+        append_log.assert_called_once()
+        self.assertIn("Журнал", self.app.package_roots_summary_var.get())
+        self.assertIn("Технические подробности", showerror.call_args.args[1])
+        self.app.package_roots_window.destroy()
+
+    def test_geometry_plan_audit_forwards_all_roots(self):
+        self.app.settings["msfs_roots"] = [r"D:\Official", r"E:\Community"]
+        with patch.object(self.app, "run_command") as runner:
+            self.app.audit_geometry_plans()
+
+        command = runner.call_args.args[0]
+        self.assertIn("audit-plans", command)
+        self.assertEqual([command[i + 1] for i, value in enumerate(command[:-1]) if value == "--root"],
+                         [r"D:\Official", r"E:\Community"])
+        self.assertIn("анализ glTF", self.app.status_var.get())
+
+    def test_geometry_plan_audit_reports_success_without_blender(self):
+        output = json.dumps({"plans_validated": 226, "geometry_buildable": 226, "failures": []})
+        with patch.object(gui.messagebox, "showinfo") as showinfo:
+            self.app.on_geometry_plan_audit_result(0, output)
+
+        self.assertIn("226/226", self.app.status_var.get())
+        self.assertIn("Blender не запускался", showinfo.call_args.args[1])
+
+    def test_geometry_plan_audit_lists_rejected_aircraft(self):
+        output = json.dumps({"plans_validated": 1, "geometry_buildable": 2,
+                             "failures": [{"aircraft": "Test_Plane", "problem": "MODEL_SELECTION_REQUIRED"}]})
+        with patch.object(gui.messagebox, "showwarning") as showwarning, \
+             patch.object(gui.messagebox, "askyesno", return_value=False), \
+             patch.object(self.app, "append_log") as append_log:
+            self.app.on_geometry_plan_audit_result(2, output)
+
+        self.assertIn("отклонённые планы", self.app.status_var.get())
+        self.assertIn("Test_Plane", showwarning.call_args.args[1])
+        append_log.assert_called_once()
+
+    def test_geometry_plan_audit_rejects_unexpected_json_shape(self):
+        with patch.object(gui.messagebox, "showerror") as showerror, \
+             patch.object(self.app, "append_log") as append_log:
+            self.app.on_geometry_plan_audit_result(0, "[]")
+
+        self.assertIn("неверная структура", self.app.status_var.get())
+        showerror.assert_called_once()
+        append_log.assert_called_once()
+
+    def test_geometry_plan_audit_warns_when_requested_root_is_missing(self):
+        missing = r"D:\MissingCommunity"
+        output = json.dumps({"plans_validated": 226, "geometry_buildable": 226,
+                             "failures": [], "missing_roots": [missing], "scope_complete": False})
+        with patch.object(gui.messagebox, "showwarning") as showwarning, \
+             patch.object(gui.messagebox, "askyesno", return_value=False):
+            self.app.on_geometry_plan_audit_result(2, output)
+
+        self.assertIn("не найдено корней: 1", showwarning.call_args.args[1])
+        self.assertIn(missing, showwarning.call_args.args[1])
+        self.assertIn("Каталоги Packages", showwarning.call_args.args[1])
+        self.assertIn("Не все каталоги проверены", self.app.status_var.get())
+
+    def test_geometry_plan_audit_can_open_missing_root_manager(self):
+        output = json.dumps({"plans_validated": 0, "geometry_buildable": 0,
+                             "failures": [], "missing_roots": [r"D:\MissingCommunity"]})
+        with patch.object(gui.messagebox, "showwarning"), \
+             patch.object(gui.messagebox, "askyesno", return_value=True), \
+             patch.object(self.app, "manage_package_roots") as manager:
+            self.app.on_geometry_plan_audit_result(2, output)
+
+        manager.assert_called_once()
+
+    def test_plan_audit_rejection_focuses_exact_catalog_entry(self):
+        entry = {"aircraft": "Test_Plane", "path": r"C:\Packages\Test_Plane",
+                 "can_build_geometry": True, "variants": [], "textures": []}
+        self.app.populate_aircraft([entry])
+        item_id = self.app._aircraft_tree_paths[entry["path"]]
+        with patch.object(self.app, "on_aircraft_select") as selected, \
+             patch.object(self.app, "diagnose_selected") as diagnose:
+            self.app.focus_audited_aircraft({"aircraft": entry["aircraft"], "path": entry["path"]})
+
+        self.assertEqual(self.app.aircraft_list.selection(), (item_id,))
+        self.assertTrue(self.app.aircraft_list.item(self.app.aircraft_list.parent(item_id), "open"))
+        selected.assert_called_once()
+        diagnose.assert_called_once()
+
+    def test_geometry_checkpoint_audit_writes_report_inside_project(self):
+        self.project()
+        output = Path(self.app.output_var.get())
+        output.mkdir(exist_ok=True)
+        blend = output / "01_geometry_strip_auto_001.blend"
+        blend.write_bytes(b"placeholder")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        with patch.object(self.app, "run_command", return_value=True) as runner:
+            self.app.audit_geometry_checkpoint()
+
+        command = runner.call_args.args[0]
+        self.assertIn("audit", command)
+        self.assertEqual(command[command.index("audit") + 1], str(blend))
+        report = Path(command[command.index("--output") + 1])
+        self.assertEqual(report.parent, Path(self.app.project_var.get()).parent / "reports" / "geometry_audits")
+        self.assertIn("проверяет geometry checkpoint", self.app.status_var.get())
+
+    def test_geometry_checkpoint_audit_reports_review_hints(self):
+        self.project()
+        report = self.folder / "reports" / "audit.json"
+        report.parent.mkdir()
+        report.write_text(json.dumps({"summary": {"mesh_objects": 20,
+                                                   "same_world_geometry_groups": 2,
+                                                   "far_disconnected_objects": 5}}), encoding="utf-8")
+        with patch.object(gui.messagebox, "showinfo") as showinfo:
+            self.app.on_geometry_audit_result(0, "{}", report)
+
+        self.assertIn("Mesh-объектов: 20", self.app.build_detail_var.get())
+        self.assertIn("не означают автоматически", self.app.build_result_var.get())
+        self.assertEqual(self.app.audit_report_path, report)
+        showinfo.assert_called_once()
+
+    def test_open_geometry_audit_report_uses_latest_report(self):
+        self.project()
+        output = Path(self.app.output_var.get())
+        output.mkdir()
+        blend = output / "01_geometry_strip_auto_002.blend"
+        blend.write_bytes(b"checkpoint")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        report_dir = self.folder / "reports" / "geometry_audits"
+        report_dir.mkdir(parents=True)
+        stale = report_dir / "01_geometry_strip_auto_002_audit_002.json"
+        newest = report_dir / "01_geometry_strip_auto_002_audit_010.json"
+        stale.write_text("{}", encoding="utf-8")
+        newest.write_text("{}", encoding="utf-8")
+        # A report copied or touched later must not override the larger sequence.
+        os.utime(stale, (2_000_000_000, 2_000_000_000))
+        self.app.audit_report_path = self.folder.parent / "old_project" / "reports" / "old.json"
+        with patch.object(gui.os, "startfile") as startfile:
+            self.app.open_geometry_audit_report()
+
+        startfile.assert_called_once_with(str(newest))
+        self.assertEqual(self.app.audit_report_path, newest)
+
+    def test_open_geometry_audit_report_recovers_after_reopen(self):
+        self.project()
+        output = Path(self.app.output_var.get())
+        output.mkdir()
+        blend = output / "01_geometry_strip_auto_001.blend"
+        blend.write_bytes(b"checkpoint")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        report = self.folder / "reports" / "geometry_audits" / "01_geometry_strip_auto_001_audit_001.json"
+        report.parent.mkdir(parents=True)
+        report.write_text("{}", encoding="utf-8")
+        self.app.audit_report_path = None
+        with patch.object(gui.os, "startfile") as startfile:
+            self.app.open_geometry_audit_report()
+
+        startfile.assert_called_once_with(str(report))
+
+    def test_open_geometry_audit_report_rejects_other_checkpoint_report(self):
+        self.project()
+        output = Path(self.app.output_var.get())
+        output.mkdir()
+        blend = output / "01_geometry_strip_auto_002.blend"
+        blend.write_bytes(b"checkpoint")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        other = self.folder / "reports" / "geometry_audits" / "01_geometry_strip_auto_001_audit_001.json"
+        other.parent.mkdir(parents=True)
+        other.write_text("{}", encoding="utf-8")
+        self.app.audit_report_path = other
+        with patch.object(gui.messagebox, "showinfo") as showinfo:
+            self.app.open_geometry_audit_report()
+
+        showinfo.assert_called_once()
+
+    def test_unresolved_alias_shows_direct_package_root_action(self):
+        entry = {"reason_code": "UNRESOLVED_ALIAS", "can_build_geometry": False}
+        self.app.update_package_root_recovery(entry)
+
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "grid")
+        folder = self.folder / "base_packages"
+        folder.mkdir()
+        with patch.object(self.app, "directory_dialog", return_value=str(folder)), \
+             patch.object(self.app, "_remember_package_root") as remember, \
+             patch.object(self.app, "scan_custom") as scan:
+            self.app.package_root_recovery_button.invoke()
+        remember.assert_called_once_with(str(folder))
+        scan.assert_called_once()
+
+    def test_base_package_recovery_cancel_has_no_side_effects(self):
+        with patch.object(self.app, "directory_dialog", return_value=None), \
+             patch.object(self.app, "_remember_package_root") as remember, \
+             patch.object(self.app, "scan_custom") as scan:
+            self.app.open_package_root_recovery()
+
+        remember.assert_not_called()
+        scan.assert_not_called()
+
+    def test_base_package_recovery_does_not_save_duplicate_root(self):
+        folder = self.folder / "base_packages"
+        folder.mkdir()
+        self.app.settings["msfs_roots"] = [str(folder)]
+        with patch.object(self.app, "directory_dialog", return_value=str(folder)), \
+             patch.object(self.app, "save_package_roots") as save, \
+             patch.object(self.app, "scan_custom") as scan:
+            self.app.open_package_root_recovery()
+
+        save.assert_not_called()
+        scan.assert_called_once()
+
+    def test_base_package_recovery_rescans_open_project_inventory(self):
+        self.project()
+        folder = self.folder / "base_packages"
+        folder.mkdir()
+        self.app.source_var.set(self.app.selected_aircraft["path"])
+        with patch.object(self.app, "directory_dialog", return_value=str(folder)), \
+             patch.object(self.app, "_remember_package_root") as remember, \
+             patch.object(self.app, "package_roots", return_value=[str(folder)]), \
+             patch.object(self.app, "run_command") as runner:
+            self.app.open_package_root_recovery()
+
+        remember.assert_called_once_with(str(folder))
+        command = runner.call_args.args[0]
+        self.assertIn("inventory", command)
+        self.assertIn(self.app.selected_aircraft["path"], command)
+        self.assertEqual(command.count("--root"), 1)
+
+    def test_unresolved_base_dependency_shows_package_root_action(self):
+        entry = {"reason_code": "SUPPORTED_PARTIAL", "dependencies": [
+            {"kind": "base_container", "resolved": False, "problem_code": "base_aircraft_missing"}
+        ]}
+
+        self.app.update_package_root_recovery(entry)
+
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "grid")
+
+    def test_healthy_or_unrelated_diagnosis_hides_package_root_action(self):
+        self.app.update_package_root_recovery({"reason_code": "UNRESOLVED_ALIAS"})
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "grid")
+
+        self.app.update_package_root_recovery({"reason_code": "OK", "dependencies": []})
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "")
+
+        self.app.update_package_root_recovery({"reason_code": "SUPPORTED_PARTIAL", "dependencies": [
+            {"kind": "texture_fallback", "resolved": False}
+        ]})
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "")
 
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()
@@ -159,7 +542,8 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertIn("bad json", detail)
         self.assertIn("ext_LOD01.gltf", detail)
         self.assertIn("LOD без файла: 1", detail)
-        self.assertIn("НЕ разрешена", detail)
+        self.assertIn("найдено 0 из 1", detail)
+        self.assertIn("Следующий шаг", detail)
         self.assertNotIn('"aircraft"', detail)
 
     def test_index_provenance_is_visible_without_json(self):
@@ -245,6 +629,30 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertEqual(self.app.status_var.get(),
                          "Найдено самолётов: 3 — полных: 1, частичных: 1, недоступно: 1")
 
+    def test_catalog_status_reports_suppressed_history_stubs(self):
+        payload = {"aircraft": [
+            {"aircraft": "Asobo_DA62", "path": "C:/official/DA62", "can_build_geometry": True,
+             "can_build_textures": True},
+        ], "suppressed_history_stubs": [{"aircraft": "Asobo_DA62", "path": "C:/history/DA62"}],
+            "index": {"packages": 1, "aircraft_names": 1, "cached": 1, "scanned": 0, "errors": []}}
+        self.app.on_catalog_result(0, json.dumps(payload))
+        self.assertIn("скрыто history-заглушек: 1", self.app.status_var.get())
+
+    def test_partial_texture_exit_keeps_checkpoint_and_explains_missing_maps(self):
+        self.app.active_stage = "textures"
+        self.app.cancel_requested = False
+        output = "[textures] C:/project/blend/02_textured_strip_auto_partial_001.blend\n"
+        with patch.object(self.app, "_set_explorer_target") as set_target, \
+             patch.object(self.app, "refresh_blend_list"):
+            self.app.on_build_finished(2, output)
+
+        self.assertEqual(self.app.build_stage_var.get(), "Этап textures: завершён")
+        self.assertIn("частично", self.app.build_result_var.get().casefold())
+        self.assertIn("02_textured_strip_auto_partial_001.blend", self.app.build_result_var.get())
+        self.assertIn("Не все карты найдены", self.app.build_detail_var.get())
+        self.assertIn("журнале", self.app.build_detail_var.get())
+        set_target.assert_called_once()
+
     def test_catalog_groups_liveries_and_filters_by_availability(self):
         entries = [
             {"aircraft": "Asobo_C152", "path": "C:/base/C152", "can_build_geometry": True,
@@ -261,9 +669,24 @@ class DesktopRegressionTests(unittest.TestCase):
         c152_group = next(group for group in groups
                           if self.app.aircraft_list.item(group, "text").startswith("Asobo_C152"))
         self.assertEqual(len(self.app.aircraft_list.get_children(c152_group)), 2)
+        self.assertFalse(self.app.aircraft_list.item(c152_group, "open"))
+
+        self.app._show_catalog_step()
+        child = self.app.aircraft_list.get_children(c152_group)[0]
+        self.app.aircraft_list.selection_set(child)
+        self.app.on_aircraft_select()
+        selected_path = self.app.selected_aircraft["path"]
+
+        self.app.aircraft_filter_var.set("Полностью доступные")
+        self.app.populate_aircraft()
+        self.assertEqual(self.app.selected_aircraft["path"], selected_path)
+        self.assertTrue(self.app.aircraft_list.selection())
 
         self.app.aircraft_filter_var.set("Недоступные")
         self.app.populate_aircraft()
+        self.assertIsNone(self.app.selected_aircraft)
+        self.assertIn("disabled", self.app.nav_next.state())
+
         self.assertEqual([entry["aircraft"] for entry in self.app.active_entries], ["Asobo_L39"])
         self.assertEqual(len(self.app.aircraft_list.get_children("")), 1)
 
@@ -274,6 +697,54 @@ class DesktopRegressionTests(unittest.TestCase):
         self.app.aircraft_list.selection_set(child)
         self.app.on_aircraft_select()
         self.assertIsNotNone(self.app.selected_aircraft)
+
+    def test_catalog_groups_aircraft_modifications_under_shared_family(self):
+        names = [
+            "Asobo_Pitts_S1_Reno", "Asobo_Pitts_S1_Reno_Common", "Asobo_Pitts_S1_Reno_LiveryAviators",
+            "Asobo_DA40_NG", "Asobo_DA40_NG_Livery_Kenmore", "Asobo_DA40_NG_LiveryAviators",
+            "Asobo_DA40_TDI", "Asobo_DA40_TDI_LiveryAviators",
+            "Asobo_C172sp_AS1000", "Asobo_C172sp_AS1000_LiveryAviators",
+            "Asobo_C172sp_AS1000_Floaters", "Asobo_C172sp_AS1000_Skis", "Asobo_C172sp_AS1000_TowPlane",
+            "Asobo_C172SP_Classic", "Asobo_C172SP_Classic_LiveryAviators",
+        ]
+        self.app.populate_aircraft([{"aircraft": name, "path": f"C:/packages/{name}",
+                                     "can_build_geometry": True, "can_build_textures": True}
+                                    for name in names])
+
+        roots = {self.app.aircraft_list.item(iid, "text").split(" (", 1)[0]: iid
+                 for iid in self.app.aircraft_list.get_children("")}
+        pitts = roots["Asobo_Pitts_S1_Reno"]
+        self.assertEqual(len(self.app.aircraft_list.get_children(pitts)), 3)
+
+        da40 = next(iid for name, iid in roots.items() if name.startswith("Asobo_DA40"))
+        da40_subgroups = {self.app.aircraft_list.item(iid, "text"): iid
+                          for iid in self.app.aircraft_list.get_children(da40)}
+        self.assertEqual(set(da40_subgroups), {"NG", "TDI"})
+        self.assertEqual(len(self.app.aircraft_list.get_children(da40_subgroups["NG"])), 3)
+        self.assertEqual(len(self.app.aircraft_list.get_children(da40_subgroups["TDI"])), 2)
+
+        c172 = next(iid for name, iid in roots.items() if name.startswith("Asobo_C172"))
+        sp = next(iid for iid in self.app.aircraft_list.get_children(c172)
+                  if self.app.aircraft_list.item(iid, "text").casefold() == "sp")
+        sp_subgroups = {self.app.aircraft_list.item(iid, "text"): iid
+                        for iid in self.app.aircraft_list.get_children(sp)}
+        self.assertEqual(set(sp_subgroups), {"AS1000", "Classic"})
+        as1000_children = self.app.aircraft_list.get_children(sp_subgroups["AS1000"])
+        self.assertEqual(sum(iid in self.app._aircraft_tree_entries for iid in as1000_children), 2)
+        self.assertEqual({self.app.aircraft_list.item(iid, "text") for iid in as1000_children
+                          if iid not in self.app._aircraft_tree_entries}, {"Floaters", "Skis", "TowPlane"})
+        self.assertEqual(len(self.app.aircraft_list.get_children(sp_subgroups["Classic"])), 2)
+        all_groups = [pitts, da40, *da40_subgroups.values(), c172, sp, *sp_subgroups.values(),
+                      *[iid for iid in as1000_children if iid not in self.app._aircraft_tree_entries]]
+        self.assertTrue(all(not self.app.aircraft_list.item(iid, "open") for iid in all_groups))
+
+        towplane = next(iid for iid, entry in self.app._aircraft_tree_entries.items()
+                        if entry["aircraft"] == "Asobo_C172sp_AS1000_TowPlane")
+        self.app._select_catalog_entry(towplane)
+        self.assertTrue(self.app.aircraft_list.item(c172, "open"))
+        self.assertTrue(self.app.aircraft_list.item(sp, "open"))
+        self.assertTrue(self.app.aircraft_list.item(sp_subgroups["AS1000"], "open"))
+        self.assertEqual(self.app.selected_aircraft["aircraft"], "Asobo_C172sp_AS1000_TowPlane")
 
     def test_index_summary_reaches_the_log(self):
         self.app.report_index({"packages": 5, "aircraft_names": 7, "cached": 5, "scanned": 0,
@@ -345,6 +816,7 @@ class DesktopRegressionTests(unittest.TestCase):
         self.model_window(self.payload([declared], [guessed]))
         exterior_tree = self.app.model_trees["exterior"]
         row = exterior_tree.get_children()[0]
+        self.assertEqual(exterior_tree.set(row, "variant"), "model")
         self.assertEqual(exterior_tree.set(row, "vertices"), "171 230")
         self.assertEqual(exterior_tree.set(row, "triangles"), "851 344")
         self.assertEqual(exterior_tree.set(row, "include"), "☑")
@@ -355,6 +827,40 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertEqual(interior_tree.set(inner, "origin"), "из пакета базового самолёта")
         self.assertEqual([e["name"] for e in self.app.chosen_models()], ["ext_LOD00.gltf"])
         self.assertIn("интерьер: 0", self.app.model_summary.cget("text"))
+
+    def test_model_variant_is_visible_in_rows_and_selected_source_summary(self):
+        first = self.choice("A320NEO_EXT_LOD01.gltf", "exterior", variant="model", lod=1,
+                            role_source="имя файла", default=False, declared=False)
+        second = self.choice("A320NEO_EXT_LOD01.gltf", "exterior", variant="model.airbus", lod=1,
+                             role_source="имя файла", default=False, declared=False)
+        self.model_window(self.payload([first, second], []))
+        tree = self.app.model_trees["exterior"]
+        rows = tree.get_children()
+        self.assertEqual([tree.set(row, "variant") for row in rows], ["model", "model.airbus"])
+        self.app.model_selected[("exterior", rows[1])] = True
+        tree.set(rows[1], "include", "☑")
+        self.app.update_model_summary()
+        summary = self.app.model_summary.cget("text")
+        self.assertIn("model.airbus/A320NEO_EXT_LOD01.gltf", summary)
+        self.assertIn("Роль по имени файла подтверждаете вы", summary)
+
+    def test_wizard_explains_substitute_for_missing_declared_model_file(self):
+        exterior = self.choice("ext_LOD00.gltf", "exterior")
+        interior = self.choice("int_LOD01.gltf", "interior", role_source="имя файла",
+                               origin="base_package", declared=False, default=False)
+        data = self.payload([exterior], [interior])
+        data["source_gaps"] = [{"kind": "model", "role": "interior",
+                                "path": "C:/base/model/int.xml",
+                                "problem_code": "declared_model_file_missing",
+                                "detail": "declared file is absent"}]
+        self.model_window(data)
+        headline = self.app.model_headline.cget("text")
+        self.assertIn("отсутствует объявленный model-файл интерьера: int.xml", headline)
+        tree = self.app.model_trees["interior"]
+        row = tree.get_children()[0]
+        tree.selection_set(row)
+        self.app.on_model_row_selected(type("Event", (), {"widget": tree})())
+        self.assertIn("заменяет отсутствующую ссылку int.xml", self.app.model_detail.get("1.0", "end"))
 
     def test_unavailable_row_cannot_be_checked(self):
         broken = self.choice("ext_LOD00.gltf", "exterior", available=False, default=False,

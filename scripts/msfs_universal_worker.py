@@ -679,7 +679,10 @@ def build_textures(spec, review):
     if compressed_normals:
         review.append("Проверьте рельеф на DDS NORM. Если освещение выглядит неверно, используйте распакованные "
                       "нормали через converted_normal_dir или texture_overrides.")
-    if spec["missing_fallback_dirs"]:
+    # Missing fallback folders matter to the user only when a required image
+    # could not be resolved. Keep the raw list in the report for diagnostics,
+    # but avoid a noisy warning when every used texture was found elsewhere.
+    if spec["missing_fallback_dirs"] and (missing or unreadable):
         review.append("В texture.cfg есть недоступные fallback-папки. Сверьте missing_fallback_dirs и при необходимости добавьте extra_texture_dirs.")
     review.append("Откройте 02_textured.blend в Material Preview. Сверьте ливрею, стекло и приборные карты.")
     for obj in meshes():

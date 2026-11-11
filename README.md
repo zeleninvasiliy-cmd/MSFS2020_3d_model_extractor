@@ -1,4 +1,4 @@
-# MSFS Model Builder 1.2.1
+# MSFS Model Builder 1.3.0
 
 
 ## English
@@ -7,9 +7,18 @@ MSFS Model Builder is a Windows pipeline for preparing static aircraft models fr
 
 Exact extraction requires the original files to be available locally: glTF/GLB, BIN, XML, configuration files and texture maps. The program does not decrypt protected packages or invent missing source geometry.
 
+### What is new in 1.3.0
+
+- Manage multiple automatically detected and custom MSFS package roots; the package index resolves installed aircraft and livery inheritance.
+- Diagnose package and model gaps before building, and explicitly choose exterior/interior models and LODs when configuration data is incomplete.
+- Browse liveries and aircraft variants under a shared family group; groups start collapsed.
+- Edit build rules and texture replacements through the GUI.
+
+Texture completeness depends on the source packages installed on the computer. Partial add-ons may lack base-package maps; the program reports these gaps instead of inventing textures.
+
 ### Quick start
 
-1. Install `MSFSModelBuilder-1.2.1-Setup.exe` from the [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.2.1), or run the source tree with Python 3.13.
+1. Install `MSFSModelBuilder-1.3.0-Setup.exe` from the [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.3.0), or run the source tree with Python 3.13.
 2. Install Blender 5.x separately and select `blender.exe` in “Paths and settings”.
 3. Create a project, select an MSFS package or mod folder, then choose an aircraft.
 4. For an unfamiliar package, enable **Deep glTF/BIN check**. Build geometry, inspect the `.blend` in Blender, and run texturing afterwards.
@@ -39,9 +48,18 @@ MSFS Model Builder — Windows-конвейер для подготовки ст
 
 Точный импорт возможен только для ресурсов, которые реально доступны на диске: glTF/GLB, BIN, XML, конфигурации и карты. Программа не расшифровывает закрытые пакеты и не создаёт отсутствующую исходную геометрию.
 
+### Что нового в 1.3.0
+
+- Можно управлять несколькими автоматически найденными и вручную добавленными корнями MSFS Packages; индекс разрешает связи самолётов и ливрей между пакетами.
+- Программа заранее показывает недостающие источники и позволяет явно выбрать exterior/interior и LOD, если конфигурация пакета неполная.
+- Ливреи и модификации находятся внутри общей группы семейства самолёта; группы изначально свёрнуты.
+- Правила сборки и замены текстур редактируются через графический интерфейс.
+
+Полнота текстур зависит от исходных пакетов, установленных на компьютере. В частичных модах могут отсутствовать карты базового самолёта; программа сообщает о таких пробелах и не подменяет их выдуманными текстурами.
+
 ### Быстрый старт
 
-1. Установите `MSFSModelBuilder-1.2.1-Setup.exe` из [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.2.1) или запустите исходники с Python 3.13.
+1. Установите `MSFSModelBuilder-1.3.0-Setup.exe` из [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.3.0) или запустите исходники с Python 3.13.
 2. Установите Blender 5.x отдельно и укажите `blender.exe` в меню «Пути и настройки».
 3. Создайте проект, выберите каталог MSFS или папку мода, затем самолёт.
 4. Выполните сборку геометрии, проверьте `.blend` в Blender, после этого запустите текстурирование.

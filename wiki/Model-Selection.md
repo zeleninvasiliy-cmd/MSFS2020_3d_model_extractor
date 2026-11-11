@@ -2,13 +2,15 @@
 
 ## English version
 
-The model wizard is part of the 1.2.1 workflow. It opens for a partial package or from the project settings. Exterior and interior are separate lists with LOD number, vertex count, triangle count, role source, origin and availability.
+The model wizard is part of the 1.3.0 workflow. It opens for a partial package or from the project settings. Exterior and interior are separate lists with the model-folder variant shown directly beside each filename, followed by LOD number, vertex count, triangle count, role source, origin and availability. The live selection summary repeats each chosen folder/file pair before confirmation.
 
 Only roles declared by configuration are preselected. A filename-based role is a hint and requires explicit confirmation. The confirmed list is stored in the project `models` field and partial variants keep the `_partial` suffix.
 
+When an installed base is missing a model file declared by a livery, the wizard calls out the missing role and file, then labels usable base-package candidates as substitutes. The user chooses explicitly; the program never assumes that a similarly named LOD is equivalent.
+
 ---
 
-Мастер выбора состава моделей. Открывается автоматически, когда самолёт помечен `◐ нужен выбор моделей`, и вручную кнопкой **«Выбрать модели...»** на шаге 2 «Параметры проекта». Это штатная часть версии 1.2.1.
+Мастер выбора состава моделей. Открывается автоматически, когда самолёт помечен `◐ нужен выбор моделей`, и вручную кнопкой **«Выбрать модели...»** на шаге 2 «Параметры проекта». Это штатная часть версии 1.3.0.
 
 ## Зачем он нужен
 
@@ -20,14 +22,17 @@ Only roles declared by configuration are preselected. A filename-based role is a
 
 Раньше третий случай заканчивался частичной сборкой без интерьера. Теперь мастер сканирует базовый пакет и предлагает найденный файл, **не приписывая ему роль молча**.
 
+Если установленная база не содержит model-файл, на который ссылается ливрея, окно отдельно показывает отсутствующую роль и имя файла. Подходящие glTF базы остаются неподтверждёнными кандидатами. Выберите замену вручную: программа сохранит её в составе проекта, но не будет утверждать, что геометрия совпадает с отсутствующей ссылкой.
+
 ## Что показывает окно
 
-Два отдельных списка: **Экстерьер** и **Интерьер**. Строка — один файл glTF.
+Два отдельных списка: **Экстерьер** и **Интерьер**. Строка — один файл glTF. Папка модели видна в отдельном столбце, поэтому одинаковые имена файлов в разных вариантах можно различить без открытия подробностей. Итог выбора перечисляет выбранные пары «папка/файл».
 
 | Столбец | Смысл |
 |---|---|
 | Взять | галочка включения файла в сборку |
-| Файл | имя glTF; полный путь показывается под списками при выборе строки |
+| Файл модели | имя glTF; полный путь показывается под списками при выборе строки |
+| Папка модели | вариант источника (`model`, `model.01`, `model.Interior` и т. п.); помогает отличить файлы с одинаковыми именами |
 | LOD | номер уровня детализации из имени файла (`ext_LOD06` → 06); `—`, если номера в имени нет |
 | Вершин | число вершин по accessor `POSITION` |
 | Треугольников | число треугольников по accessor индексов |
@@ -49,7 +54,7 @@ LOD00 — ближайший и самый подробный уровень. Ч
 
 ## Подтверждение
 
-Кнопка **«Подтвердить состав»** записывает выбранные файлы в штатное поле `models` проекта. Никакой правки JSON не требуется.
+Итог выбора показывает пару «папка модели / файл» для каждого отмеченного источника. Кнопка **«Подтвердить состав»** записывает выбранные файлы в штатное поле `models` проекта. Никакой правки JSON не требуется.
 
 - Если экстерьер не выбран, окно отдельно спрашивает, точно ли нужен только интерьер.
 - Пустой состав подтвердить нельзя.
@@ -71,7 +76,7 @@ python scripts/msfs_universal.py models "C:\...\SimObjects\Airplanes\Asobo_Pitts
 python scripts/msfs_universal.py models "C:\...\Airplanes\Test" --root "D:\Community"
 ```
 
-Печатает JSON: `aircraft`, `path`, `reason_code`, `reason`, `action`, `partial`, `base_aircraft` (`name`, `path`, `scanned`), `roles.exterior[]`, `roles.interior[]`, `default_models`, `missing_resources`. У каждого кандидата: `path`, `name`, `role`, `role_source`, `lod`, `variant`, `origin`, `declared`, `default`, `available`, `vertices`, `triangles`, `missing_buffers`, `unsupported`, `read_error`, `status`.
+Печатает JSON: `aircraft`, `path`, `reason_code`, `reason`, `action`, `partial`, `base_aircraft` (`name`, `path`, `scanned`), `roles.exterior[]`, `roles.interior[]`, `default_models`, `source_gaps`, `missing_resources`. `source_gaps` сообщает об отсутствующих внешних model-ссылках и их `problem_code`. У каждого кандидата: `path`, `name`, `role`, `role_source`, `lod`, `variant`, `origin`, `declared`, `default`, `available`, `vertices`, `triangles`, `missing_buffers`, `unsupported`, `read_error`, `status`.
 
 Команда всегда делает глубокую проверку: BIN и неподдерживаемые возможности видны сразу. На установленном MSFS 2020 один вызов занимает около 0.6 с.
 

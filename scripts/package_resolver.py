@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import unquote
 
-from msfs_gltf import load_gltf, read_document
+from msfs_gltf import load_gltf, read_document, unsupported_geometry_extensions
 
 
 GENERATED_AIRCRAFT_DIRS = {"msfs_gui_build"}
@@ -72,13 +72,13 @@ def resolve(base, value):
     return (base / Path(os.path.expandvars(str(value))).expanduser()).resolve()
 
 
-def rebase(path, aircraft, index):
+def rebase(path, aircraft, index, *, allow_global=False):
     """A livery's relative path is written for the merged VFS tree, so on disk
     it points inside the livery package where nothing exists. The index knows
     which installed package actually owns the named aircraft or folder."""
     if index is None or path.exists():
         return path, None, []
-    found, origin, candidates = index.rebase(path, aircraft)
+    found, origin, candidates = index.rebase(path, aircraft, allow_global=allow_global)
     if found is not None:
         return found, origin, []
     return path, None, candidates
@@ -243,6 +243,7 @@ def model_from_cfg(folder, index=None, aircraft=None):
         folder.parent if MODEL_DIR.fullmatch(folder.name) else folder)
     entries = {key: val for section, key, val in sections(cfg) if section == "models"}
     models = []
+    seen_paths = set()
     for role, value in (("exterior", entries.get("exterior") or entries.get("normal")),
                         ("interior", entries.get("interior"))):
         if not value:
@@ -254,6 +255,10 @@ def model_from_cfg(folder, index=None, aircraft=None):
             if error:
                 raise ValueError(f"{error} Задайте models вручную.")
             path = files[0]
+        key = _path_key(path)
+        if key in seen_paths:
+            continue
+        seen_paths.add(key)
         models.append({"path": str(path), "role": role, "origin": origin or "model.cfg"})
     if not models:
         raise ValueError(f"В {cfg} нет локальных exterior/normal/interior. Задайте models вручную.")
@@ -287,7 +292,10 @@ def _geometry_counts(document):
 def inspect_gltf(path):
     """Deep check of one glTF/GLB using the shared container loader."""
     result = {"path": str(path), "available": path.is_file(), "missing_buffers": [], "unsupported": [],
-              "read_error": None, "vertices": None, "triangles": None, "source_format": path.suffix.casefold().lstrip(".")}
+              "read_error": None, "vertices": None, "triangles": None,
+              "source_format": path.suffix.casefold().lstrip("."), "extensions_used": [],
+              "extensions_required": [], "primitive_modes": [], "sparse_accessors": 0,
+              "buffer_count": 0}
     if not result["available"]:
         return result
     try:
@@ -312,10 +320,15 @@ def inspect_gltf(path):
         result["available"] = False
         result["read_error"] = "ожидался JSON-объект glTF"
         return result
-    if "KHR_draco_mesh_compression" in (document.get("extensionsUsed") or []):
-        result["unsupported"].append("Draco compression")
+    result["extensions_used"] = sorted(str(value) for value in (document.get("extensionsUsed") or []))
+    result["extensions_required"] = sorted(str(value) for value in (document.get("extensionsRequired") or []))
+    result["buffer_count"] = len(document.get("buffers") or [])
+    result["sparse_accessors"] = sum(1 for accessor in document.get("accessors") or []
+                                     if isinstance(accessor, dict) and "sparse" in accessor)
+    result["unsupported"].extend(unsupported_geometry_extensions(document))
     modes = {primitive.get("mode", 4) for mesh in document.get("meshes") or []
              for primitive in mesh.get("primitives") or []}
+    result["primitive_modes"] = sorted(mode for mode in modes if isinstance(mode, int))
     # The geometry adapter triangulates the standard strip/fan modes before
     # handing the document to Blender. Points/lines/line loops remain outside
     # the aircraft mesh contract and are reported before a worker is started.
@@ -444,6 +457,9 @@ def inspect_variant(folder, aircraft, deep=False, index=None):
                 model["reason_code"] = "MISSING_GLTF"
             elif deep:
                 checked = inspect_gltf(path)
+                for key in ("source_format", "extensions_used", "extensions_required", "primitive_modes",
+                            "sparse_accessors", "buffer_count"):
+                    model[key] = checked[key]
                 model["missing_buffers"] = checked["missing_buffers"]
                 model["unsupported"] = checked["unsupported"]
                 model["available"] = checked["available"] and not checked["missing_buffers"] and not checked["unsupported"]
@@ -580,8 +596,19 @@ def collect_dependencies(folder, roots=(), index=None):
     for item in manifest.get("dependencies") or []:
         name = item.get("name") if isinstance(item, dict) else item
         if name:
-            dependencies.append({"kind": "manifest", "name": str(name), "path": None,
-                                 "resolved": False, "source": "manifest.json"})
+            entry = {"kind": "manifest", "name": str(name), "path": None,
+                     "resolved": False, "source": "manifest.json"}
+            if index is not None:
+                matches = index.package_folders(name)
+                if len(matches) == 1:
+                    entry.update(path=str(matches[0]), resolved=True, origin="package_index")
+                elif len(matches) > 1:
+                    entry["problem_code"] = "ambiguous_owner"
+                    entry["detail"] = "несколько установленных пакетов: " + "; ".join(map(str, matches))
+                else:
+                    entry["problem_code"] = "manifest_package_missing"
+                    entry["detail"] = "пакет не найден среди установленных корней"
+            dependencies.append(entry)
     cfg = by_case(folder, "aircraft.cfg")
     if cfg.is_file():
         try:
@@ -591,13 +618,15 @@ def collect_dependencies(folder, roots=(), index=None):
                     entry = {"kind": "base_container", "name": Path(value.replace("\\", "/")).name,
                              "path": str(target), "resolved": target.is_dir(), "source": str(cfg)}
                     if not entry["resolved"] and index is not None:
-                        found, origin, ambiguous = rebase(target, folder, index)
+                        found, origin, ambiguous = rebase(target, folder, index, allow_global=True)
                         if ambiguous:
+                            entry["problem_code"] = "ambiguous_owner"
                             entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                         elif origin:
                             entry.update(path=str(found), resolved=True, origin=origin)
                         else:
                             entry["base_installed"] = False
+                            entry["problem_code"] = "base_aircraft_missing"
                             entry["detail"] = "базовый самолёт не установлен"
                     if not entry["resolved"] and roots:
                         found = locate_aircraft_folder(entry["name"], roots)
@@ -624,17 +653,23 @@ def collect_dependencies(folder, roots=(), index=None):
             target = resolve(variant, value.replace("\\", "/"))
             if folder not in target.parents and target != folder:
                 found, origin, ambiguous = rebase(target, folder, index)
-                entry = {"kind": "model", "name": key, "path": str(found),
-                         "resolved": found.exists(), "source": str(cfg)}
+                entry = {"kind": "model", "name": key,
+                         "path": str(found if found is not None else target),
+                         "resolved": bool(found is not None and found.exists()), "source": str(cfg)}
                 if origin:
                     entry["origin"] = origin
                 if ambiguous:
+                    entry["problem_code"] = "ambiguous_owner"
                     entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                 elif not entry["resolved"] and base_entry is not None:
                     # The base folder can be installed while the file the livery
                     # declares inside it is not: those are different user actions.
-                    entry["detail"] = ("базовый самолёт установлен, но объявленный файл в нём отсутствует"
-                                       if base_entry["resolved"] else "базовый самолёт не установлен")
+                    if base_entry["resolved"]:
+                        entry["problem_code"] = "declared_model_file_missing"
+                        entry["detail"] = "базовый самолёт установлен, но объявленный файл в нём отсутствует"
+                    else:
+                        entry["problem_code"] = "base_aircraft_missing"
+                        entry["detail"] = "базовый самолёт не установлен"
                 dependencies.append(entry)
     for texture in texture_variants(folder):
         cfg = by_case(texture, "texture.cfg")
@@ -647,15 +682,26 @@ def collect_dependencies(folder, roots=(), index=None):
         for key, value in values:
             target = resolve(texture, value.replace("\\", "/"))
             if folder not in target.parents:
-                found, origin, ambiguous = rebase(target, folder, index)
+                found, origin, ambiguous = rebase(target, folder, index, allow_global=True)
                 resolved_path = found if found is not None else target
+                target_parts = target.parts
+                airplane_index = next((position for position, part in enumerate(target_parts)
+                                       if part.casefold() == "airplanes"
+                                       and position + 1 < len(target_parts)), None)
+                target_aircraft = (target_parts[airplane_index + 1]
+                                   if airplane_index is not None else None)
                 entry = {"kind": "texture_fallback", "name": key, "path": str(resolved_path),
-                         "resolved": bool(found is not None and found.is_dir()), "source": str(cfg)}
+                         "resolved": bool(found is not None and found.is_dir()), "optional": True,
+                         "source": str(cfg), "target_aircraft": target_aircraft,
+                         "target_aircraft_installed": (None if target_aircraft is None or index is None
+                                                        else bool(index.aircraft_folders(target_aircraft)))}
                 if ambiguous:
+                    entry["problem_code"] = "ambiguous_owner"
                     entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
                 elif origin:
                     entry["origin"] = origin
                 elif not entry["resolved"]:
+                    entry["problem_code"] = "optional_texture_fallback_missing"
                     entry["detail"] = "папка fallback не найдена"
                 dependencies.append(entry)
     unique = []
@@ -729,9 +775,13 @@ def resolve_aircraft(folder, *, roots=(), deep=False, index=None):
                     # wings, ...). The default build takes one per role; the full
                     # candidate list stays available for manual selection.
                     result["best_models"] = []
+                    best_model_paths = set()
                     for candidate in best["candidates"]:
-                        if any(m["role"] == candidate["role"] for m in result["best_models"]):
+                        path_key = _path_key(candidate["path"])
+                        if (candidate["role"] in {m["role"] for m in result["best_models"]}
+                                or path_key in best_model_paths):
                             continue
+                        best_model_paths.add(path_key)
                         result["best_models"].append({"path": candidate["path"], "role": candidate["role"],
                                                       "origin": candidate["origin"], "variant": candidate["variant"]})
                     result["candidates"] = [c for v in result["variants"] for c in v["candidates"]]
@@ -888,6 +938,11 @@ def model_choices(folder, *, roots=(), index=None):
         chosen.sort(key=lambda e: (not e["default"], not e["declared"], not e["available"],
                                    e["lod"] if e["lod"] is not None else 99, e["name"].casefold()))
         roles[role] = chosen
+    source_gaps = [{"kind": item.get("kind"), "role": item.get("name"),
+                    "path": item.get("path"), "problem_code": item.get("problem_code"),
+                    "detail": item.get("detail")}
+                   for item in report["dependencies"]
+                   if not item.get("resolved") and item.get("kind") == "model"]
     return {"aircraft": report["aircraft"], "path": report["path"], "reason_code": report["reason_code"],
             "reason": report["reason"], "action": report["action"], "partial": report["partial"],
             "needs_model_selection": report["needs_model_selection"],
@@ -895,4 +950,5 @@ def model_choices(folder, *, roots=(), index=None):
             "base_aircraft": None if base is None else {"name": base.get("name"), "path": base["path"],
                                                        "scanned": base_scanned},
             "roles": roles, "default_models": [{"path": m["path"], "role": m["role"]} for m in report["best_models"]],
+            "source_gaps": source_gaps,
             "missing_resources": report["missing_resources"]}

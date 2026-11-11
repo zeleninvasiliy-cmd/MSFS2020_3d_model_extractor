@@ -37,6 +37,7 @@ ORIGIN_LABELS = {
     "base_container": "наследование базового самолёта",
     "aircraft_index": "пакет базового самолёта",
     "base_package": "базовый пакет",
+    "package_index": "индекс пакетов MSFS",
     "name_lookup": "поиск по имени в каталоге MSFS",
 }
 
@@ -46,11 +47,50 @@ FOREIGN_ORIGINS = {"scan", "base_container", "aircraft_index", "base_package", "
 AIRCRAFT_FILTERS = ("Все", "Полностью доступные", "Частично доступные", "Недоступные")
 
 
-def aircraft_group_name(name):
-    """Return a stable base name for livery/physical variants in the catalog."""
+def aircraft_group_stem(name):
+    """Remove package suffixes that describe a livery or shared common files."""
     text = str(name or "?").strip() or "?"
-    match = re.match(r"^(.*?)(?:_livery(?:_|$).*)$", text, re.IGNORECASE)
-    return (match.group(1) or text) if match else text
+    text = re.sub(r"_Livery.*$", "", text, flags=re.IGNORECASE)
+    return re.sub(r"_Common$", "", text, flags=re.IGNORECASE)
+
+
+def aircraft_family_prefix(stem):
+    """Find a broad model-family key and the remaining subtype path."""
+    tokens = stem.split("_")
+    for index in range(1, len(tokens)):
+        match = re.match(r"^([A-Za-z-]*\d+)", tokens[index])
+        if not match:
+            continue
+        core = match.group(1)
+        prefix = "_".join([*tokens[:index], core])
+        suffix = [tokens[index][len(core):], *tokens[index + 1:]]
+        return prefix, tuple(token for token in suffix if token)
+    return stem, ()
+
+
+def group_aircraft_entries(entries):
+    """Group liveries and related model subtypes beneath one aircraft family."""
+    prepared = []
+    family_stems = {}
+    for entry in entries:
+        name = entry.get("aircraft", entry.get("name", "?"))
+        stem = aircraft_group_stem(name)
+        prefix, subtype = aircraft_family_prefix(stem)
+        key = prefix.casefold()
+        family_stems.setdefault(key, set()).add(stem.casefold())
+        prepared.append((entry, stem, prefix, subtype))
+
+    groups = {}
+    for entry, stem, prefix, subtype in prepared:
+        family_key = prefix.casefold()
+        # A numeric core is only broad enough when sibling package stems
+        # actually exist. Keep names such as the unique Grand Caravan intact.
+        use_family = len(family_stems[family_key]) > 1
+        group_name = prefix if use_family else stem
+        path = subtype if use_family else ()
+        group = groups.setdefault(group_name, {"entries": []})
+        group["entries"].append((entry, path))
+    return groups
 
 
 def aircraft_status(entry):
@@ -94,6 +134,7 @@ class BuilderApp(tk.Tk):
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.process: subprocess.Popen[str] | None = None
         self.catalog_entries: list[dict] = []
+        self.suppressed_history_stub_count = 0
         self.inventory_entries: list[dict] = []
         self.active_entries: list[dict] = []
         self._aircraft_tree_entries: dict[str, dict] = {}
@@ -147,13 +188,15 @@ class BuilderApp(tk.Tk):
         self.exclude_var = tk.StringVar()
         self.extra_texture_var = tk.StringVar()
         self.project_var = tk.StringVar()
-        self.catalog_root_var.set(self.settings.get("msfs_root", ""))
+        roots = self.package_roots()
+        self.catalog_root_var.set(roots[0] if roots else "")
         self.status_var = tk.StringVar(value="Готово. Выберите каталог или выполните сканирование MSFS.")
         self.build_stage_var = tk.StringVar(value="Этап не запущен")
         self.build_detail_var = tk.StringVar(value="Перейдите по шагам и запустите нужный этап сборки.")
         self.build_result_var = tk.StringVar(value="")
         self.build_variant_var = tk.StringVar(value="")
         self.last_blend_path: Path | None = None
+        self.audit_report_path: Path | None = None
         self.explorer_button_visible = False
         self.object_include: dict[str, bool] = {}
         self.object_details: dict[str, dict] = {}
@@ -168,7 +211,9 @@ class BuilderApp(tk.Tk):
         toolbar = ttk.Frame(self, padding=8)
         toolbar.grid(row=0, column=0, sticky="ew")
         ttk.Button(toolbar, text="Сканировать MSFS", command=self.scan_installed).pack(side="left", padx=3)
+        ttk.Button(toolbar, text="Проверить планы", command=self.audit_geometry_plans).pack(side="left", padx=3)
         ttk.Button(toolbar, text="Выбрать каталог", command=self.choose_catalog).pack(side="left", padx=3)
+        ttk.Button(toolbar, text="Каталоги Packages...", command=self.manage_package_roots).pack(side="left", padx=3)
         ttk.Label(toolbar, textvariable=self.status_var).pack(side="left", padx=16)
 
         notebook = ttk.Notebook(self)
@@ -243,6 +288,7 @@ class BuilderApp(tk.Tk):
         menu.add_cascade(label="Файлы", menu=files)
         self.file_menu = files
         menu.add_command(label="Пути и настройки...", command=self.configure_paths)
+        menu.add_command(label="Каталоги Packages...", command=self.manage_package_roots)
         menu.add_command(label="Индекс пакетов...", command=self.show_package_index)
         menu.add_command(label="Руководство", command=self.open_help)
         self.config(menu=menu)
@@ -264,9 +310,206 @@ class BuilderApp(tk.Tk):
         directory = self.directory_dialog("Папка Packages MSFS (Official/Community) или каталог модов", self.catalog_root_var.get())
         if directory:
             self.catalog_root_var.set(directory)
-            self.settings["msfs_root"] = directory
+            self._remember_package_root(directory)
         self.choose_blender()
         self._save_user_settings()
+
+    def package_roots(self):
+        """Return configured extra roots, including the legacy single-root setting."""
+        values = self.settings.get("msfs_roots", [])
+        if not isinstance(values, list):
+            values = []
+        legacy = self.settings.get("msfs_root")
+        if legacy:
+            values = [*values, legacy]
+        roots = []
+        seen = set()
+        for value in values:
+            if not isinstance(value, str) or not value.strip():
+                continue
+            path = os.path.abspath(os.path.expandvars(os.path.expanduser(value.strip())))
+            key = os.path.normcase(path)
+            if key not in seen:
+                seen.add(key)
+                roots.append(path)
+        return roots
+
+    @staticmethod
+    def append_package_roots(command, roots):
+        for root in roots:
+            command.extend(["--root", str(root)])
+        return command
+
+    def save_package_roots(self, roots):
+        normalized = []
+        seen = set()
+        for value in roots:
+            raw = os.path.expandvars(os.path.expanduser(str(value).strip()))
+            if not raw:
+                continue
+            path = os.path.abspath(raw)
+            key = os.path.normcase(path)
+            if path and key not in seen:
+                seen.add(key)
+                normalized.append(path)
+        self.settings["msfs_roots"] = normalized
+        # Preserve compatibility with v1 settings and command-line setup.
+        self.settings["msfs_root"] = normalized[0] if normalized else ""
+        if not self.project_open:
+            self.catalog_root_var.set(normalized[0] if normalized else "")
+        self._save_user_settings()
+        if hasattr(self, "package_roots_custom_list") and self.package_roots_window.winfo_exists():
+            self.render_package_roots(getattr(self, "package_roots_data", {}))
+
+    def _remember_package_root(self, path):
+        roots = self.package_roots()
+        candidate = os.path.abspath(os.path.expandvars(os.path.expanduser(str(path).strip())))
+        if candidate and os.path.normcase(candidate) not in {os.path.normcase(item) for item in roots}:
+            roots.append(candidate)
+            self.save_package_roots(roots)
+
+    def manage_package_roots(self):
+        if self.busy:
+            return
+        window = getattr(self, "package_roots_window", None)
+        if window is not None and window.winfo_exists():
+            window.deiconify()
+            window.lift()
+            self.refresh_package_roots()
+            return
+        window = tk.Toplevel(self)
+        window.title("Каталоги MSFS и модов")
+        window.geometry("980x590")
+        window.minsize(760, 460)
+        window.transient(self)
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(1, weight=1)
+        self.package_roots_window = window
+        ttk.Label(window, text="Автоматически найденные корни Packages (UserCfg.opt и стандартные расположения):",
+                  wraplength=920, justify="left").grid(row=0, column=0, columnspan=2, sticky="w", padx=10, pady=(10, 4))
+        auto_box = ttk.LabelFrame(window, text="Найдены автоматически", padding=6)
+        auto_box.grid(row=1, column=0, sticky="nsew", padx=(10, 5), pady=5)
+        auto_box.columnconfigure(0, weight=1)
+        auto_box.rowconfigure(0, weight=1)
+        self.package_roots_auto_list = tk.Listbox(auto_box, exportselection=False)
+        self.package_roots_auto_list.grid(row=0, column=0, sticky="nsew")
+        auto_scroll = ttk.Scrollbar(auto_box, command=self.package_roots_auto_list.yview)
+        auto_scroll.grid(row=0, column=1, sticky="ns")
+        self.package_roots_auto_list.configure(yscrollcommand=auto_scroll.set)
+        custom_box = ttk.LabelFrame(window, text="Добавлены вручную", padding=6)
+        custom_box.grid(row=1, column=1, sticky="nsew", padx=(5, 10), pady=5)
+        custom_box.columnconfigure(0, weight=1)
+        custom_box.rowconfigure(0, weight=1)
+        self.package_roots_custom_list = tk.Listbox(custom_box, exportselection=False)
+        self.package_roots_custom_list.grid(row=0, column=0, sticky="nsew")
+        custom_scroll = ttk.Scrollbar(custom_box, command=self.package_roots_custom_list.yview)
+        custom_scroll.grid(row=0, column=1, sticky="ns")
+        self.package_roots_custom_list.configure(yscrollcommand=custom_scroll.set)
+        controls = ttk.Frame(window, padding=(10, 4))
+        controls.grid(row=2, column=0, columnspan=2, sticky="ew")
+        ttk.Button(controls, text="Добавить каталог...", command=self.add_package_root).pack(side="left")
+        ttk.Button(controls, text="Убрать выбранный", command=self.remove_package_root).pack(side="left", padx=6)
+        ttk.Button(controls, text="Обновить список", command=self.refresh_package_roots).pack(side="left", padx=6)
+        ttk.Button(controls, text="Закрыть", command=window.destroy).pack(side="right")
+        self.package_roots_summary_var = tk.StringVar(value="Проверка каталогов...")
+        ttk.Label(window, textvariable=self.package_roots_summary_var, wraplength=940,
+                  justify="left").grid(row=3, column=0, columnspan=2, sticky="w", padx=10, pady=(4, 10))
+        self.package_roots_data = {}
+        self.render_package_roots({})
+        self.refresh_package_roots()
+
+    def render_package_roots(self, data):
+        if not hasattr(self, "package_roots_auto_list") or not self.package_roots_window.winfo_exists():
+            return
+        data = data if isinstance(data, dict) else {}
+        self.package_roots_data = data
+        automatic = self.package_roots_data.get("automatic_roots", [])
+        if not isinstance(automatic, list):
+            automatic = []
+        custom = self.package_roots()
+        custom_keys = {os.path.normcase(os.path.abspath(path)) for path in custom}
+        automatic = [path for path in automatic if os.path.normcase(os.path.abspath(path)) not in custom_keys]
+        self.package_roots_auto_list.delete(0, "end")
+        self.package_roots_custom_list.delete(0, "end")
+        for path in automatic:
+            self.package_roots_auto_list.insert("end", path)
+        missing_values = data.get("missing_additional_roots", [])
+        if not isinstance(missing_values, list):
+            missing_values = []
+        missing = {os.path.normcase(os.path.abspath(path)) for path in missing_values if isinstance(path, str)}
+        for path in custom:
+            label = f"⚠ {path} — каталог не найден" if os.path.normcase(os.path.abspath(path)) in missing else path
+            self.package_roots_custom_list.insert("end", label)
+        if not automatic:
+            self.package_roots_auto_list.insert("end", "MSFS не обнаружен автоматически")
+        if not custom:
+            self.package_roots_custom_list.insert("end", "Дополнительные каталоги не добавлены")
+        missing_count = len(missing)
+        searched_values = data.get("searched_roots", [])
+        searched_count = (len(searched_values) if isinstance(searched_values, list) and searched_values
+                          else len(automatic) + len(custom))
+        self.package_roots_summary_var.set(
+            f"Каталогов в поиске: {searched_count}; автоматически найдено: "
+            f"{len(automatic)}; добавлено вручную: {len(custom)}; отсутствует: {missing_count}. "
+            "Отсутствующие пути отмечены значком ⚠."
+        )
+
+    def refresh_package_roots(self):
+        if not hasattr(self, "package_roots_window") or not self.package_roots_window.winfo_exists():
+            return
+        command = self.append_package_roots(cli_command("roots"), self.package_roots())
+
+        def loaded(code, output):
+            if not self.package_roots_window.winfo_exists():
+                return
+            if code:
+                self.append_log("Ошибка проверки каталогов Packages: " + output[-1200:])
+                self.package_roots_summary_var.set(
+                    "Не удалось обновить список каталогов. Проверьте вкладку «Журнал» и повторите проверку."
+                )
+                messagebox.showerror(
+                    "Каталоги Packages",
+                    "Не удалось проверить список. Технические подробности записаны во вкладку «Журнал».",
+                    parent=self.package_roots_window,
+                )
+                return
+            try:
+                data = json.loads(output)
+            except json.JSONDecodeError:
+                self.append_log("Не удалось разобрать ответ команды roots: " + output[-1200:])
+                self.package_roots_summary_var.set(
+                    "Ответ проверки каталогов повреждён. Подробности записаны во вкладку «Журнал»."
+                )
+                messagebox.showerror(
+                    "Каталоги Packages",
+                    "Программа не смогла прочитать ответ проверки. Подробности записаны во вкладку «Журнал».",
+                    parent=self.package_roots_window,
+                )
+                return
+            self.render_package_roots(data)
+
+        self.run_command(command, loaded)
+
+    def add_package_root(self):
+        path = self.directory_dialog("Добавить папку Packages, Community или каталог пакета", self.catalog_root_var.get())
+        if path:
+            roots = self.package_roots()
+            if os.path.normcase(os.path.abspath(path)) not in {os.path.normcase(item) for item in roots}:
+                roots.append(path)
+                self.save_package_roots(roots)
+                self.catalog_root_var.set(path)
+            self.refresh_package_roots()
+
+    def remove_package_root(self):
+        selection = self.package_roots_custom_list.curselection()
+        roots = self.package_roots()
+        index = selection[0] if selection else None
+        if index is None or index >= len(roots):
+            return
+        roots.pop(index)
+        self.save_package_roots(roots)
+        self.refresh_package_roots()
 
     def _save_user_settings(self):
         self.settings["blender"] = self.blender_var.get().strip()
@@ -333,6 +576,10 @@ class BuilderApp(tk.Tk):
                                          wraplength=900, justify="left")
         self.aircraft_reason.grid(row=0, column=0, sticky="ew")
         ttk.Button(diagnose, text="Проверить пакет подробно", command=self.diagnose_selected).grid(row=0, column=1, padx=(8, 0))
+        self.package_root_recovery_button = ttk.Button(
+            diagnose, text="Добавить каталог базы…", command=self.open_package_root_recovery)
+        self.package_root_recovery_button.grid(row=0, column=2, padx=(8, 0))
+        self.package_root_recovery_button.grid_remove()
         self.aircraft_detail = tk.Text(tab, height=8, wrap="word", state="disabled")
         self.aircraft_detail.grid(row=4, column=0, sticky="ew", pady=(8, 0))
 
@@ -443,6 +690,8 @@ class BuilderApp(tk.Tk):
         buttons.grid(row=4, column=0, sticky="w", pady=12)
         ttk.Button(buttons, text="Собрать geometry", command=lambda: self.start_build("geometry")).pack(side="left", padx=(0, 8))
         ttk.Button(buttons, text="Открыть checkpoint", command=self.open_checkpoint).pack(side="left", padx=8)
+        ttk.Button(buttons, text="Проверить checkpoint", command=self.audit_geometry_checkpoint).pack(side="left", padx=8)
+        ttk.Button(buttons, text="Открыть отчёт аудита", command=self.open_geometry_audit_report).pack(side="left", padx=8)
         self.geometry_explorer_button = ttk.Button(buttons, text="Перейти к .blend в проводнике", command=self.open_blend_in_explorer)
         ttk.Button(buttons, text="Остановить", command=self.stop_build).pack(side="left", padx=8)
         ttk.Label(tab, text="Повторная сборка того же режима создаёт новый пронумерованный checkpoint.", foreground="#555").grid(row=5, column=0, sticky="w", pady=(2, 0))
@@ -712,7 +961,8 @@ class BuilderApp(tk.Tk):
     def open_texture_table(self):
         if self.busy or not self.project_open:
             return
-        TextureTable(self, cli_command)
+        command_factory = lambda *parts: self.append_package_roots(cli_command(*parts), self.package_roots())
+        TextureTable(self, command_factory)
 
     def scan_blend_objects(self, blend, silent=False):
         blender = self.blender_var.get().strip()
@@ -819,8 +1069,7 @@ class BuilderApp(tk.Tk):
         path = self.directory_dialog("Выберите каталог MSFS или каталог с самолётами", self.catalog_root_var.get())
         if path:
             self.catalog_root_var.set(path)
-            self.settings["msfs_root"] = path
-            self._save_user_settings()
+            self._remember_package_root(path)
             self.scan_custom()
 
     def choose_output(self):
@@ -849,12 +1098,119 @@ class BuilderApp(tk.Tk):
             return
         self._show_catalog_step()
         command = cli_command("catalog")
-        root = self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
         if self.catalog_deep_var.get():
             command.append("--deep")
         self.run_command(command, self.on_catalog_result)
+
+    def audit_geometry_plans(self):
+        """Run a package-wide geometry preflight; no Blender process is started."""
+        if self.busy:
+            return
+        command = self.append_package_roots(cli_command("audit-plans"), self.package_roots())
+        if self.run_command(command, self.on_geometry_plan_audit_result):
+            self.status_var.set("Проверка build-plan для доступных самолётов: анализ glTF и ресурсов…")
+
+    def on_geometry_plan_audit_result(self, code, output):
+        try:
+            data = json.loads(output)
+        except (json.JSONDecodeError, TypeError):
+            detail = output[-1200:] if output else "Ответ команды пуст."
+            self.append_log("Не удалось прочитать результат проверки планов: " + detail)
+            self.status_var.set("Ошибка проверки планов геометрии")
+            messagebox.showerror("Проверка планов", "Не удалось прочитать результат. Подробности во вкладке «Журнал».")
+            return
+        if not isinstance(data, dict):
+            self.append_log("Ответ проверки планов имеет неверную структуру JSON.")
+            self.status_var.set("Не удалось обработать ответ: неверная структура JSON")
+            messagebox.showerror("Проверка планов", "Ответ имеет неверную структуру. Подробности во вкладке «Журнал».")
+            return
+        validated = int(data.get("plans_validated") or 0)
+        buildable = int(data.get("geometry_buildable") or 0)
+        failure_values = data.get("failures") if isinstance(data.get("failures"), list) else []
+        failures = [item for item in failure_values if isinstance(item, dict)]
+        missing_roots = data.get("missing_roots") if isinstance(data.get("missing_roots"), list) else []
+        if code == 0 and not failures and not missing_roots:
+            summary = (f"Планы геометрии проверены: {validated}/{buildable}. "
+                       "Blender не запускался, файлы не создавались.")
+            self.status_var.set(summary)
+            self.append_log(summary)
+            messagebox.showinfo("Проверка планов геометрии", summary)
+            return
+        examples = [f"• {item.get('aircraft', '?')}: {item.get('problem', 'ошибка')}" for item in failures[:8]]
+        examples.extend(f"• Каталог не найден: {path}" for path in missing_roots[:4])
+        more = f"\n…и ещё {len(failures) - 8}" if len(failures) > 8 else ""
+        if len(missing_roots) > 4:
+            more += f"\n…и ещё отсутствующих каталогов: {len(missing_roots) - 4}"
+        summary = (f"Прошли: {validated}/{buildable}; отклонено планов: {len(failures)}; "
+                   f"не найдено корней: {len(missing_roots)}.")
+        detail = "\n".join(examples) + more
+        if failures and missing_roots:
+            status = "Есть отклонённые планы и отсутствующие корни; подробности в журнале."
+        elif missing_roots:
+            status = "Не все каталоги проверены; исправьте отсутствующие корни."
+        else:
+            status = "Есть отклонённые планы геометрии; подробности в журнале."
+        self.status_var.set(status)
+        self.append_log(summary + ("\n" + detail if detail else ""))
+        advice = ("Проверьте пути в окне «Каталоги Packages…» и повторите проверку."
+                  if missing_roots else
+                  "Откройте диагностику соответствующего пакета через каталог самолётов.")
+        messagebox.showwarning(
+            "Проверка планов геометрии",
+            summary + ("\n\n" + detail if detail else "")
+            + "\n\n" + advice,
+        )
+        if missing_roots:
+            if messagebox.askyesno("Исправить корни Packages?", "Открыть окно каталогов, чтобы убрать или заменить отсутствующий путь?"):
+                self.manage_package_roots()
+        elif failures and messagebox.askyesno(
+                "Открыть диагностику самолёта?",
+                f"Перейти к первому отклонённому самолёту: {failures[0].get('aircraft', '?')}?"):
+            self.focus_audited_aircraft(failures[0])
+
+    def focus_audited_aircraft(self, failure):
+        """Select an audit failure in the catalog and open its package details."""
+        if self.project_open:
+            messagebox.showinfo("Проект открыт", "Сначала закройте текущий проект, чтобы перейти к другому самолёту.")
+            return
+        self._show_catalog_step()
+        self.aircraft_filter_var.set(AIRCRAFT_FILTERS[0])
+        self.populate_aircraft()
+        source_path = str(failure.get("path") or "")
+        item_id = self._aircraft_tree_paths.get(source_path) if source_path else None
+        if item_id is None:
+            name = str(failure.get("aircraft") or "").casefold()
+            matches = [candidate_id for candidate_id, entry in self._aircraft_tree_entries.items()
+                       if str(entry.get("aircraft", "")).casefold() == name]
+            item_id = matches[0] if len(matches) == 1 else None
+        if item_id:
+            self._select_catalog_entry(item_id)
+            return
+
+        command = self.append_package_roots(cli_command("catalog"), self.package_roots())
+
+        def scanned(code, output):
+            self.on_catalog_result(code, output)
+            if code == 0:
+                fresh_id = self._aircraft_tree_paths.get(source_path) if source_path else None
+                if fresh_id:
+                    self._select_catalog_entry(fresh_id)
+                    return
+            messagebox.showinfo("Самолёт не найден", "Обновите корни Packages и повторите проверку планов.")
+
+        self.run_command(command, scanned)
+
+    def _select_catalog_entry(self, item_id):
+        group_id = self.aircraft_list.parent(item_id)
+        while group_id:
+            self.aircraft_list.item(group_id, open=True)
+            group_id = self.aircraft_list.parent(group_id)
+        self.aircraft_list.selection_set(item_id)
+        self.aircraft_list.focus(item_id)
+        self.aircraft_list.see(item_id)
+        self.on_aircraft_select()
+        self.diagnose_selected()
 
     def scan_custom(self):
         if self.busy or self.project_open:
@@ -863,8 +1219,10 @@ class BuilderApp(tk.Tk):
         if not root:
             messagebox.showwarning("Нет каталога", "Сначала выберите каталог MSFS или каталог самолёта.")
             return
-        # A chosen Packages/Community root may contain many packages.
-        command = cli_command("catalog", "--root", root)
+        # A chosen Packages/Community root may contain many packages. All saved
+        # roots are scanned together so cross-package links can resolve.
+        self._remember_package_root(root)
+        command = self.append_package_roots(cli_command("catalog"), self.package_roots())
         if self.catalog_deep_var.get():
             command.append("--deep")
         self.run_command(command, self.on_catalog_result)
@@ -878,7 +1236,7 @@ class BuilderApp(tk.Tk):
         self._set_busy_widgets(True)
         self.append_log("$ " + " ".join(f'\"{part}\"' if " " in part else part for part in command))
         self.status_var.set("Выполняется...")
-        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "models", "validate", "bones",
+        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "roots", "models", "validate", "bones", "audit-plans", "audit",
                                         "find-textures"} for part in command)
 
         def worker():
@@ -982,8 +1340,12 @@ class BuilderApp(tk.Tk):
         try:
             data = json.loads(output)
             self.catalog_entries = data.get("aircraft", [])
+            self.suppressed_history_stub_count = len(data.get("suppressed_history_stubs", []))
             self.active_entries = self.catalog_entries
             self.populate_aircraft(self.active_entries)
+            if self.suppressed_history_stub_count:
+                self.append_log(f"Скрыты пустые записи fs-base-history: {self.suppressed_history_stub_count}; "
+                                "рабочий одноимённый пакет оставлен в списке.")
             self.report_index(data.get("index"))
         except json.JSONDecodeError:
             self.append_log("Не удалось разобрать JSON catalog. Проверьте журнал.")
@@ -1035,9 +1397,7 @@ class BuilderApp(tk.Tk):
         if self.busy:
             return
         command = cli_command("index")
-        root = self.catalog_root_var.get().strip() or self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
         name = self.index_filter_var.get().strip()
         if name:
             command += ["--aircraft", name]
@@ -1098,9 +1458,7 @@ class BuilderApp(tk.Tk):
             return
         self._build_model_window()
         command = cli_command("models", path)
-        root = self.catalog_root_var.get().strip() or self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
 
         def loaded(code, output):
             if not self.model_window.winfo_exists():
@@ -1125,7 +1483,7 @@ class BuilderApp(tk.Tk):
             previous.destroy()
         window = tk.Toplevel(self)
         window.title("Состав моделей самолёта")
-        window.geometry("1080x720")
+        window.geometry("1220x720")
         window.transient(self)
         window.columnconfigure(0, weight=1)
         window.rowconfigure(2, weight=1)
@@ -1145,18 +1503,18 @@ class BuilderApp(tk.Tk):
             box.grid(row=row, column=0, sticky="nsew", padx=10, pady=4)
             box.columnconfigure(0, weight=1)
             box.rowconfigure(0, weight=1)
-            columns = ("include", "lod", "vertices", "triangles", "role_source", "origin", "status")
+            columns = ("include", "variant", "lod", "vertices", "triangles", "role_source", "origin", "status")
             tree = ttk.Treeview(box, columns=columns, show="tree headings", selectmode="browse", height=6)
-            tree.heading("#0", text="Файл")
-            tree.column("#0", width=260, stretch=True)
-            titles = {"include": "Взять", "lod": "LOD", "vertices": "Вершин", "triangles": "Треугольников",
+            tree.heading("#0", text="Файл модели")
+            tree.column("#0", width=220, stretch=True)
+            titles = {"include": "Взять", "variant": "Папка модели", "lod": "LOD", "vertices": "Вершин", "triangles": "Треугольников",
                       "role_source": "Роль по", "origin": "Источник", "status": "Состояние"}
-            widths = {"include": 50, "lod": 50, "vertices": 90, "triangles": 110,
-                      "role_source": 100, "origin": 210, "status": 150}
+            widths = {"include": 44, "variant": 130, "lod": 44, "vertices": 78, "triangles": 96,
+                      "role_source": 80, "origin": 150, "status": 120}
             for name in columns:
                 tree.heading(name, text=titles[name])
                 tree.column(name, width=widths[name], stretch=name in {"origin", "status"},
-                            anchor="w" if name in {"role_source", "origin", "status"} else "e")
+                            anchor="w" if name in {"variant", "role_source", "origin", "status"} else "e")
             tree.grid(row=0, column=0, sticky="nsew")
             scroll = ttk.Scrollbar(box, command=tree.yview)
             scroll.grid(row=0, column=1, sticky="ns")
@@ -1190,12 +1548,22 @@ class BuilderApp(tk.Tk):
         if base:
             headline.append(f"Базовый самолёт: {base.get('name')} — "
                             f"{'просканирован, его модели предложены ниже' if base.get('scanned') else 'установлен'}.")
+        for gap in data.get("source_gaps", []):
+            if gap.get("problem_code") == "declared_model_file_missing":
+                role = {"exterior": "экстерьера", "interior": "интерьера"}.get(
+                    gap.get("role"), gap.get("role", "модели"))
+                headline.append(f"В пакете отсутствует объявленный model-файл {role}: {Path(gap.get('path') or '').name}. "
+                                "Если подходящая модель базы есть ниже, отметьте её вручную; программа сохранит выбор в проект.")
+            elif gap.get("problem_code") == "base_aircraft_missing":
+                role = {"exterior": "экстерьера", "interior": "интерьера"}.get(
+                    gap.get("role"), gap.get("role", "модели"))
+                headline.append(f"Для роли {role} отсутствует базовый самолёт. Установите базовый пакет или выберите другой источник.")
         self.model_headline.configure(text="\n".join(line for line in headline if line))
         for role, tree in self.model_trees.items():
             tree.delete(*tree.get_children())
             entries = data.get("roles", {}).get(role, [])
             if not entries:
-                tree.insert("", "end", text="Кандидатов нет", values=("—", "", "", "", "", "", "нет файлов"))
+                tree.insert("", "end", text="Кандидатов нет", values=("—", "", "", "", "", "", "", "нет файлов"))
                 continue
             for entry in entries:
                 key = os.path.normcase(entry["path"])
@@ -1205,7 +1573,7 @@ class BuilderApp(tk.Tk):
                 selected = (saved.get(key) == role if saved else suggested) and entry["available"]
                 lod = "—" if entry.get("lod") is None else f"{entry['lod']:02d}"
                 item_id = tree.insert("", "end", text=entry["name"], values=(
-                    "☑" if selected else "☐", lod,
+                    "☑" if selected else "☐", entry.get("variant") or "—", lod,
                     "—" if entry.get("vertices") is None else f"{entry['vertices']:,}".replace(",", " "),
                     "—" if entry.get("triangles") is None else f"{entry['triangles']:,}".replace(",", " "),
                     entry.get("role_source", ""), self.MODEL_ORIGIN_TITLES.get(entry.get("origin"), entry.get("origin", "")),
@@ -1254,6 +1622,13 @@ class BuilderApp(tk.Tk):
                  f"Роль: {self.MODEL_ROLE_TITLES.get(entry['role'], entry['role'])} "
                  f"(определена по: {entry.get('role_source', 'неизвестно')}). "
                  f"Model-вариант: {entry.get('variant') or '—'}."]
+        substitute = next((gap for gap in self.model_data.get("source_gaps", [])
+                           if gap.get("role") == entry.get("role")
+                           and gap.get("problem_code") == "declared_model_file_missing"), None)
+        if substitute:
+            expected = Path(substitute.get("path") or "").name
+            lines.append(f"Кандидат заменяет отсутствующую ссылку {expected} для этой роли. "
+                         "Проверьте, что его геометрия подходит.")
         if entry.get("missing_buffers"):
             lines.append("Отсутствуют буферы: " + "; ".join(entry["missing_buffers"]))
         if entry.get("unsupported"):
@@ -1277,6 +1652,9 @@ class BuilderApp(tk.Tk):
         guessed = [entry["name"] for entry in chosen if entry.get("role_source") == "имя файла"]
         if guessed:
             text += " Роль по имени файла подтверждаете вы: " + ", ".join(guessed) + "."
+        if chosen:
+            sources = [f"{entry.get('variant') or 'папка без имени'}/{entry['name']}" for entry in chosen]
+            text += " Источники: " + "; ".join(sources) + "."
         self.model_summary.configure(text=text)
         self.model_confirm.configure(state="normal" if chosen else "disabled")
 
@@ -1347,6 +1725,9 @@ class BuilderApp(tk.Tk):
             state = (origin_text(base.get("origin")) if base.get("resolved")
                      else base.get("detail") or "ссылка не разрешена")
             lines.append(f"Базовый самолёт: {base.get('name')} — {state}")
+            if not base.get("resolved"):
+                lines.append("Без базы доступны только найденные модели; отсутствующие интерьер и базовые текстуры не появятся. "
+                             "Если база установлена в другом корне, нажмите «Добавить каталог базы…».")
         models = entry.get("best_models", [])
         if models:
             lines.append("Доступные модели:")
@@ -1415,16 +1796,93 @@ class BuilderApp(tk.Tk):
             lines.append("")
             lines.append("Texture-варианты: " + ", ".join(report["textures"]))
         dependencies = report.get("dependencies", [])
-        if dependencies:
+        fallback_dependencies = [item for item in dependencies if item.get("kind") == "texture_fallback"]
+        other_dependencies = [item for item in dependencies if item.get("kind") != "texture_fallback"]
+        if other_dependencies or fallback_dependencies:
             lines.append("")
             lines.append("Зависимости:")
-            for dependency in dependencies[:12]:
-                mark = "OK" if dependency.get("resolved") else "НЕ разрешена"
-                origin = f", {origin_text(dependency['origin'])}" if dependency.get("origin") else ""
-                detail = f" — {dependency['detail']}" if dependency.get("detail") else ""
-                lines.append(f"  • {dependency.get('kind')}: {dependency.get('path') or dependency.get('name')}"
-                             f" — {mark}{origin}{detail}")
+            labels = {"manifest": "Пакеты-зависимости", "base_container": "Базовый самолёт",
+                      "model": "Ссылки на модели", "texture_fallback": "texture.cfg fallback"}
+            grouped = {}
+            for dependency in other_dependencies:
+                grouped.setdefault(dependency.get("kind", "other"), []).append(dependency)
+            for kind, items in sorted(grouped.items()):
+                resolved = [item for item in items if item.get("resolved")]
+                unresolved = [item for item in items if not item.get("resolved")]
+                lines.append(f"  • {labels.get(kind, kind)}: найдено {len(resolved)} из {len(items)}")
+                for dependency in resolved[:2]:
+                    source = dependency.get("path") or dependency.get("name")
+                    origin = f", {origin_text(dependency['origin'])}" if dependency.get("origin") else ""
+                    lines.append(f"      ✓ {dependency.get('name') or kind}: {source} — OK{origin}")
+                for dependency in unresolved[:4]:
+                    source = dependency.get("path") or dependency.get("name") or "путь не указан"
+                    detail = f" — {dependency['detail']}" if dependency.get("detail") else ""
+                    lines.append(f"      ! {dependency.get('name') or kind}: {source}{detail}")
+                    advice = BuilderApp._dependency_next_step(dependency)
+                    if advice:
+                        lines.append(f"        Следующий шаг: {advice}")
+                if len(unresolved) > 4:
+                    lines.append(f"      … ещё не разрешено: {len(unresolved) - 4}")
+            if fallback_dependencies:
+                found = sum(bool(item.get("resolved")) for item in fallback_dependencies)
+                lines.append(f"  • texture.cfg fallback: найдено папок {found} из {len(fallback_dependencies)}; "
+                             "проверяйте отсутствующие карты в отчёте текстурирования.")
+                absent_targets = {}
+                for item in fallback_dependencies:
+                    target = item.get("target_aircraft")
+                    if target and item.get("target_aircraft_installed") is False:
+                        absent_targets[target] = absent_targets.get(target, 0) + 1
+                if absent_targets:
+                    examples = list(sorted(absent_targets.items(), key=lambda pair: pair[0].casefold()))
+                    summary = ", ".join(f"{name} ({count})" for name, count in examples[:4])
+                    if len(examples) > 4:
+                        summary += f" и ещё {len(examples) - 4}"
+                    lines.append("      Целевые самолёты не найдены в выбранных Packages-каталогах: " + summary + ".")
+                for dependency in [item for item in fallback_dependencies if not item.get("resolved")][:4]:
+                    advice = BuilderApp._dependency_next_step(dependency)
+                    if advice:
+                        lines.append(f"      Следующий шаг: {advice}")
+                ambiguous = [item for item in fallback_dependencies
+                             if "несколько установленных пакетов" in str(item.get("detail") or "")]
+                for dependency in ambiguous[:3]:
+                    lines.append(f"      {dependency.get('name')}: {dependency['detail']}")
+        source_links = [*dependencies, *report.get("missing_resources", []), *report.get("source_gaps", [])]
+        missing_base = next((item for item in source_links if isinstance(item, dict) and (
+            item.get("kind") == "base_container" or item.get("problem_code") == "base_aircraft_missing"
+        ) and (item.get("resolved") is False or item.get("problem_code") == "base_aircraft_missing")), None)
+        if missing_base:
+            base_name = missing_base.get("name") or "базовый самолёт"
+            lines.append("")
+            lines.append(f"Базовая модель {base_name} не найдена. Сейчас можно собрать только найденные части; "
+                         "отсутствующие интерьер и базовые текстуры не появятся, а текстурный этап укажет пропущенные карты. "
+                         "Если база установлена в другом каталоге, нажмите «Добавить каталог базы…».")
         return "\n".join(lines)
+
+    @staticmethod
+    def _dependency_next_step(dependency):
+        """Give a concrete user action for unresolved package links."""
+        kind = dependency.get("kind")
+        detail = str(dependency.get("detail") or "")
+        if "несколько установленных пакетов" in detail:
+            if kind == "model":
+                return "сравните кандидатов; назначьте найденный файл через «Выбрать модели…» в настройках проекта."
+            return "уточните корень Packages или убедитесь, что выбран нужный пакет/вариант."
+        if kind == "manifest":
+            return "проверьте, установлен ли этот пакет, и добавлен ли его Packages-каталог в «Пути и настройки»."
+        if kind == "base_container":
+            return "установите базовый самолёт и добавьте его Packages-каталог в «Пути и настройки»."
+        if kind == "model":
+            if "базовый самолёт установлен" in detail:
+                return "проверьте вариант самолёта; если нужный glTF найден, назначьте его кнопкой «Выбрать модели…»."
+            return "если это ливрея, установите её базовый самолёт; затем повторите подробную проверку."
+        if kind == "texture_fallback" and dependency.get("target_aircraft_installed") is False:
+            target = dependency.get("target_aircraft")
+            return (f"папка {target} не найдена в выбранных Packages-каталогах; "
+                    "установите пакет с этой текстурой или добавьте его каталог в настройках. "
+                    "Fallback необязателен для геометрии.")
+        if kind == "texture_fallback" and dependency.get("target_aircraft_installed") is True:
+            return "самолёт найден, но целевая fallback-папка отсутствует; проверьте имя и состав texture-варианта."
+        return "проверьте выбранные каталоги MSFS и повторите диагностику."
 
     def diagnose_selected(self):
         if self.busy:
@@ -1440,9 +1898,7 @@ class BuilderApp(tk.Tk):
             messagebox.showinfo("Диагностика", "Сначала выберите самолёт в списке.")
             return
         command = cli_command("inventory", path, "--deep")
-        root = self.catalog_root_var.get().strip() or self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
 
         def diagnosed(code, output):
             if code:
@@ -1458,11 +1914,52 @@ class BuilderApp(tk.Tk):
             report = data[0]
             self._set_text(self.aircraft_detail, self.format_detail(report))
             self.aircraft_reason.configure(text=self.format_diagnosis(report))
+            self.update_package_root_recovery(report)
             if self.selected_aircraft and self.selected_aircraft.get("path") == report.get("path"):
                 self.selected_aircraft.update(report)
             self.append_log(f"Диагностика {report.get('aircraft')}: {report.get('reason_code')}")
 
         self.run_command(command, diagnosed)
+
+    @staticmethod
+    def has_unresolved_base_package(entry):
+        if not isinstance(entry, dict):
+            return False
+        if entry.get("reason_code") == "UNRESOLVED_ALIAS":
+            return True
+        dependencies = [*(entry.get("dependencies") or []), *(entry.get("missing_resources") or []),
+                        *(entry.get("source_gaps") or [])]
+        return any(isinstance(item, dict) and item.get("resolved") is False and (
+            item.get("kind") == "base_container" or item.get("problem_code") == "base_aircraft_missing"
+        ) for item in dependencies)
+
+    def update_package_root_recovery(self, entry):
+        button = getattr(self, "package_root_recovery_button", None)
+        if button is None:
+            return
+        if self.has_unresolved_base_package(entry):
+            button.grid()
+        else:
+            button.grid_remove()
+
+    def open_package_root_recovery(self):
+        if self.busy:
+            return
+        folder = self.directory_dialog(
+            "Выберите Packages/Community с базовым самолётом", self.catalog_root_var.get())
+        if not folder:
+            return
+        self.catalog_root_var.set(folder)
+        self._remember_package_root(folder)
+        if self.project_open:
+            source = self.source_var.get().strip()
+            if not source:
+                messagebox.showwarning("Исходный самолёт не найден", "Укажите папку самолёта перед повторной диагностикой.")
+                return
+            command = self.append_package_roots(cli_command("inventory", source), self.package_roots())
+            self.run_command(command, self.on_open_project_inventory)
+        else:
+            self.scan_custom()
 
     @staticmethod
     def _aircraft_marker(entry):
@@ -1481,41 +1978,70 @@ class BuilderApp(tk.Tk):
 
     def populate_aircraft(self, entries=None):
         """Render the catalog as expandable base-name groups."""
+        selected_path = None
+        if not self.project_open and self.selected_aircraft:
+            selected_path = str(self.selected_aircraft.get("path", "")) or None
         if entries is not None:
             self.catalog_entries = list(entries)
         visible = [entry for entry in self.catalog_entries
                    if self.aircraft_filter_var.get() in {AIRCRAFT_FILTERS[0], aircraft_status(entry)}]
         self.active_entries = visible
         tree = self.aircraft_list
+        self.update_package_root_recovery(None)
         was_disabled = "disabled" in tree.state()
         tree.state(["!disabled"])
         tree.delete(*tree.get_children())
         self._aircraft_tree_entries.clear()
         self._aircraft_tree_paths.clear()
-        grouped = {}
-        for entry in visible:
-            name = entry.get("aircraft", entry.get("name", "?"))
-            grouped.setdefault(aircraft_group_name(name), []).append(entry)
+        grouped = group_aircraft_entries(visible)
         group_counter = 0
         child_counter = 0
         for group_name in sorted(grouped, key=str.casefold):
-            group_entries = sorted(grouped[group_name],
-                                   key=lambda item: (str(item.get("aircraft", "")).casefold(),
-                                                     str(item.get("path", "")).casefold()))
+            group_entries = grouped[group_name]["entries"]
             group_counter += 1
             group_iid = f"aircraft-group-{group_counter}"
             suffix = f" ({len(group_entries)} варианта)" if len(group_entries) > 1 else ""
             tree.insert("", "end", iid=group_iid, text=f"{group_name}{suffix}", open=False)
-            for entry in group_entries:
+            subtype_ids = {}
+            for entry, subtype_path in sorted(
+                    group_entries,
+                    key=lambda item: (str(item[0].get("aircraft", "")).casefold(),
+                                      str(item[0].get("path", "")).casefold())):
+                parent_id = group_iid
+                for depth in range(1, len(subtype_path) + 1):
+                    path = subtype_path[:depth]
+                    path_key = tuple(token.casefold() for token in path)
+                    if path_key not in subtype_ids:
+                        subgroup_id = f"{group_iid}-sub-{len(subtype_ids) + 1}"
+                        tree.insert(parent_id, "end", iid=subgroup_id, text=path[-1], open=False)
+                        subtype_ids[path_key] = subgroup_id
+                    parent_id = subtype_ids[path_key]
                 child_counter += 1
                 child_iid = f"aircraft-entry-{child_counter}"
                 name = entry.get("aircraft", entry.get("name", "?"))
                 label = f"{name}{self._aircraft_marker(entry)}  —  {entry.get('path', '')}"
-                tree.insert(group_iid, "end", iid=child_iid, text=label)
+                tree.insert(parent_id, "end", iid=child_iid, text=label)
                 self._aircraft_tree_entries[child_iid] = entry
                 path = str(entry.get("path", ""))
                 if path:
                     self._aircraft_tree_paths[path] = child_iid
+        if selected_path:
+            selected_iid = self._aircraft_tree_paths.get(selected_path)
+            if selected_iid:
+                tree.selection_set(selected_iid)
+                tree.focus(selected_iid)
+                self.on_aircraft_select()
+            else:
+                # Filtering must not leave an invisible aircraft selected for
+                # the Next button or a new-project action.
+                self.selected_aircraft = None
+                self.aircraft_var.set("")
+                self.source_var.set("")
+                self.model_var.set("")
+                self.model_combo["values"] = ()
+                self.livery_combo["values"] = ()
+                self.aircraft_reason.configure(text="")
+                self._set_text(self.aircraft_detail, "")
         if was_disabled:
             tree.state(["disabled"])
         counts = {status: sum(1 for entry in self.catalog_entries if aircraft_status(entry) == status)
@@ -1526,16 +2052,20 @@ class BuilderApp(tk.Tk):
         prefix = f"Показано: {shown} из {total}" if filter_text != AIRCRAFT_FILTERS[0] else f"Найдено самолётов: {total}"
         self.status_var.set(prefix + f" — полных: {counts['Полностью доступные']}, "
                             f"частичных: {counts['Частично доступные']}, "
-                            f"недоступно: {counts['Недоступные']}")
+                            f"недоступно: {counts['Недоступные']}" +
+                            (f"; скрыто history-заглушек: {self.suppressed_history_stub_count}"
+                             if self.suppressed_history_stub_count else ""))
         self._update_navigation()
 
     def on_aircraft_select(self, _event=None):
         selection = self.aircraft_list.selection()
         if not selection or selection[0] not in self._aircraft_tree_entries:
+            self.update_package_root_recovery(None)
             return
         if self.project_open:
             return
         entry = self._aircraft_tree_entries[selection[0]]
+        self.update_package_root_recovery(entry)
         self.aircraft_reason.configure(text=self.format_diagnosis(entry))
         self._set_text(self.aircraft_detail, self.format_detail(entry))
         if not entry.get("can_build_geometry"):
@@ -1739,6 +2269,7 @@ class BuilderApp(tk.Tk):
         self.project_open = False
         self.project_dirty = False
         self.project_var.set("")
+        self.audit_report_path = None
         self.selected_aircraft = None
         self.selected_inventory = None
         self.aircraft_var.set("")
@@ -1838,6 +2369,7 @@ class BuilderApp(tk.Tk):
             if self.project_open:
                 self.close_project(force=True)
             self.project_extra = dict(data)
+            self.audit_report_path = None
             source = (Path(path).parent / os.path.expandvars(data["source"])).resolve()
             self.project_var.set(path)
             self.project_open = True
@@ -1872,7 +2404,8 @@ class BuilderApp(tk.Tk):
             self._set_project_state(True)
             self.project_dirty = False
             self.catalog_root_var.set(data.get("source", ""))
-            self.run_command(cli_command("inventory", str(source)), self.on_open_project_inventory)
+            command = self.append_package_roots(cli_command("inventory", str(source)), self.package_roots())
+            self.run_command(command, self.on_open_project_inventory)
             self.status_var.set("Проект загружен. Обновляю список самолётов...")
         except Exception as exc:
             self._set_project_state(False)
@@ -1886,6 +2419,8 @@ class BuilderApp(tk.Tk):
         try:
             data = json.loads(output)
             self.catalog_entries = data if isinstance(data, list) else data.get("aircraft", [])
+            self.suppressed_history_stub_count = (len(data.get("suppressed_history_stubs", []))
+                                                  if isinstance(data, dict) else 0)
             self.aircraft_filter_var.set(AIRCRAFT_FILTERS[0])
             self.populate_aircraft()
         except json.JSONDecodeError:
@@ -1899,6 +2434,7 @@ class BuilderApp(tk.Tk):
                 self.model_combo["values"] = [variant["folder"] for variant in entry.get("variants", [])]
                 self.livery_combo["values"] = self.available_liveries(entry)
                 self.aircraft_reason.configure(text=self.format_diagnosis(entry))
+                self.update_package_root_recovery(entry)
                 item_id = self._aircraft_tree_paths.get(str(entry.get("path", "")))
                 if item_id:
                     self.aircraft_list.selection_set(item_id)
@@ -1941,7 +2477,8 @@ class BuilderApp(tk.Tk):
             self.project_dirty = True
             if data[0].get("needs_model_selection"):
                 self.choose_models()
-        self.run_command(cli_command("inventory", folder), relocated)
+        command = self.append_package_roots(cli_command("inventory", folder), self.package_roots())
+        self.run_command(command, relocated)
 
     def _set_project_state(self, enabled):
         self.project_open = bool(enabled)
@@ -2225,10 +2762,15 @@ class BuilderApp(tk.Tk):
             self._set_explorer_target(blend)
             self.refresh_blend_list()
             self.build_stage_var.set(f"Этап {stage}: завершён")
-            self.build_result_var.set(f"{'Готово с замечаниями' if code == 2 else 'Сборка выполнена успешно'}. Создан файл {checkpoint}.")
+            if stage == "textures" and code == 2:
+                self.build_result_var.set(f"Текстуры применены частично. Создан файл {checkpoint}.")
+            else:
+                self.build_result_var.set(f"{'Готово с замечаниями' if code == 2 else 'Сборка выполнена успешно'}. Создан файл {checkpoint}.")
             if stage in {"geometry", "all"}:
                 self.build_detail_var.set("Геометрия готова. Список объектов обновлён; проверьте модель в Blender.")
                 self.load_object_catalog(silent=True)
+            elif stage == "textures" and code == 2:
+                self.build_detail_var.set("Не все карты найдены. Смотрите список в журнале; созданный .blend можно открыть в Blender.")
             else:
                 self.build_detail_var.set("Проверьте результат в Blender. Подробный журнал сохранён во вкладке «Журнал».")
         elif self.cancel_requested:
@@ -2356,6 +2898,105 @@ class BuilderApp(tk.Tk):
             return
         subprocess.Popen([blender, str(blend)])
         self.refresh_blend_list()
+
+    def audit_geometry_checkpoint(self):
+        if self.busy or not self.project_open:
+            return
+        blend = self.geometry_checkpoint_for_audit()
+        if blend is None:
+            messagebox.showwarning("Checkpoint не найден", "Сначала соберите geometry, затем проверьте её checkpoint.")
+            return
+        blender = self.blender_var.get().strip()
+        if not blender or not Path(blender).is_file():
+            messagebox.showwarning("Blender не найден", "Укажите путь к blender.exe на вкладке настройки.")
+            return
+        project = self.project_path()
+        if project is None:
+            messagebox.showwarning("Проект не найден", "Сохраните проект перед запуском аудита.")
+            return
+        report_dir = project.parent / "reports" / "geometry_audits"
+        try:
+            report_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            self.audit_report_path = None
+            self.append_log(f"Не удалось создать папку отчётов аудита {report_dir}: {exc}")
+            messagebox.showerror("Аудит checkpoint", "Не удалось создать папку отчётов проекта. Проверьте доступ к папке; подробности записаны во вкладку «Журнал».")
+            return
+        prefix = f"{blend.stem}_audit_"
+        sequence = max((int(match.group(1)) for path in report_dir.glob(f"{prefix}*.json")
+                        if (match := re.search(r"_(\d+)$", path.stem))), default=0) + 1
+        report = report_dir / f"{prefix}{sequence:03d}.json"
+        command = cli_command("audit", str(blend), "--output", str(report), "--blender", blender)
+        self.audit_report_path = None
+        if self.run_command(command, lambda code, output: self.on_geometry_audit_result(code, output, report)):
+            self.status_var.set("Blender проверяет geometry checkpoint; рендер не запускается…")
+
+    def geometry_checkpoint_for_audit(self):
+        selected = self.selected_blend_path()
+        if selected and selected.name.casefold().startswith("01_geometry"):
+            return selected
+        return self.latest_geometry_file()
+
+    def latest_geometry_audit_report(self, blend):
+        project = self.project_path()
+        if project is None or blend is None:
+            return None
+        report_dir = project.parent / "reports" / "geometry_audits"
+        prefix = f"{blend.stem}_audit_"
+        numbered = []
+        for path in report_dir.glob(f"{prefix}*.json") if report_dir.is_dir() else ():
+            match = re.fullmatch(re.escape(prefix) + r"(\d+)\.json", path.name, re.IGNORECASE)
+            if match and path.is_file():
+                numbered.append((int(match.group(1)), path))
+        return max(numbered, key=lambda item: item[0])[1] if numbered else None
+
+    def on_geometry_audit_result(self, code, output, report):
+        if code:
+            self.audit_report_path = None
+            self.status_var.set("Аудит geometry checkpoint завершился ошибкой")
+            self.append_log("Ошибка аудита checkpoint: " + (output[-1800:] if output else "нет подробностей"))
+            messagebox.showerror("Аудит checkpoint", "Не удалось проверить файл. Технические подробности записаны во вкладку «Журнал».")
+            return
+        try:
+            data = json.loads(report.read_text(encoding="utf-8-sig"))
+            summary = data["summary"]
+            mesh_objects = int(summary["mesh_objects"])
+            duplicate_groups = int(summary["same_world_geometry_groups"])
+            disconnected = int(summary["far_disconnected_objects"])
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            self.audit_report_path = None
+            self.append_log(f"Не удалось разобрать отчёт аудита: {exc}")
+            self.status_var.set("Не удалось прочитать отчёт аудита checkpoint")
+            messagebox.showerror("Аудит checkpoint", "Отчёт создан неверно. Подробности записаны во вкладку «Журнал».")
+            return
+        text = (f"Mesh-объектов: {mesh_objects}; совпадающих мировых геометрий: {duplicate_groups}; "
+                f"объектов с разнесёнными компонентами: {disconnected}.")
+        caveat = "Эти числа помогают найти места для просмотра и не означают автоматически, что геометрия неверна."
+        self.audit_report_path = report
+        self.status_var.set("Аудит geometry завершён; отчёт сохранён в проекте.")
+        self.build_stage_var.set("Аудит checkpoint: завершён")
+        self.build_detail_var.set(text)
+        self.build_result_var.set(caveat)
+        self.append_log(f"Аудит {report.stem}: {text} {caveat}")
+        messagebox.showinfo("Аудит geometry checkpoint", text + "\n\n" + caveat + f"\n\nОтчёт: {report}")
+
+    def open_geometry_audit_report(self):
+        if not self.project_open or self.project_path() is None:
+            messagebox.showinfo("Отчёт не найден", "Сначала откройте проект с geometry checkpoint.")
+            return
+        blend = self.geometry_checkpoint_for_audit()
+        if blend is None:
+            messagebox.showinfo("Checkpoint не найден", "В активном проекте нет geometry checkpoint для просмотра отчёта.")
+            return
+        report = self.latest_geometry_audit_report(blend)
+        if report is None:
+            messagebox.showinfo("Отчёт не найден", "Для выбранного geometry checkpoint ещё нет отчёта аудита.")
+            return
+        self.audit_report_path = report
+        try:
+            os.startfile(str(report))
+        except OSError as exc:
+            messagebox.showerror("Отчёт аудита", str(exc))
 
     def checkpoint_name(self, stage):
         base = {"geometry": "01_geometry", "textures": "02_textured", "final": "03_model", "all": "03_model"}.get(stage, "checkpoint")

@@ -1,0 +1,675 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T07:48:00Z",
+  "mode": "normal_gui_generated_config_cli_geometry_build_and_blender_audit",
+  "blender_major": "5.2",
+  "sample_size": 20,
+  "builds_succeeded": 20,
+  "checkpoint_audits_passed": 20,
+  "reason_codes": {
+    "OK": 12,
+    "SUPPORTED_PARTIAL": 8
+  },
+  "manual_gui_model_confirmations": 8,
+  "elapsed_seconds_including_gui_build_audit_range": [
+    8.2,
+    19.4
+  ],
+  "temporary_outputs_cleaned": true,
+  "rendered": false,
+  "source_modified": false,
+  "interpretation": "Seventh live-catalog tranche adds generic piston/turboprop, King Air 350 and Longitude liveries, LS8, Pipistrel, Pitts and Savage Shock Ultra. Each record used GUI-generated config, normal CLI geometry build and Blender 5.2 structural audit. Partial records used explicit GUI role confirmation. Audit metrics are review hints, not visual acceptance.",
+  "personal_paths_included": false,
+  "results": [
+    {
+      "aircraft": "Asobo_Generic_Piston_SingleEngine",
+      "catalog_reason_code": "OK",
+      "model_folder": "model",
+      "livery": "base",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Generic_Piston_SingleEngine_LOD00.gltf",
+          "variant": "model",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 1652754,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 25,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 0,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 12,
+        "far_disconnected_objects": 16
+      },
+      "seconds": 8.2
+    },
+    {
+      "aircraft": "Asobo_Generic_Turbo_MultiEngines",
+      "catalog_reason_code": "OK",
+      "model_folder": "model",
+      "livery": "base",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Generic_Turbo_MultiEngines_LOD00.gltf",
+          "variant": "model",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 1425970,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 36,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 0,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 18,
+        "far_disconnected_objects": 17
+      },
+      "seconds": 8.2
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Emerald",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.emerald",
+      "livery": "EMERALD",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "KINGAIR_350I_LOD0.gltf",
+          "variant": "model.emerald",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "KINGAIR_350I_interior_LOD0.gltf",
+          "variant": "model.emerald",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 30907123,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 490,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 41,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 25,
+        "far_disconnected_objects": 76
+      },
+      "seconds": 19.0
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Global",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.global",
+      "livery": "GLOBAL",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "KINGAIR_350I_LOD0.gltf",
+          "variant": "model.global",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "KINGAIR_350I_interior_LOD0.gltf",
+          "variant": "model.global",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 31936316,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 492,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 41,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 25,
+        "far_disconnected_objects": 77
+      },
+      "seconds": 19.3
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Kenmore",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.kenmore",
+      "livery": "KENMORE",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "KINGAIR_350I_LOD0.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "KINGAIR_350I_interior_LOD0.gltf",
+          "variant": "model.kenmore",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 30977191,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 488,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 41,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 23,
+        "far_disconnected_objects": 75
+      },
+      "seconds": 18.9
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Orbit",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.orbit",
+      "livery": "ORBIT",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "KINGAIR_350I_LOD0.gltf",
+          "variant": "model.orbit",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "KINGAIR_350I_interior_LOD0.gltf",
+          "variant": "model.orbit",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 31476309,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 493,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 41,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 25,
+        "far_disconnected_objects": 78
+      },
+      "seconds": 19.4
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Pacifica",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.pacifica",
+      "livery": "PACIFICA",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "KINGAIR_350I_LOD0.gltf",
+          "variant": "model.pacifica",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "KINGAIR_350I_interior_LOD0.gltf",
+          "variant": "model.pacifica",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 31211211,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 491,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 41,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 25,
+        "far_disconnected_objects": 76
+      },
+      "seconds": 19.2
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "KINGAIR_350I_LOD0.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "KINGAIR_350I_interior_LOD0.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 31016542,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 496,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 41,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 23,
+        "far_disconnected_objects": 81
+      },
+      "seconds": 19.0
+    },
+    {
+      "aircraft": "Asobo_KingAir350_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "KINGAIR_350I_LOD0.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "KINGAIR_350I_interior_LOD0.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 31019214,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 494,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 41,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 23,
+        "far_disconnected_objects": 79
+      },
+      "seconds": 19.2
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Kenmore",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.kenmore",
+      "livery": "kenmore",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Cessna_Citation_Longitude_LOD00.gltf",
+          "variant": "model.kenmore",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 13574044,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 119,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 3,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 46,
+        "far_disconnected_objects": 53
+      },
+      "seconds": 16.5
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Orbit",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.orbit",
+      "livery": "orbit",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Cessna_Citation_Longitude_LOD00.gltf",
+          "variant": "model.orbit",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 14758967,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 129,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 3,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 50,
+        "far_disconnected_objects": 57
+      },
+      "seconds": 16.9
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Pacifica",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.pacifica",
+      "livery": "pacifica",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Cessna_Citation_Longitude_LOD00.gltf",
+          "variant": "model.pacifica",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 14110481,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 119,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 3,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 46,
+        "far_disconnected_objects": 54
+      },
+      "seconds": 16.8
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Xbox_Aviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Cessna_Citation_Longitude_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 14211051,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 131,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 3,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 47,
+        "far_disconnected_objects": 58
+      },
+      "seconds": 16.9
+    },
+    {
+      "aircraft": "Asobo_Longitude_LiveryAviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Cessna_Citation_Longitude_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 14150406,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 131,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 3,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 47,
+        "far_disconnected_objects": 60
+      },
+      "seconds": 16.7
+    },
+    {
+      "aircraft": "Asobo_LS8_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "LS8_18_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "LS8_18_Interior_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 11571440,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 489,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 38,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 33,
+        "far_disconnected_objects": 31
+      },
+      "seconds": 12.1
+    },
+    {
+      "aircraft": "Asobo_Pipistrel_Livery_Xbox_Aviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Pipistrel_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7592203,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 42,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 2,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 6,
+        "far_disconnected_objects": 20
+      },
+      "seconds": 14.8
+    },
+    {
+      "aircraft": "Asobo_Pipistrel_LiveryAviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "Pipistrel_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7549126,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 39,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 2,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 18
+      },
+      "seconds": 14.4
+    },
+    {
+      "aircraft": "Asobo_Pitts_Livery_Xbox_Aviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "S2S_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "S2S_Interior_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 13714167,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 185,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 6,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 6,
+        "far_disconnected_objects": 32
+      },
+      "seconds": 11.7
+    },
+    {
+      "aircraft": "Asobo_Pitts_LiveryAviators",
+      "catalog_reason_code": "OK",
+      "model_folder": "model.aviators",
+      "livery": "AVIATORS",
+      "selection_method": "model.cfg",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "S2S_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        },
+        {
+          "role": "interior",
+          "file": "S2S_Interior_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": null,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 13698000,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 183,
+        "same_base_name_groups": 1,
+        "same_local_geometry_groups": 6,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 8,
+        "far_disconnected_objects": 30
+      },
+      "seconds": 11.6
+    },
+    {
+      "aircraft": "Asobo_Savage_ShockUltra_Livery_Xbox_Aviators",
+      "catalog_reason_code": "SUPPORTED_PARTIAL",
+      "model_folder": "model.aviators",
+      "livery": "aviators",
+      "selection_method": "explicit GUI model chooser confirmation",
+      "selected_models": [
+        {
+          "role": "exterior",
+          "file": "SavageShockUltra_LOD00.gltf",
+          "variant": "model.aviators",
+          "lod": 0,
+          "role_source": "model.cfg"
+        }
+      ],
+      "build_exit": 0,
+      "checkpoint_count": 1,
+      "checkpoint_bytes": 7814560,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 55,
+        "same_base_name_groups": 0,
+        "same_local_geometry_groups": 0,
+        "same_world_geometry_groups": 0,
+        "gear_candidates": 10,
+        "far_disconnected_objects": 29
+      },
+      "seconds": 14.7
+    }
+  ]
+}

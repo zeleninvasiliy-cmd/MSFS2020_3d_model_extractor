@@ -55,12 +55,20 @@ class PipelineRegressionTests(unittest.TestCase):
         for config in ({}, {"source": "a", "output_dir": "b", "exclude_objects": "*"},
                        {"source": "a", "output_dir": "b", "filter_runtime": "false"},
                        {"source": "a", "output_dir": "b", "skinning": "hybrid"},
+                       {"source": "a", "output_dir": "b", "drawmode": "auto"},
                        {"source": "a", "output_dir": "b", "placements": {"wing": {"anchor": "body", "offset_m": [0, float("nan"), 0]}}}):
             with self.subTest(config=config), self.assertRaises(ValueError):
                 pipeline.validate_config(config)
         for sequence in (True, 0, -1, "abc", 1.5):
             with self.assertRaises(ValueError):
                 pipeline.choose_build_sequence(self.root, "strip_auto", "geometry", sequence)
+
+    def test_rule_preflight_rejects_unknown_project_fields(self):
+        path = self.root / "project.json"
+        path.write_text(json.dumps({"source": "a", "output_dir": "b", "drawmode": "auto"}),
+                        encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Неизвестные параметры JSON: drawmode"):
+            pipeline.validate_rules(path)
 
     def config_with(self, key, value):
         return {"source": "a", "output_dir": "b", key: value}
@@ -170,6 +178,39 @@ class PipelineRegressionTests(unittest.TestCase):
         self.assertEqual(len(entries), 2)
         self.assertTrue(all(item["duplicate_name"] for item in entries))
         self.assertEqual({item["duplicate_count"] for item in entries}, {2})
+
+    def test_catalog_suppresses_only_shadowed_history_stub(self):
+        real = self.root / "Official" / "Steam" / "asobo-aircraft-da62" / "SimObjects" / "Airplanes" / "Asobo_DA62"
+        model = real / "model"
+        model.mkdir(parents=True)
+        (model / "model.cfg").write_text("[models]\nexterior=body.gltf\n", encoding="utf-8")
+        (model / "body.gltf").write_text(json.dumps({"asset": {"version": "2.0"}, "meshes": []}),
+                                          encoding="utf-8")
+        stub = self.root / "Official" / "Steam" / "fs-base-history" / "SimObjects" / "Airplanes" / "Asobo_DA62"
+        stub.mkdir(parents=True)
+
+        with patch.object(pipeline, "installed_package_roots", return_value=[self.root]):
+            result = pipeline.catalog()
+
+        entries = [item for item in result["aircraft"] if item["aircraft"] == "Asobo_DA62"]
+        self.assertEqual([item["path"] for item in entries], [str(real)])
+        self.assertNotIn("duplicate_name", entries[0])
+        self.assertEqual(len(result["suppressed_history_stubs"]), 1)
+        suppressed = result["suppressed_history_stubs"][0]
+        self.assertEqual(suppressed["path"], str(stub))
+        self.assertEqual(suppressed["shadowed_by"], [str(real)])
+
+    def test_catalog_keeps_history_stub_when_no_buildable_peer_exists(self):
+        stub = self.root / "Official" / "Steam" / "fs-base-history" / "SimObjects" / "Airplanes" / "Legacy_Plane"
+        stub.mkdir(parents=True)
+
+        with patch.object(pipeline, "installed_package_roots", return_value=[self.root]):
+            result = pipeline.catalog()
+
+        entries = [item for item in result["aircraft"] if item["aircraft"] == "Legacy_Plane"]
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["reason_code"], "NO_MODEL_FOLDER")
+        self.assertEqual(result["suppressed_history_stubs"], [])
 
     def test_catalog_deep_reports_missing_buffers_before_project_creation(self):
         folder = self.root / "package" / "SimObjects" / "Airplanes" / "Broken_Plane"

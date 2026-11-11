@@ -159,6 +159,12 @@ class ModelChoicesTests(unittest.TestCase):
         # The composition stays unconfirmed until the user assigns the role.
         self.assertFalse(interior[0]["default"])
         self.assertEqual([m["role"] for m in choices["default_models"]], ["exterior"])
+        self.assertEqual(len(choices["source_gaps"]), 1)
+        gap = choices["source_gaps"][0]
+        self.assertEqual((gap["kind"], gap["role"], gap["problem_code"]),
+                         ("model", "interior", "declared_model_file_missing"))
+        self.assertEqual(Path(gap["path"]).name, "int.xml")
+        self.assertEqual(gap["detail"], "базовый самолёт установлен, но объявленный файл в нём отсутствует")
 
     def test_complete_package_does_not_scan_the_base(self):
         base = aircraft(self.root, "test-base", "Test_Plane")
@@ -192,6 +198,21 @@ class ModelChoicesTests(unittest.TestCase):
         data = json.loads(result.stdout)
         self.assertEqual(set(data["roles"]), {"exterior", "interior"})
         self.assertEqual(data["aircraft"], "Test_Plane")
+
+    def test_cli_roots_reports_multiple_additional_roots(self):
+        first = self.root / "Packages_A"
+        second = self.root / "Packages_B"
+        missing = self.root / "Packages_Missing"
+        first.mkdir()
+        second.mkdir()
+        result = subprocess.run([sys.executable, str(SCRIPTS / "msfs_universal.py"), "roots",
+                                 "--root", str(first), "--root", str(second), "--root", str(missing)],
+                                capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual([Path(path) for path in data["additional_roots"]],
+                         [first.resolve(), second.resolve(), missing.resolve()])
+        self.assertEqual([Path(path) for path in data["missing_additional_roots"]], [missing.resolve()])
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from msfs_gltf import combine_buffers, load_gltf
+from msfs_gltf import combine_buffers, load_gltf, unsupported_geometry_extensions
 
 
 def write_glb(path, document, binary):
@@ -73,6 +73,20 @@ class GltfLoaderTests(unittest.TestCase):
                                     "buffers": [{"uri": "missing.bin", "byteLength": 4}]}), encoding="utf-8")
         with self.assertRaises(FileNotFoundError):
             load_gltf(path)
+
+    def test_geometry_compression_extensions_are_detected_at_their_use_sites(self):
+        document = {
+            "extensionsUsed": ["KHR_draco_mesh_compression"],
+            "bufferViews": [{"extensions": {"EXT_meshopt_compression": {"buffer": 0}}}],
+            "meshes": [{"primitives": [{"extensions": {
+                "KHR_draco_mesh_compression": {"bufferView": 0}}}]}],
+        }
+
+        unsupported = unsupported_geometry_extensions(document)
+
+        self.assertEqual(len(unsupported), 2)
+        self.assertTrue(any("Draco" in value for value in unsupported))
+        self.assertTrue(any("Meshopt" in value for value in unsupported))
 
 
 if __name__ == "__main__":
