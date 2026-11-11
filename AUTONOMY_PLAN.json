@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/model-ownership-audit",
+  "working_branch": "codex/gui-root-diagnostics",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -166,13 +166,37 @@
     {
       "id": "M13",
       "name": "GUI root and dependency diagnostics review",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "review the multi-root manager after actual catalog use",
         "show package-root errors and unresolved dependencies with concrete actions",
         "test open/reopen and legacy settings migration"
       ],
-      "acceptance": "A user can tell what roots are searched, which roots are missing, and what dependency action to take without editing project JSON."
+      "acceptance": "A user can tell what roots are searched, which roots are missing, and what dependency action to take without editing project JSON.",
+      "result": "Reviewed saved-root migration, catalog-root forwarding, manual-root removal, missing-path warnings, callback failure handling, and malformed roots responses. The manager now summarizes effective, automatic, manual and missing root counts; refresh failures show a plain-language message and put technical details in the Log tab. Render is safe for absent/malformed response lists. 181 unit tests, GUI self-test, compileall and diff checks pass; bilingual user guides updated.",
+      "next": "Alternate back to compatibility: validate generated build plans across all currently buildable installed-aircraft records, classify any worker/config blockers, and turn the report into reproducible tests. Follow with a GUI repair/diagnosis flow only for errors this audit proves can be fixed without guessing."
+    },
+    {
+      "id": "M14",
+      "name": "Installed aircraft build-plan coverage audit",
+      "status": "planned",
+      "deliverables": [
+        "exercise the normal geometry build-plan preflight for every geometry-buildable catalog record",
+        "classify plan failures by source/layout/config cause and distinguish expected partials",
+        "add a path-free reproducible coverage report and fixtures for every discovered failure class"
+      ],
+      "acceptance": "Every installed catalog record marked geometry-buildable either yields a validated plan or a stable actionable blocker; no mass Blender builds are launched automatically."
+    },
+    {
+      "id": "M15",
+      "name": "GUI build-plan diagnosis and repair routing",
+      "status": "planned",
+      "deliverables": [
+        "show plan-preflight blockers before starting Blender",
+        "map each stable blocker code to a concrete supported action",
+        "preserve confirmed model choices and package roots across project reopen"
+      ],
+      "acceptance": "A user can identify whether a package needs a source root, model selection, supported mode change, or source restoration before running the worker."
     }
   ],
   "rolling_roadmap": [
@@ -329,6 +353,6 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M13-GUI-root-and-dependency-diagnostics-review"
+    "next_stage": "M14-installed-aircraft-build-plan-coverage-audit"
   }
 }

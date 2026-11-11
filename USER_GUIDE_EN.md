@@ -21,7 +21,7 @@ python .\msfs_builder_gui.py
 4. If several entries share a name, select the required package and livery.
 5. In the general settings choose Blender and the output directory. Work outside an open project is disabled.
 
-MSFS roots are detected from `UserCfg.opt` and common install locations. If an aircraft or its base is in another library, click **Package folders...** and add the required folders. The window separates automatically detected roots from manual entries and marks paths that no longer exist. **Choose catalog** also adds the selected path and starts a scan.
+MSFS roots are detected from `UserCfg.opt` and common install locations. If an aircraft or its base is in another library, click **Package folders...** and add the required folders. The window separates automatically detected roots from manual entries and shows how many folders take part in search and how many saved paths are missing. Missing paths have a ⚠ marker; remove them and add the correct folder again. If the list cannot be refreshed, technical details are written to the **Log** tab. **Choose catalog** also adds the selected path and starts a scan.
 
 Projects store settings, selected models, rules, map replacements and the `.blend` variant history. The original aircraft folder is never modified.
 

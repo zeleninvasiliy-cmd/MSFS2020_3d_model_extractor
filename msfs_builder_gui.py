@@ -371,6 +371,9 @@ class BuilderApp(tk.Tk):
         ttk.Button(controls, text="Убрать выбранный", command=self.remove_package_root).pack(side="left", padx=6)
         ttk.Button(controls, text="Обновить список", command=self.refresh_package_roots).pack(side="left", padx=6)
         ttk.Button(controls, text="Закрыть", command=window.destroy).pack(side="right")
+        self.package_roots_summary_var = tk.StringVar(value="Проверка каталогов...")
+        ttk.Label(window, textvariable=self.package_roots_summary_var, wraplength=940,
+                  justify="left").grid(row=3, column=0, columnspan=2, sticky="w", padx=10, pady=(4, 10))
         self.package_roots_data = {}
         self.render_package_roots({})
         self.refresh_package_roots()
@@ -378,8 +381,11 @@ class BuilderApp(tk.Tk):
     def render_package_roots(self, data):
         if not hasattr(self, "package_roots_auto_list") or not self.package_roots_window.winfo_exists():
             return
-        self.package_roots_data = data or {}
+        data = data if isinstance(data, dict) else {}
+        self.package_roots_data = data
         automatic = self.package_roots_data.get("automatic_roots", [])
+        if not isinstance(automatic, list):
+            automatic = []
         custom = self.package_roots()
         custom_keys = {os.path.normcase(os.path.abspath(path)) for path in custom}
         automatic = [path for path in automatic if os.path.normcase(os.path.abspath(path)) not in custom_keys]
@@ -387,7 +393,10 @@ class BuilderApp(tk.Tk):
         self.package_roots_custom_list.delete(0, "end")
         for path in automatic:
             self.package_roots_auto_list.insert("end", path)
-        missing = {os.path.normcase(os.path.abspath(path)) for path in data.get("missing_additional_roots", [])}
+        missing_values = data.get("missing_additional_roots", [])
+        if not isinstance(missing_values, list):
+            missing_values = []
+        missing = {os.path.normcase(os.path.abspath(path)) for path in missing_values if isinstance(path, str)}
         for path in custom:
             label = f"⚠ {path} — каталог не найден" if os.path.normcase(os.path.abspath(path)) in missing else path
             self.package_roots_custom_list.insert("end", label)
@@ -395,6 +404,15 @@ class BuilderApp(tk.Tk):
             self.package_roots_auto_list.insert("end", "MSFS не обнаружен автоматически")
         if not custom:
             self.package_roots_custom_list.insert("end", "Дополнительные каталоги не добавлены")
+        missing_count = len(missing)
+        searched_values = data.get("searched_roots", [])
+        searched_count = (len(searched_values) if isinstance(searched_values, list) and searched_values
+                          else len(automatic) + len(custom))
+        self.package_roots_summary_var.set(
+            f"Каталогов в поиске: {searched_count}; автоматически найдено: "
+            f"{len(automatic)}; добавлено вручную: {len(custom)}; отсутствует: {missing_count}. "
+            "Отсутствующие пути отмечены значком ⚠."
+        )
 
     def refresh_package_roots(self):
         if not hasattr(self, "package_roots_window") or not self.package_roots_window.winfo_exists():
@@ -405,12 +423,28 @@ class BuilderApp(tk.Tk):
             if not self.package_roots_window.winfo_exists():
                 return
             if code:
-                messagebox.showerror("Каталоги Packages", output[-1200:], parent=self.package_roots_window)
+                self.append_log("Ошибка проверки каталогов Packages: " + output[-1200:])
+                self.package_roots_summary_var.set(
+                    "Не удалось обновить список каталогов. Проверьте вкладку «Журнал» и повторите проверку."
+                )
+                messagebox.showerror(
+                    "Каталоги Packages",
+                    "Не удалось проверить список. Технические подробности записаны во вкладку «Журнал».",
+                    parent=self.package_roots_window,
+                )
                 return
             try:
                 data = json.loads(output)
             except json.JSONDecodeError:
-                messagebox.showerror("Каталоги Packages", "Не удалось разобрать ответ roots.", parent=self.package_roots_window)
+                self.append_log("Не удалось разобрать ответ команды roots: " + output[-1200:])
+                self.package_roots_summary_var.set(
+                    "Ответ проверки каталогов повреждён. Подробности записаны во вкладку «Журнал»."
+                )
+                messagebox.showerror(
+                    "Каталоги Packages",
+                    "Программа не смогла прочитать ответ проверки. Подробности записаны во вкладку «Журнал».",
+                    parent=self.package_roots_window,
+                )
                 return
             self.render_package_roots(data)
 

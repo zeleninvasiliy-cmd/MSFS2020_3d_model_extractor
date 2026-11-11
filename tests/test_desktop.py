@@ -165,6 +165,38 @@ class DesktopRegressionTests(unittest.TestCase):
 
         self.assertIn(r"C:\MSFS\Packages", self.app.package_roots_auto_list.get(0))
         self.assertIn("каталог не найден", self.app.package_roots_custom_list.get(0))
+        self.assertIn("Каталогов в поиске: 2", self.app.package_roots_summary_var.get())
+        self.app.render_package_roots(None)
+        self.app.render_package_roots({"missing_additional_roots": None})
+        self.app.package_roots_window.destroy()
+
+    def test_root_manager_removes_only_selected_manual_path(self):
+        roots = [r"D:\Official", r"E:\Community"]
+        self.app.settings["msfs_roots"] = roots
+        with patch.object(self.app, "run_command", return_value=False):
+            self.app.manage_package_roots()
+        self.app.package_roots_custom_list.selection_set(1)
+        with patch.object(self.app, "save_package_roots") as save, \
+             patch.object(self.app, "refresh_package_roots"):
+            self.app.remove_package_root()
+
+        save.assert_called_once_with([r"D:\Official"])
+        self.app.package_roots_window.destroy()
+
+    def test_root_manager_shows_actionable_refresh_error(self):
+        callbacks = []
+        def capture_callback(_command, callback=None):
+            callbacks.append(callback)
+
+        with patch.object(self.app, "run_command", side_effect=capture_callback):
+            self.app.manage_package_roots()
+        with patch.object(self.app, "append_log") as append_log, \
+             patch.object(gui.messagebox, "showerror") as showerror:
+            callbacks[0](1, "internal scan failure")
+
+        append_log.assert_called_once()
+        self.assertIn("Журнал", self.app.package_roots_summary_var.get())
+        self.assertIn("Технические подробности", showerror.call_args.args[1])
         self.app.package_roots_window.destroy()
 
     def test_normal_decode_is_saved_from_texture_controls(self):

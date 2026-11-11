@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M12-audit-unresolved-aircraft-model-ownership",
+  "last_completed_stage": "M13-GUI-root-and-dependency-diagnostics-review",
   "active_stage": "M13-GUI-root-and-dependency-diagnostics-review",
-  "working_branch": "codex/model-ownership-audit",
-  "last_commit": "pending M12 checkpoint commit",
+  "working_branch": "codex/gui-root-diagnostics",
+  "last_commit": "pending M13 checkpoint commit",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "179 passed",
+    "unittest": "181 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -85,11 +85,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Commit and push the validated M12 audit branch. Then create codex/gui-root-diagnostics and review GUI actionability, saved roots, new/open/reopen and legacy settings migration.",
-  "next_stage": "M13-GUI-root-and-dependency-diagnostics-review",
+  "next_step": "Commit and push M13. Then create codex/aircraft-build-plan-audit and validate the standard geometry build plan for every catalog record marked geometry-buildable, reusing one package index; do not launch Blender builds.",
+  "next_stage": "M14-installed-aircraft-build-plan-coverage-audit",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T03:36:00Z"
+  "updated_utc": "2026-11-11T03:43:00Z"
 }
