@@ -697,7 +697,7 @@
     {
       "id": "M53",
       "name": "Full catalog texture coverage, second tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "process ten next unsampled OK entries from the exact coverage index",
         "run normal geometry, texture and Blender audit commands",
@@ -705,7 +705,21 @@
         "update deduplicated OK coverage index"
       ],
       "acceptance": "Ten previously unsampled OK records create geometry/texture checkpoints and pass final audit; coverage index shows unique sampled and remaining counts; report is path-free.",
-      "next": "Continue batches of ten until the 174 fully available catalog records are covered, then review actual recurrent texture failure modes."
+      "next": "M54: process the next ten unsampled OK records: the remaining three A320neo liveries and seven B747-8i liveries; continue auditing and reconciling.",
+      "result": "Ten previously unsampled OK/buildable records (five Caravan and five A320neo liveries) created geometry and texture checkpoints and passed all final Blender audits. All returned texture exit 0 with no missing maps. Exact reconciliation: 35/174 OK records now sampled (139 remain); partial coverage remains 48/48. Report: compatibility/headless_texture_ok_sample_m53.json; index: compatibility/ok_texture_coverage_m53.json."
+    },
+    {
+      "id": "M54",
+      "name": "Full catalog texture coverage, third tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "process the next ten unsampled OK catalog records",
+        "audit every output checkpoint with Blender 5.2",
+        "record package recovery evidence for missing maps",
+        "recompute the exact OK and partial coverage index"
+      ],
+      "acceptance": "Ten unique records create geometry/texture checkpoints and pass Blender audit or have a reproducible blocker; path-free index shows remaining OK count.",
+      "next": "Continue ten-record batches through all remaining OK catalog records and investigate any nonzero texture result beyond expected partial status."
     }
   ],
   "rolling_roadmap": [
@@ -862,8 +876,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M53-full-catalog-texture-coverage-second-tranche"
+    "next_stage": "M54-full-catalog-texture-coverage-third-tranche"
   },
-  "next_stage": "M53-full-catalog-texture-coverage-second-tranche",
-  "updated_utc": "2026-11-11T09:31:00Z"
+  "next_stage": "M54-full-catalog-texture-coverage-third-tranche",
+  "updated_utc": "2026-11-11T09:42:00Z"
 }
