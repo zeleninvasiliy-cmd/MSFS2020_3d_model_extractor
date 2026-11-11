@@ -8,27 +8,27 @@ This wiki documents the current **1.3.0** release: a Windows pipeline that impor
 
 | Page | Purpose |
 |---|---|
-| [Getting Started](Getting-Started) | requirements, installation and the first project |
-| [GUI Workflow](GUI-Workflow) | tabs, buttons and the workflow |
-| [Package Diagnosis](Package-Diagnosis) | availability reasons and partial packages |
-| [Package Index](Package-Index) | livery inheritance and resource origin |
-| [Model Selection](Model-Selection) | exterior/interior and LOD selection |
-| [Rule Editors](Rule-Editors) | split, mirror, placement, collections and maps |
-| [Troubleshooting](Troubleshooting) | common errors and safe actions |
+| [Getting Started](Getting-Started.md) | requirements, installation and the first project |
+| [GUI Workflow](GUI-Workflow.md) | tabs, buttons and the workflow |
+| [Package Diagnosis](Package-Diagnosis.md) | availability reasons and partial packages |
+| [Package Index](Package-Index.md) | livery inheritance and resource origin |
+| [Model Selection](Model-Selection.md) | exterior/interior and LOD selection |
+| [Rule Editors](Rule-Editors.md) | split, mirror, placement, collections and maps |
+| [Troubleshooting](Troubleshooting.md) | common errors and safe actions |
 
 ### References
 
 | Page | Purpose |
 |---|---|
-| [CLI Reference](CLI-Reference) | CLI commands and arguments |
-| [Configuration Reference](Configuration-Reference) | JSON configuration and validation |
-| [Build Modes](Build-Modes) | geometry and texture modes |
-| [Textures and Materials](Textures-and-Materials) | maps, DDS and materials |
-| [Object Organization](Object-Organization) | collections, exclusions and splitting |
-| [Architecture](Architecture) | processes and module boundaries |
-| [MSFS glTF Format](MSFS-glTF-Format) | supported glTF data |
-| [Building and Release](Building-and-Release) | rebuilding the Windows package |
-| [Known Issues](Known-Issues) | current limitations and known defects |
+| [CLI Reference](CLI-Reference.md) | CLI commands and arguments |
+| [Configuration Reference](Configuration-Reference.md) | JSON configuration and validation |
+| [Build Modes](Build-Modes.md) | geometry and texture modes |
+| [Textures and Materials](Textures-and-Materials.md) | maps, DDS and materials |
+| [Object Organization](Object-Organization.md) | collections, exclusions and splitting |
+| [Architecture](Architecture.md) | processes and module boundaries |
+| [MSFS glTF Format](MSFS-glTF-Format.md) | supported glTF data |
+| [Building and Release](Building-and-Release.md) | rebuilding the Windows package |
+| [Known Issues](Known-Issues.md) | current limitations and known defects |
 
 MSFS sources are read-only. Real local glTF/GLB, BIN, XML and texture files are required. Protected or missing files are not reconstructed; the user performs visual acceptance in Blender.
 
@@ -44,27 +44,27 @@ Top-level documents: [README](../README.md), [Russian user guide](../USER_GUIDE.
 
 | Страница | Назначение |
 |---|---|
-| [Getting Started](Getting-Started) | требования, установка и первый проект |
-| [GUI Workflow](GUI-Workflow) | вкладки, кнопки и порядок работы |
-| [Package Diagnosis](Package-Diagnosis) | причины недоступности и частичные пакеты |
-| [Package Index](Package-Index) | наследование ливрей и происхождение ресурсов |
-| [Model Selection](Model-Selection) | выбор exterior/interior и LOD |
-| [Rule Editors](Rule-Editors) | split, mirror, placement, коллекции и карты |
-| [Troubleshooting](Troubleshooting) | типовые ошибки и безопасные действия |
+| [Getting Started](Getting-Started.md) | требования, установка и первый проект |
+| [GUI Workflow](GUI-Workflow.md) | вкладки, кнопки и порядок работы |
+| [Package Diagnosis](Package-Diagnosis.md) | причины недоступности и частичные пакеты |
+| [Package Index](Package-Index.md) | наследование ливрей и происхождение ресурсов |
+| [Model Selection](Model-Selection.md) | выбор exterior/interior и LOD |
+| [Rule Editors](Rule-Editors.md) | split, mirror, placement, коллекции и карты |
+| [Troubleshooting](Troubleshooting.md) | типовые ошибки и безопасные действия |
 
 ### Справочники
 
 | Страница | Назначение |
 |---|---|
-| [CLI Reference](CLI-Reference) | команды и аргументы CLI |
-| [Configuration Reference](Configuration-Reference) | JSON-конфигурация и проверки |
-| [Build Modes](Build-Modes) | режимы геометрии и текстур |
-| [Textures and Materials](Textures-and-Materials) | карты, DDS и материалы |
-| [Object Organization](Object-Organization) | коллекции, исключения и разделение |
-| [Architecture](Architecture) | процессы и границы модулей |
-| [MSFS glTF Format](MSFS-glTF-Format) | поддерживаемые данные glTF |
-| [Building and Release](Building-and-Release) | пересборка Windows-пакета |
-| [Known Issues](Known-Issues) | ограничения и известные дефекты |
+| [CLI Reference](CLI-Reference.md) | команды и аргументы CLI |
+| [Configuration Reference](Configuration-Reference.md) | JSON-конфигурация и проверки |
+| [Build Modes](Build-Modes.md) | режимы геометрии и текстур |
+| [Textures and Materials](Textures-and-Materials.md) | карты, DDS и материалы |
+| [Object Organization](Object-Organization.md) | коллекции, исключения и разделение |
+| [Architecture](Architecture.md) | процессы и границы модулей |
+| [MSFS glTF Format](MSFS-glTF-Format.md) | поддерживаемые данные glTF |
+| [Building and Release](Building-and-Release.md) | пересборка Windows-пакета |
+| [Known Issues](Known-Issues.md) | ограничения и известные дефекты |
 
 Исходники MSFS открываются только для чтения. Нужны реальные локальные glTF/GLB, BIN, XML и карты. Закрытые или отсутствующие файлы программа не восстанавливает; визуальную приёмку выполняет пользователь в Blender.
 

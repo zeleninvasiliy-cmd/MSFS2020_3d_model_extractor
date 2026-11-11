@@ -33,7 +33,7 @@ The GUI's installed-package search groups report URIs by map basename, deduplica
 2. `converted_normal_dir` — уже декодированные PNG вида `<имя DDS>.png`;
 3. первая папка из `texture_dirs`, содержащая basename.
 
-`texture_dirs` строится по цепочке `fallback.N` из `texture.cfg` рекурсивно, затем добавляются `extra_texture_dirs`. Ссылка, которой нет на диске внутри пакета ливреи, переносится в базовый пакет через [индекс пакетов](Package-Index) (`origin=base_package`). Флажок «Подключать все texture.*» расширяет поиск на другие ливреи.
+`texture_dirs` строится по цепочке `fallback.N` из `texture.cfg` рекурсивно, затем добавляются `extra_texture_dirs`. Ссылка, которой нет на диске внутри пакета ливреи, переносится в базовый пакет через [индекс пакетов](Package-Index.md) (`origin=base_package`). Флажок «Подключать все texture.*» расширяет поиск на другие ливреи.
 
 При одинаковых именах изображений разные ливреи конфликтуют. Для предсказуемого результата сначала используйте выбранную ливрею и её штатные fallback-каталоги. Все неоднозначности попадают в `ambiguous_textures`.
 
@@ -93,7 +93,7 @@ python .\scripts\msfs_universal.py find-textures .\blend\02_textured_strip_auto_
 
 ### Таблица карт в GUI
 
-Всё перечисленное делается кнопками: «4. Текстуры» → **«Таблица карт...»** ([Rule Editors](Rule-Editors)). Окно показывает одну строку на базовое имя карты с её состоянием, путём и материалами, а поля отчёта с ключом-путём (сжатые и распакованные нормали, нечитаемые изображения, дубликаты) приводятся к тому же имени, чтобы карта не распадалась на две строки из-за регистра.
+Всё перечисленное делается кнопками: «4. Текстуры» → **«Таблица карт...»** ([Rule Editors](Rule-Editors.md)). Окно показывает одну строку на базовое имя карты с её состоянием, путём и материалами, а поля отчёта с ключом-путём (сжатые и распакованные нормали, нечитаемые изображения, дубликаты) приводятся к тому же имени, чтобы карта не распадалась на две строки из-за регистра.
 
 | Задача | Кнопка |
 |---|---|
@@ -115,6 +115,6 @@ python .\scripts\msfs_universal.py find-textures .\blend\02_textured_strip_auto_
 
 Worker пишет на меш `msfs_source_role` и `msfs_pipeline_source`, на новые материалы — `msfs_source_path`. По этому признаку материал сопоставляется с определением из нужного glTF. Для старых checkpoint без признака используется сопоставление по имени файла, что неоднозначно при одинаковых basename двух моделей.
 
-Дальше: [Rule Editors](Rule-Editors) · [Build Modes](Build-Modes) · [Troubleshooting](Troubleshooting)
+Дальше: [Rule Editors](Rule-Editors.md) · [Build Modes](Build-Modes.md) · [Troubleshooting](Troubleshooting.md)
 
 ---

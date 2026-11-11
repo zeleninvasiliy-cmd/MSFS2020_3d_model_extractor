@@ -10,7 +10,7 @@ The application has three processes:
 
 The resolver and validators run without `bpy`; package diagnosis, model selection and rule validation therefore work before Blender starts. The worker owns geometry, materials and scene metadata. The GUI only collects choices, starts a child process and displays its reports. Source packages are read-only and every stage writes into the project output folder.
 
-See [GUI Workflow](GUI-Workflow), [CLI Reference](CLI-Reference) and [Build Modes](Build-Modes) for the public interfaces.
+See [GUI Workflow](GUI-Workflow.md), [CLI Reference](CLI-Reference.md) and [Build Modes](Build-Modes.md) for the public interfaces.
 
 ---
 
@@ -96,9 +96,9 @@ config.json ──► make_plan (валидация) ────┤
 
 Индекс строится один раз на скан и передаётся resolver явно (`index=`). Resolver не импортирует `package_index`: зависимость односторонняя, поэтому диагностику можно запускать и без индекса — тогда относительные ссылки ливрей просто остаются неразрешёнными.
 
-`model_choices` — надстройка над `resolve_aircraft(deep=True)` для мастера выбора. Она собирает кандидатов по ролям, дедуплицирует пути и считает вершины с треугольниками по JSON glTF, не открывая BIN. GUI вызывает её через CLI-команду `models` и не разбирает glTF самостоятельно: граница «GUI не читает геометрию» сохранена. Подтверждённый состав попадает в обычное поле `models` конфига, которое worker уже понимал до этапа C, — отдельного формата для мастера не вводилось. Подробности: [Model Selection](Model-Selection).
+`model_choices` — надстройка над `resolve_aircraft(deep=True)` для мастера выбора. Она собирает кандидатов по ролям, дедуплицирует пути и считает вершины с треугольниками по JSON glTF, не открывая BIN. GUI вызывает её через CLI-команду `models` и не разбирает glTF самостоятельно: граница «GUI не читает геометрию» сохранена. Подтверждённый состав попадает в обычное поле `models` конфига, которое worker уже понимал до этапа C, — отдельного формата для мастера не вводилось. Подробности: [Model Selection](Model-Selection.md).
 
-Редакторы правил устроены так же. `rule_editor.py` и `texture_table.py` лежат в корне рядом с `app_support.py`, импортируются обычным образом и поэтому попадают в сборку PyInstaller без отдельных настроек. Они не содержат определения «допустимого правила»: при сохранении записывают временный конфиг и вызывают CLI `validate`, то есть ту же `validate_config`, которую использует конвейер. Имена суставов для разделения по костям даёт `package_resolver.skin_joints` — чтение JSON glTF без bpy и без BIN, доступное через команду `bones`. Мировые границы объектов для подсказки разделения приходят из уже существовавшей команды `objects`, поэтому worker для этапа D не менялся. Подробности: [Rule Editors](Rule-Editors).
+Редакторы правил устроены так же. `rule_editor.py` и `texture_table.py` лежат в корне рядом с `app_support.py`, импортируются обычным образом и поэтому попадают в сборку PyInstaller без отдельных настроек. Они не содержат определения «допустимого правила»: при сохранении записывают временный конфиг и вызывают CLI `validate`, то есть ту же `validate_config`, которую использует конвейер. Имена суставов для разделения по костям даёт `package_resolver.skin_joints` — чтение JSON glTF без bpy и без BIN, доступное через команду `bones`. Мировые границы объектов для подсказки разделения приходят из уже существовавшей команды `objects`, поэтому worker для этапа D не менялся. Подробности: [Rule Editors](Rule-Editors.md).
 
 Исходный пакет MSFS **не изменяется**. Временные подготовленные glTF и декодированные нормали лежат только в каталоге результатов; временные каталоги `msfs-prepared-*` удаляются автоматически. Временный конфиг проверки правил создаётся в `msfs_rules_*` и удаляется сразу после ответа CLI.
 
@@ -110,18 +110,18 @@ config.json ──► make_plan (валидация) ────┤
 - **Worker** исполняет один этап в Blender и возвращает машинный отчёт. Он не знает названий самолётов.
 - **GUI** не содержит логики сборки: только представление, ввод параметров и запуск CLI. Проверку правил она делегирует команде `validate`, чтение костей — команде `bones`, поиск карт — команде `find-textures`.
 
-Все решения, зависящие от конкретных имён объектов, задаются пользователем в [редакторах](Rule-Editors) и попадают в конфиг. Профилей C152, Wilga, ASK 21, B747 и других в универсальной версии нет; `profile` принимает только `generic`.
+Все решения, зависящие от конкретных имён объектов, задаются пользователем в [редакторах](Rule-Editors.md) и попадают в конфиг. Профилей C152, Wilga, ASK 21, B747 и других в универсальной версии нет; `profile` принимает только `generic`.
 
 ## Версионирование и поставка
 
-`VERSION` в корне — единственный источник истины. `app_support.VERSION` читает его (в замороженном виде — из `_internal`). Сборочный скрипт передаёт версию Inno Setup через `/DAppVersion` и копирует файл в поставку. `release/version_info.txt` содержит версию ресурсов Windows и обновляется при выпуске.
+`VERSION` в корне — единственный источник истины. `app_support.VERSION` читает его (в замороженном виде — из `_internal`). Сборочный скрипт передаёт версию Inno Setup через `/DAppVersion`, формирует метаданные EXE из `release/version_info.template.txt` и `VERSION`, затем копирует файл версии в поставку.
 
 ## Настройки и данные пользователя
 
 | Путь | Содержимое |
 |---|---|
 | `%LOCALAPPDATA%\MSFSModelBuilder\settings.json` | `msfs_root`, `blender` |
-| `%LOCALAPPDATA%\MSFSModelBuilder\package_index.json` | кэш индекса пакетов, см. [Package Index](Package-Index) |
+| `%LOCALAPPDATA%\MSFSModelBuilder\package_index.json` | кэш индекса пакетов, см. [Package Index](Package-Index.md) |
 | `%LOCALAPPDATA%\MSFSModelBuilder\gui-errors.log` | необработанные исключения Tk |
 | `%LOCALAPPDATA%\MSFSModelBuilder\DeletedProjects\` | восстановимый архив удалённых проектов |
 | `<проект>\<имя>.json` | конфигурация проекта |
@@ -131,4 +131,4 @@ config.json ──► make_plan (валидация) ────┤
 
 Каталог `msfs_gui_build` внутри `SimObjects/Airplanes` исключён из скана, чтобы результаты не попадали в список самолётов симулятора. Дополнительно `output_dir` не может находиться внутри исходного пакета.
 
-Дальше: [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Package Index](Package-Index) · [MSFS glTF Format](MSFS-glTF-Format) · [Building and Release](Building-and-Release) · [CLI Reference](CLI-Reference)
+Дальше: [Rule Editors](Rule-Editors.md) · [Model Selection](Model-Selection.md) · [Package Index](Package-Index.md) · [MSFS glTF Format](MSFS-glTF-Format.md) · [Building and Release](Building-and-Release.md) · [CLI Reference](CLI-Reference.md)

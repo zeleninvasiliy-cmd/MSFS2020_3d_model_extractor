@@ -10,7 +10,7 @@ The texture table is on the Textures tab. It shows map state and material, searc
 
 ---
 
-Графическое редактирование правил сборки без правки JSON. Появилось на этапе D (версия 1.3.0) и закрывает пункты 7 и 17 списка [Known Issues](Known-Issues).
+Графическое редактирование правил сборки без правки JSON. Появилось на этапе D (версия 1.3.0) и закрывает пункты 7 и 17 списка [Known Issues](Known-Issues.md).
 
 Два окна:
 
@@ -57,7 +57,7 @@ The texture table is on the Textures tab. It shows map state and material, searc
 
 Пока проверка идёт, кнопка «Сохранить» недоступна. При отказе форма остаётся открытой, а текст ошибки конвейера показывается целиком — например `Ошибка: mirror_objects/1: ось должна быть X, Y или Z.`
 
-Если имя объекта отсутствует в загруженном списке, программа спрашивает подтверждение, а не отказывает: Blender мог добавить суффикс `.001` к повторяющемуся имени (пункт 4 [Known Issues](Known-Issues)). Правило с несуществующим именем остановит сборку.
+Если имя объекта отсутствует в загруженном списке, программа спрашивает подтверждение, а не отказывает: Blender мог добавить суффикс `.001` к повторяющемуся имени (пункт 4 [Known Issues](Known-Issues.md)). Правило с несуществующим именем остановит сборку.
 
 **«Проверить все правила»** проверяет весь набор разом, показывает число правил по каждому типу и **не** помечает проект изменённым.
 
@@ -92,4 +92,4 @@ The texture table is on the Textures tab. It shows map state and material, searc
 - Редакторы правил работают с настоящими виджетами Tk и сохраняют настройки проекта через графический интерфейс; построение модели запускается отдельно от Blender.
 - Измерение на реальном checkpoint C152 пользователя: `bones` вернул 5 skin-узлов без запуска Blender, `objects` — 257 объектов с границами, таблица карт показала **103 карты, 33 с проблемами** (70 разрешённых путей, 38 записей о недостающих картах, 46 применённых материалов), `validate` принял 8 правил всех шести типов и замену карты и отклонил ось `W` до запуска Blender.
 
-Дальше: [GUI Workflow](GUI-Workflow) · [Object Organization](Object-Organization) · [Configuration Reference](Configuration-Reference) · [Textures and Materials](Textures-and-Materials) · [CLI Reference](CLI-Reference) · [Known Issues](Known-Issues)
+Дальше: [GUI Workflow](GUI-Workflow.md) · [Object Organization](Object-Organization.md) · [Configuration Reference](Configuration-Reference.md) · [Textures and Materials](Textures-and-Materials.md) · [CLI Reference](CLI-Reference.md) · [Known Issues](Known-Issues.md)

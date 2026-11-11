@@ -6,7 +6,7 @@ A local release build is made on Windows with Python 3.13 x64 and Inno Setup 7:
 
 1. Create a virtual environment and install `release/build_requirements.txt`.
 2. Run `release/build_release.ps1` with the build Python and optional `-ISCC`.
-3. The script freezes the GUI and CLI, copies the two user guides and license notices, builds Setup and Portable packages, and writes `SHA256SUMS.txt`.
+3. The script reads `VERSION`, generates the executable file-version metadata from it, freezes the GUI and CLI, copies the two user guides and license notices, builds Setup and Portable packages, and writes `SHA256SUMS.txt`.
 4. Upload only the Setup, Portable ZIP and checksum file to the GitHub Release.
 
 Blender and MSFS packages are never bundled. A portable build must keep both executables and the shared `_internal` directory together. The installer is per-user and does not delete projects or settings.
@@ -44,7 +44,7 @@ powershell -ExecutionPolicy Bypass -File .\release\build_release.ps1 -Python C:\
 
 ## Что делает скрипт
 
-1. Читает версию из `VERSION`.
+1. Читает версию из `VERSION` и формирует из неё метаданные версии Windows EXE.
 2. PyInstaller `--onedir`: оконный `MSFSBuilder` из `msfs_builder_gui.py` и консольный `MSFSBuilderCLI` из `release/cli_entry.py`.
 3. Объединяет поставки: оба executable используют общий `_internal`.
 4. Копирует `VERSION`, два пользовательских руководства (`USER_GUIDE.md`, `USER_GUIDE_EN.md`) и лицензионные файлы Python/Tk/PyInstaller.
@@ -96,6 +96,6 @@ Workflow **Build and publish release** запускается только дл�
 
 Установщик не подписан цифровым сертификатом. Для публичного распространения следует подписать `.exe` и установщик доверенным сертификатом и проверить чистую Windows VM с выбранной версией Blender. Лицензия распространения исходников пока не выбрана: [LICENSE_NOTICE](../LICENSE_NOTICE.md).
 
-Дальше: [Architecture](Architecture) · [Getting Started](Getting-Started)
+Дальше: [Architecture](Architecture.md) · [Getting Started](Getting-Started.md)
 
 ---

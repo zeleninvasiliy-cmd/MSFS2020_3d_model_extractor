@@ -56,13 +56,13 @@ python .\scripts\msfs_universal.py roots --root "D:\MSFS\Community" --root "E:\C
 | `--deep` | флаг | выключен | дополнительно разобрать glTF: BIN-буферы и неподдерживаемые возможности |
 | `--root` | путь, **повторяемый** | `[]` | дополнительный корень Packages для поиска базовой модели |
 
-Корни MSFS для поиска по имени (`roots`) обнаруживаются автоматически только когда задан `--deep` или `--root`. [Индекс пакетов](Package-Index) строится всегда: для самолёта внутри установленных Packages — по ним (с кэшем), для отдельного локального пакета — только по его контейнеру, без кэша.
+Корни MSFS для поиска по имени (`roots`) обнаруживаются автоматически только когда задан `--deep` или `--root`. [Индекс пакетов](Package-Index.md) строится всегда: для самолёта внутри установленных Packages — по ним (с кэшем), для отдельного локального пакета — только по его контейнеру, без кэша.
 
 ```powershell
 python .\scripts\msfs_universal.py inventory "C:\MSFS\Packages\Community\my-aircraft" --deep --root "C:\MSFS\Packages\Official"
 ```
 
-Поля отчёта: [Package Diagnosis](Package-Diagnosis). Происхождение ресурсов (`origin`): [Package Index](Package-Index).
+Поля отчёта: [Package Diagnosis](Package-Diagnosis.md). Происхождение ресурсов (`origin`): [Package Index](Package-Index.md).
 
 ### `index`
 
@@ -80,11 +80,11 @@ python .\scripts\msfs_universal.py index --aircraft Asobo_208B_GRAND_CARAVAN_EX_
 python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages\Community"
 ```
 
-Поля ответа: `searched_roots`, `packages`, `aircraft_names`, `cached`, `scanned`, `errors`, `cache_path`, `aircraft`. У записи самолёта — `name`, `path`, `package`, `base_container` (как объявлено в cfg) и `base_installed` (`true`/`false`, либо `null`, если база не объявлена). Подробности: [Package Index](Package-Index).
+Поля ответа: `searched_roots`, `packages`, `aircraft_names`, `cached`, `scanned`, `errors`, `cache_path`, `aircraft`. У записи самолёта — `name`, `path`, `package`, `base_container` (как объявлено в cfg) и `base_installed` (`true`/`false`, либо `null`, если база не объявлена). Подробности: [Package Index](Package-Index.md).
 
 ### `models`
 
-Кандидаты состава моделей для [мастера выбора](Model-Selection). Печатает JSON с раздельными списками `exterior` и `interior`: все LOD, число вершин и треугольников, состояние BIN, происхождение пути и источник роли. Проверка всегда глубокая.
+Кандидаты состава моделей для [мастера выбора](Model-Selection.md). Печатает JSON с раздельными списками `exterior` и `interior`: все LOD, число вершин и треугольников, состояние BIN, происхождение пути и источник роли. Проверка всегда глубокая.
 
 | Аргумент | Тип | По умолчанию | Описание |
 |---|---|---|---|
@@ -95,7 +95,7 @@ python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages\Com
 python .\scripts\msfs_universal.py models "C:\MSFS\Packages\Official\Steam\asobo-aircraft-pitts-s1-reno-livery-aviators\SimObjects\Airplanes\Asobo_Pitts_S1_Reno_LiveryAviators"
 ```
 
-Базовый пакет сканируется только когда пакет частичный или одна из ролей не имеет пригодного кандидата. Числа вершин и треугольников читаются из JSON glTF без открытия BIN. Поля ответа и измеренный результат: [Model Selection](Model-Selection).
+Базовый пакет сканируется только когда пакет частичный или одна из ролей не имеет пригодного кандидата. Числа вершин и треугольников читаются из JSON glTF без открытия BIN. Поля ответа и измеренный результат: [Model Selection](Model-Selection.md).
 
 ### `catalog`
 
@@ -150,7 +150,7 @@ JSON содержит количества доступных записей, в
 python .\scripts\msfs_universal.py find-textures .\work\02_textured.json
 ```
 
-Каталоги из `suggested_extra_texture_dirs` добавляются в `extra_texture_dirs`, затем текстурирование повторяется. В GUI то и другое делает [таблица карт](Rule-Editors): кнопка «Найти в установленных пакетах» вызывает эту команду, «Использовать выбранный файл» записывает `texture_overrides`, а «Добавить найденные папки в поиск» дописывает каталоги в поле дополнительных папок.
+Каталоги из `suggested_extra_texture_dirs` добавляются в `extra_texture_dirs`, затем текстурирование повторяется. В GUI то и другое делает [таблица карт](Rule-Editors.md): кнопка «Найти в установленных пакетах» вызывает эту команду, «Использовать выбранный файл» записывает `texture_overrides`, а «Добавить найденные папки в поиск» дописывает каталоги в поле дополнительных папок.
 
 ### `build`
 
@@ -188,11 +188,11 @@ python .\scripts\msfs_universal.py build .\examples\config.myplane.json --stage 
 | `--output` | путь, **обязательный** | — |
 | `--blender` | путь | `blender` из PATH |
 
-Отказывает, если файл `--output` уже существует. Печатает структурированный `summary`; основные коды описаны на странице [Package Diagnosis](Package-Diagnosis).
+Отказывает, если файл `--output` уже существует. Печатает структурированный `summary`; основные коды описаны на странице [Package Diagnosis](Package-Diagnosis.md).
 
 ### `objects`
 
-Фактический состав сохранённой сцены. Запускает аудит с `--objects-only` во временный каталог и печатает чистый JSON `{"blend": …, "objects": […]}` — баннер Blender не попадает в stdout. Эту команду использует GUI для дерева объектов и для кнопки «Прочитать объекты из checkpoint» в [редакторе правил](Rule-Editors).
+Фактический состав сохранённой сцены. Запускает аудит с `--objects-only` во временный каталог и печатает чистый JSON `{"blend": …, "objects": […]}` — баннер Blender не попадает в stdout. Эту команду использует GUI для дерева объектов и для кнопки «Прочитать объекты из checkpoint» в [редакторе правил](Rule-Editors.md).
 
 | Аргумент | Тип | По умолчанию |
 |---|---|---|
@@ -203,7 +203,7 @@ python .\scripts\msfs_universal.py build .\examples\config.myplane.json --stage 
 
 ### `validate`
 
-Проверка правил редактирования **без обращения к диску и без Blender**. Читает JSON-конфиг, вызывает ту же `validate_config`, что и конвейер, и печатает `{"ok": true, "rules": {<ключ>: <число правил>}}`. Эту команду вызывает окно [редакторов правил](Rule-Editors) при каждом сохранении и кнопка «Проверить все правила».
+Проверка правил редактирования **без обращения к диску и без Blender**. Читает JSON-конфиг, вызывает ту же `validate_config`, что и конвейер, и печатает `{"ok": true, "rules": {<ключ>: <число правил>}}`. Эту команду вызывает окно [редакторов правил](Rule-Editors.md) при каждом сохранении и кнопка «Проверить все правила».
 
 | Аргумент | Тип | По умолчанию |
 |---|---|---|
@@ -260,4 +260,4 @@ GUI останавливает операцию деревом процессо�
 blender -b --factory-startup --python-exit-code 1 --python msfs_universal_worker.py -- <spec>
 ```
 
-Дальше: [Rule Editors](Rule-Editors) · [Package Index](Package-Index) · [Configuration Reference](Configuration-Reference) · [Build Modes](Build-Modes) · [Troubleshooting](Troubleshooting)
+Дальше: [Rule Editors](Rule-Editors.md) · [Package Index](Package-Index.md) · [Configuration Reference](Configuration-Reference.md) · [Build Modes](Build-Modes.md) · [Troubleshooting](Troubleshooting.md)

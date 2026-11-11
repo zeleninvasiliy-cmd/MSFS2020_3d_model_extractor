@@ -145,4 +145,4 @@ python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages\Com
 - Неоднозначность всегда передаётся пользователю.
 - Исходные пакеты открываются только для чтения; кэш пишется в профиль пользователя.
 
-Дальше: [Package Diagnosis](Package-Diagnosis) · [CLI Reference](CLI-Reference) · [Architecture](Architecture) · [Textures and Materials](Textures-and-Materials)
+Дальше: [Package Diagnosis](Package-Diagnosis.md) · [CLI Reference](CLI-Reference.md) · [Architecture](Architecture.md) · [Textures and Materials](Textures-and-Materials.md)

@@ -87,4 +87,4 @@ python scripts/msfs_universal.py models "C:\...\Airplanes\Test" --root "D:\Commu
 - Не восстанавливает отсутствующие исходники и не расшифровывает пакеты.
 - Не доказывает правильность формы: визуальная приёмка остаётся за пользователем в Blender.
 
-Дальше: [Package Diagnosis](Package-Diagnosis) · [Package Index](Package-Index) · [GUI Workflow](GUI-Workflow) · [Configuration Reference](Configuration-Reference)
+Дальше: [Package Diagnosis](Package-Diagnosis.md) · [Package Index](Package-Index.md) · [GUI Workflow](GUI-Workflow.md) · [Configuration Reference](Configuration-Reference.md)

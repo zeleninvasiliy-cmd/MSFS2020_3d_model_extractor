@@ -4,7 +4,7 @@
 
 The adapter reads the glTF JSON and its available buffers, maps MSFS attributes and creates Blender meshes and materials. It validates primitive modes, indices, accessors, winding and node transforms before creating the scene.
 
-Supported resources depend on the installed package and the current adapter. Missing buffers, unsupported extensions and malformed containers are reported before Blender. The program does not silently replace a failed primitive with an approximate mesh. See [Known Issues](Known-Issues) for the current limits.
+Supported resources depend on the installed package and the current adapter. Missing buffers, unsupported extensions and malformed containers are reported before Blender. The program does not silently replace a failed primitive with an approximate mesh. See [Known Issues](Known-Issues.md) for the current limits.
 
 Geometry compressed with `KHR_draco_mesh_compression` or `EXT_meshopt_compression` is not decoded. Deep diagnosis detects the extension at its declaration/use site, and the Blender worker repeats the guard so a build cannot silently import compressed bytes as ordinary geometry. Decompress the source in its exporter or choose another LOD. Neither extension appeared in the 285 glTF models selected by the current local deep catalog scan.
 
@@ -107,7 +107,7 @@ blur, frost, colision, collision, occluder, _slow, tuto_
 
 ## Материалы
 
-`read_materials` извлекает ALBD/COMP/NORM/EMISSIVE через расширение `MSFT_texture_dds`. Каналы COMP: **R = occlusion, G = roughness, B = metallic**. NORM требует инверсии зелёного канала (DirectX → OpenGL). Подробности: [Textures and Materials](Textures-and-Materials).
+`read_materials` извлекает ALBD/COMP/NORM/EMISSIVE через расширение `MSFT_texture_dds`. Каналы COMP: **R = occlusion, G = roughness, B = metallic**. NORM требует инверсии зелёного канала (DirectX → OpenGL). Подробности: [Textures and Materials](Textures-and-Materials.md).
 
 ## Диагностика против декодирования
 
@@ -118,4 +118,4 @@ Resolver (`inspect_gltf`) проверяет документ **до** сбор�
 намеренное разделение: понятное ограничение не должно превращаться в аварию
 worker.
 
-Дальше: [Build Modes](Build-Modes) · [Package Diagnosis](Package-Diagnosis) · [Textures and Materials](Textures-and-Materials)
+Дальше: [Build Modes](Build-Modes.md) · [Package Diagnosis](Package-Diagnosis.md) · [Textures and Materials](Textures-and-Materials.md)

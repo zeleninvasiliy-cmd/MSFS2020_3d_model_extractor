@@ -21,10 +21,21 @@ $distRoot = Join-Path $PSScriptRoot 'dist'
 $installerRoot = Join-Path $PSScriptRoot 'output'
 New-Item -ItemType Directory -Path $buildRoot,$distRoot,$installerRoot -Force | Out-Null
 $version = (Get-Content -LiteralPath (Join-Path $packageRoot 'VERSION') -Raw).Trim()
+$versionMatch = [regex]::Match($version, '^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$')
+if (-not $versionMatch.Success) {
+    throw "VERSION must use three numeric components (major.minor.patch): $version"
+}
+$versionTemplate = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'version_info.template.txt') -Raw
+$versionTemplate = $versionTemplate.Replace('@VERSION_MAJOR@', $versionMatch.Groups['major'].Value)
+$versionTemplate = $versionTemplate.Replace('@VERSION_MINOR@', $versionMatch.Groups['minor'].Value)
+$versionTemplate = $versionTemplate.Replace('@VERSION_PATCH@', $versionMatch.Groups['patch'].Value)
+$versionTemplate = $versionTemplate.Replace('@VERSION@', $version)
+$generatedVersionInfo = Join-Path $buildRoot 'version_info.txt'
+[System.IO.File]::WriteAllText($generatedVersionInfo, $versionTemplate, [System.Text.UTF8Encoding]::new($false))
 $common = @('--noconfirm', '--clean', '--onedir', '--distpath', $distRoot,
             '--workpath', $buildRoot, '--specpath', $buildRoot,
             '--paths', $packageRoot, '--paths', (Join-Path $packageRoot 'scripts'),
-            '--version-file', (Join-Path $PSScriptRoot 'version_info.txt'),
+            '--version-file', $generatedVersionInfo,
             '--hidden-import', 'msfs_universal', '--add-data', ((Join-Path $packageRoot 'scripts') + ';scripts'),
             '--add-data', ((Join-Path $packageRoot 'VERSION') + ';.'))
 

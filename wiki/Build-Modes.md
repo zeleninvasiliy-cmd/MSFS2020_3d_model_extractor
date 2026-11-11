@@ -82,8 +82,8 @@ MSFS упаковывает индексы в draw ranges внутри `extras.A
 - Не восстанавливают отсутствующий interior или недостающий LOD.
 - Не исправляют неверное назначение ролей моделям.
 - Не доказывают правильную форму: название режима не является результатом визуальной проверки.
-- Не влияют на доступность пакета — причины недоступности описаны в [Package Diagnosis](Package-Diagnosis), и смена skinning там не поможет.
+- Не влияют на доступность пакета — причины недоступности описаны в [Package Diagnosis](Package-Diagnosis.md), и смена skinning там не поможет.
 
-Дальше: [MSFS glTF Format](MSFS-glTF-Format) · [Object Organization](Object-Organization) · [Troubleshooting](Troubleshooting)
+Дальше: [MSFS glTF Format](MSFS-glTF-Format.md) · [Object Organization](Object-Organization.md) · [Troubleshooting](Troubleshooting.md)
 
 ---
