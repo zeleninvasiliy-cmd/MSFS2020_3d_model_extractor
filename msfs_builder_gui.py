@@ -138,6 +138,7 @@ class BuilderApp(tk.Tk):
         self.blender_var = tk.StringVar(value=self.settings.get("blender") or detect_blender())
         self.skinning_var = tk.StringVar(value="strip")
         self.draw_var = tk.StringVar(value="auto")
+        self.normal_decode_var = tk.StringVar(value="auto")
         self.filter_runtime_var = tk.BooleanVar(value=True)
         self.all_liveries_var = tk.BooleanVar(value=False)
         self.exclude_var = tk.StringVar()
@@ -204,6 +205,7 @@ class BuilderApp(tk.Tk):
             self.blender_var,
             self.skinning_var,
             self.draw_var,
+            self.normal_decode_var,
             self.filter_runtime_var,
             self.all_liveries_var,
         ):
@@ -448,9 +450,15 @@ class BuilderApp(tk.Tk):
 
         texture_params = ttk.LabelFrame(tab, text="Параметры текстур", padding=8)
         texture_params.grid(row=2, column=0, sticky="ew", pady=(4, 8))
+        texture_params.columnconfigure(4, weight=1)
         ttk.Checkbutton(texture_params, text="Подключать все texture.* варианты", variable=self.all_liveries_var).grid(row=0, column=0, sticky="w")
-        ttk.Button(texture_params, text="Таблица карт...", command=self.open_texture_table).grid(row=0, column=1, sticky="w", padx=12)
-        ttk.Label(texture_params, text="Опция влияет только на поиск ливрей и fallback-текстур.", foreground="#555").grid(row=1, column=0, sticky="w", pady=(5, 0))
+        ttk.Label(texture_params, text="Нормали:").grid(row=0, column=1, sticky="w", padx=(18, 6))
+        self.normal_decode_combo = ttk.Combobox(texture_params, textvariable=self.normal_decode_var,
+                                                values=("auto", "dxt5n", "off"), state="readonly", width=10)
+        self.normal_decode_combo.grid(row=0, column=2, sticky="w")
+        ttk.Button(texture_params, text="Таблица карт...", command=self.open_texture_table).grid(row=0, column=3, sticky="w", padx=12)
+        ttk.Label(texture_params, text="auto: BC5 автоматически, DXT5 отмечается для проверки; dxt5n декодирует DXT5.",
+                  foreground="#555").grid(row=1, column=0, columnspan=5, sticky="w", pady=(5, 0))
 
         extra_frame = ttk.LabelFrame(tab, text="Дополнительные каталоги текстур", padding=8)
         extra_frame.grid(row=3, column=0, sticky="ew", pady=(0, 8))
@@ -1580,6 +1588,7 @@ class BuilderApp(tk.Tk):
             "build_variant": build_variant,
             "skinning": self.skinning_var.get(),
             "draw_mode": self.draw_var.get(),
+            "normal_decode": self.normal_decode_var.get(),
             "filter_runtime": bool(self.filter_runtime_var.get()),
             "include_all_liveries": bool(self.all_liveries_var.get()),
             "exclude_objects": self.current_exclusions(),
@@ -1818,6 +1827,7 @@ class BuilderApp(tk.Tk):
             self.livery_var.set(data.get("livery", "base"))
             self.skinning_var.set(data.get("skinning", "strip"))
             self.draw_var.set(data.get("draw_mode", "auto"))
+            self.normal_decode_var.set(data.get("normal_decode", "auto"))
             self.build_variant_var.set(data.get("build_variant", f"{self.skinning_var.get()}_{self.draw_var.get()}"))
             self.filter_runtime_var.set(data.get("filter_runtime", True))
             self.all_liveries_var.set(data.get("include_all_liveries", False))

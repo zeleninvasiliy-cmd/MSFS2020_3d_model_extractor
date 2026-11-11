@@ -84,6 +84,11 @@ class DesktopRegressionTests(unittest.TestCase):
         command = runner.call_args.args[0]
         self.assertEqual(command[-1], "--deep")
 
+    def test_normal_decode_is_saved_from_texture_controls(self):
+        self.project()
+        self.app.normal_decode_var.set("dxt5n")
+        self.assertEqual(self.app.make_config()["normal_decode"], "dxt5n")
+
     def test_report_object_catalog_survives_exclusions(self):
         self.app._populate_catalog([
             {"name": "Wheel_Left", "type": "MESH", "collections": ["05_LANDING_GEAR"], "included": False},

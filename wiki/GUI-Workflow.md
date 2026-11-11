@@ -141,6 +141,6 @@ The project wizard selects an aircraft and general settings. The Geometry tab se
 
 Все правила проверяются до запуска Blender: сначала в форме, затем командой CLI `validate`, которая использует ту же функцию `validate_config`, что и конвейер. Отказ показывается текстом ошибки, форма остаётся открытой. Подробнее: [Rule Editors](Rule-Editors).
 
-**Без графического редактора** остаются расширенные ключи `converted_normal_dir`, `normal_decode`, `repair_skin_roots`, `pose_position` и `profile`. Движок их поддерживает, GUI сохраняет при круговой загрузке, но задаются они в JSON. Замена конкретной нормали через таблицу карт покрывает большинство случаев, ради которых раньше требовался `converted_normal_dir`.
+**Без графического редактора** остаются расширенные ключи `converted_normal_dir`, `repair_skin_roots`, `pose_position` и `profile`. `normal_decode` выбирается на вкладке «Текстуры» (`auto`, `dxt5n`, `off`). Остальные ключи движок поддерживает, GUI сохраняет при круговой загрузке, но задаются они в JSON. Замена конкретной нормали через таблицу карт покрывает большинство случаев, ради которых раньше требовался `converted_normal_dir`.
 
 Дальше: [Rule Editors](Rule-Editors) · [Model Selection](Model-Selection) · [Object Organization](Object-Organization) · [Textures and Materials](Textures-and-Materials) · [Known Issues](Known-Issues)
