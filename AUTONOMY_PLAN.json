@@ -683,7 +683,7 @@
     {
       "id": "M52",
       "name": "Full catalog texture coverage, first tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "identify fully available buildable records absent from all prior texture reports",
         "sample ten diverse aircraft through normal geometry and texture CLI stages",
@@ -691,7 +691,21 @@
         "start exact coverage index for the 174 OK catalog entries"
       ],
       "acceptance": "All ten selected records produce texture checkpoints and pass final audit or have a reproducible blocker; report is path-free and deduplicated by aircraft record.",
-      "next": "Repeat ten-record texture tranches until all 174 OK catalog entries are represented, reconciling after each batch; then address any package-specific material failures."
+      "next": "M53: test the next ten unsampled OK records, starting with additional Caravan and A320 livery packages; continue exact reconciliation each tranche.",
+      "result": "Ten diverse OK/buildable aircraft records (AS-33, Caravan, A320neo, B747-8i, Bonanza G36, C152, C172, floatplane, Cabri G2 and Cap10C) built geometry and texture checkpoints and passed all Blender 5.2 audits. All ten returned texture exit 0 with zero missing maps. Exact deep-catalog reconciliation: 25/174 OK records have texture reports (149 not yet sampled); all 48 partial records are already covered. Coverage report: compatibility/ok_texture_coverage_m52.json."
+    },
+    {
+      "id": "M53",
+      "name": "Full catalog texture coverage, second tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "process ten next unsampled OK entries from the exact coverage index",
+        "run normal geometry, texture and Blender audit commands",
+        "record texture missing counts and any recovery candidates",
+        "update deduplicated OK coverage index"
+      ],
+      "acceptance": "Ten previously unsampled OK records create geometry/texture checkpoints and pass final audit; coverage index shows unique sampled and remaining counts; report is path-free.",
+      "next": "Continue batches of ten until the 174 fully available catalog records are covered, then review actual recurrent texture failure modes."
     }
   ],
   "rolling_roadmap": [
@@ -848,8 +862,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M52-full-catalog-texture-coverage-first-tranche"
+    "next_stage": "M53-full-catalog-texture-coverage-second-tranche"
   },
-  "next_stage": "M52-full-catalog-texture-coverage-first-tranche",
-  "updated_utc": "2026-11-11T09:23:00Z"
+  "next_stage": "M53-full-catalog-texture-coverage-second-tranche",
+  "updated_utc": "2026-11-11T09:31:00Z"
 }
