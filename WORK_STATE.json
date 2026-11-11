@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M42-live-catalog-reconciliation",
-  "active_stage": "M43-nonbuildable-catalog-audit",
-  "working_branch": "codex/live-catalog-reconciliation",
-  "last_commit": "7ed92f1",
+  "last_completed_stage": "M43-nonbuildable-catalog-audit",
+  "active_stage": "M44-texture-stage-broad-sample",
+  "working_branch": "codex/nonbuildable-catalog-audit",
+  "last_commit": "929c02e",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -70,7 +70,9 @@
     "m42_reconciliation": "Live deep catalog exact-key comparison: 226/226 geometry-buildable records covered; 0 uncovered. Earlier incremental unique count was high by two; compatibility archive contains intentional repeat tests, all deduplicated in compatibility/live_geometry_coverage_m42.json.",
     "m42_final_sample": "12/12 final uncovered entries built one checkpoint and passed Blender 5.2 audit; six DC-3, five Pilatus PC-6 and partial Volocity; temp outputs cleaned.",
     "m42_report": "compatibility/headless_live_geometry_sample_m42.json; path-free, all 12 successful.",
-    "m42_coverage_report": "Path-free exact coverage index, catalog reason counts and duplicate-report names at compatibility/live_geometry_coverage_m42.json."
+    "m42_coverage_report": "Path-free exact coverage index, catalog reason counts and duplicate-report names at compatibility/live_geometry_coverage_m42.json.",
+    "m43_nonbuildable_audit": "7/7 catalog records classified; six shared-resource-only packages have zero model candidates; R44 base alias absent in forced uncached 526-package index (0 errors).",
+    "m43_report": "compatibility/nonbuildable_catalog_audit_m43.json; path-free."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -184,14 +186,17 @@
     },
     "unique_real_import_report_records": 226,
     "uncovered_geometry_buildable": 0,
-    "duplicate_report_names": 21
+    "duplicate_report_names": 21,
+    "not_geometry_buildable": 7,
+    "common_resources_only": 6,
+    "unresolved_aliases": 1
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M43: audit all non-buildable catalog records, classify source limitations versus resolver gaps and test evidence-backed recovery.",
+  "next_step": "M44: expand real texture-stage coverage, especially partial livery packages, and classify incomplete texture sources versus code defects.",
   "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T08:22:00Z"
+  "updated_utc": "2026-11-11T08:30:00Z"
 }
