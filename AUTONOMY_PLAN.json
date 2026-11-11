@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/partial-texture-sample-second-tranche",
+  "working_branch": "codex/full-catalog-texture-validation",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -711,7 +711,7 @@
     {
       "id": "M54",
       "name": "Full catalog texture coverage, third tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "process the next ten unsampled OK catalog records",
         "audit every output checkpoint with Blender 5.2",
@@ -719,7 +719,21 @@
         "recompute the exact OK and partial coverage index"
       ],
       "acceptance": "Ten unique records create geometry/texture checkpoints and pass Blender audit or have a reproducible blocker; path-free index shows remaining OK count.",
-      "next": "Continue ten-record batches through all remaining OK catalog records and investigate any nonzero texture result beyond expected partial status."
+      "next": "M55: process the next ten unsampled G36/C152/C172 records; start the ongoing full-catalog texture work on a focused branch.",
+      "result": "Ten additional OK/buildable records (three A320neo liveries, six B747-8i liveries and Bonanza G36 livery 01) produced geometry and texture checkpoints and passed final Blender 5.2 audits. All ten texture stages returned exit 0 with zero missing maps. Exact deep-catalog reconciliation: 45/174 OK records have texture reports; 129 remain; partial coverage is 48/48. Reports: compatibility/headless_texture_ok_sample_m54.json and compatibility/ok_texture_coverage_m54.json."
+    },
+    {
+      "id": "M55",
+      "name": "Full catalog texture coverage, fourth tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "process next ten unsampled OK records across G36, C152 and C172",
+        "audit each geometry/texture checkpoint with Blender",
+        "reconcile all 48 partial and 174 OK records",
+        "continue on a dedicated full-catalog texture-validation branch"
+      ],
+      "acceptance": "Ten unique unsampled OK records produce texture checkpoints and pass Blender audit; report/index path-free; branch lineage is explicit.",
+      "next": "Continue ten-record batches until all 174 OK records are covered, reconcile zero-sample entries, then investigate any anomalous status."
     }
   ],
   "rolling_roadmap": [
@@ -876,8 +890,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M54-full-catalog-texture-coverage-third-tranche"
+    "next_stage": "M55-full-catalog-texture-coverage-fourth-tranche"
   },
-  "next_stage": "M54-full-catalog-texture-coverage-third-tranche",
-  "updated_utc": "2026-11-11T09:42:00Z"
+  "next_stage": "M55-full-catalog-texture-coverage-fourth-tranche",
+  "updated_utc": "2026-11-11T10:03:00Z"
 }
