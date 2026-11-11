@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M21-partial-package-model-choice-import-coverage",
-  "active_stage": "M22-gui-audit-report-recovery",
-  "working_branch": "codex/partial-model-choice-import",
+  "last_completed_stage": "M22-gui-audit-report-recovery",
+  "active_stage": "M23-new-aircraft-class-compatibility-audit",
+  "working_branch": "codex/gui-audit-report-recovery",
   "last_commit": "2e8e371",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "194 passed (last product-code validation at M19; M20 changed only docs and a path-free report)",
+    "unittest": "196 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -26,7 +26,9 @@
     "headless_m20_sample": "8/8 real aircraft built one checkpoint and passed normal CLI audit using Blender 5.2; 5.7–15.5 s/build; no render; temporary outputs cleaned; report compatibility/headless_import_sample_m20.json",
     "m20_report": "JSON parses; 8 entries; all build_exit=0, checkpoint_count=1 and audit_passed=true; no absolute source paths",
     "m21_partial_model_sample": "6/6 partial/incomplete real packages built one checkpoint and passed audit; manual roles confirmed by GUI callback; includes inherited Pitts interior; no render; temporary outputs cleaned; compatibility/headless_model_choice_sample_m21.json",
-    "m21_report": "JSON parses; 6 entries; all build_exit=0, checkpoint_count=1 and audit_passed=true; no absolute source paths"
+    "m21_report": "JSON parses; 6 entries; all build_exit=0, checkpoint_count=1 and audit_passed=true; no absolute source paths",
+    "gui_checkpoint_audit_recovery": "report recovered after reopen; selected checkpoint matching, numeric report order and stale-project isolation covered",
+    "test_output_isolation": "all desktop project fixtures now use temporary project/blend folders; verified stray placeholder removed"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -140,11 +142,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Improve audit report discovery so the Geometry tab can reopen the report for the active selected/latest geometry checkpoint after closing/reopening a project, and cannot follow an old report path from a different project.",
-  "next_stage": "M22-gui-audit-report-recovery",
+  "next_step": "Query the live deep catalog for installed rotorcraft or other aircraft classes not represented in previous headless samples, then test any newly found buildable classes through the normal CLI.",
+  "next_stage": "M23-new-aircraft-class-compatibility-audit",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T04:58:16Z"
+  "updated_utc": "2026-11-11T05:02:30Z"
 }

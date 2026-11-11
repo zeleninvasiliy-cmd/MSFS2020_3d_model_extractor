@@ -2137,6 +2137,7 @@ class BuilderApp(tk.Tk):
         self.project_open = False
         self.project_dirty = False
         self.project_var.set("")
+        self.audit_report_path = None
         self.selected_aircraft = None
         self.selected_inventory = None
         self.aircraft_var.set("")
@@ -2236,6 +2237,7 @@ class BuilderApp(tk.Tk):
             if self.project_open:
                 self.close_project(force=True)
             self.project_extra = dict(data)
+            self.audit_report_path = None
             source = (Path(path).parent / os.path.expandvars(data["source"])).resolve()
             self.project_var.set(path)
             self.project_open = True
@@ -2762,8 +2764,7 @@ class BuilderApp(tk.Tk):
     def audit_geometry_checkpoint(self):
         if self.busy or not self.project_open:
             return
-        selected = self.selected_blend_path()
-        blend = selected if selected and selected.name.casefold().startswith("01_geometry") else self.latest_geometry_file()
+        blend = self.geometry_checkpoint_for_audit()
         if blend is None:
             messagebox.showwarning("Checkpoint не найден", "Сначала соберите geometry, затем проверьте её checkpoint.")
             return
@@ -2791,6 +2792,25 @@ class BuilderApp(tk.Tk):
         self.audit_report_path = None
         if self.run_command(command, lambda code, output: self.on_geometry_audit_result(code, output, report)):
             self.status_var.set("Blender проверяет geometry checkpoint; рендер не запускается…")
+
+    def geometry_checkpoint_for_audit(self):
+        selected = self.selected_blend_path()
+        if selected and selected.name.casefold().startswith("01_geometry"):
+            return selected
+        return self.latest_geometry_file()
+
+    def latest_geometry_audit_report(self, blend):
+        project = self.project_path()
+        if project is None or blend is None:
+            return None
+        report_dir = project.parent / "reports" / "geometry_audits"
+        prefix = f"{blend.stem}_audit_"
+        numbered = []
+        for path in report_dir.glob(f"{prefix}*.json") if report_dir.is_dir() else ():
+            match = re.fullmatch(re.escape(prefix) + r"(\d+)\.json", path.name, re.IGNORECASE)
+            if match and path.is_file():
+                numbered.append((int(match.group(1)), path))
+        return max(numbered, key=lambda item: item[0])[1] if numbered else None
 
     def on_geometry_audit_result(self, code, output, report):
         if code:
@@ -2823,10 +2843,18 @@ class BuilderApp(tk.Tk):
         messagebox.showinfo("Аудит geometry checkpoint", text + "\n\n" + caveat + f"\n\nОтчёт: {report}")
 
     def open_geometry_audit_report(self):
-        report = self.audit_report_path
-        if report is None or not report.is_file():
-            messagebox.showinfo("Отчёт не найден", "Сначала выполните аудит geometry checkpoint.")
+        if not self.project_open or self.project_path() is None:
+            messagebox.showinfo("Отчёт не найден", "Сначала откройте проект с geometry checkpoint.")
             return
+        blend = self.geometry_checkpoint_for_audit()
+        if blend is None:
+            messagebox.showinfo("Checkpoint не найден", "В активном проекте нет geometry checkpoint для просмотра отчёта.")
+            return
+        report = self.latest_geometry_audit_report(blend)
+        if report is None:
+            messagebox.showinfo("Отчёт не найден", "Для выбранного geometry checkpoint ещё нет отчёта аудита.")
+            return
+        self.audit_report_path = report
         try:
             os.startfile(str(report))
         except OSError as exc:

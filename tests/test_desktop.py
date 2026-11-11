@@ -30,6 +30,7 @@ class DesktopRegressionTests(unittest.TestCase):
         source.mkdir()
         self.app.project_open = True
         self.app.project_var.set(str(self.folder / "project.json"))
+        self.app.output_var.set(str(self.folder / "blend"))
         self.app.selected_aircraft = {"aircraft": "Test", "path": str(source)}
         self.app.model_var.set("model")
         self.app.blender_var.set(sys.executable)
@@ -312,13 +313,63 @@ class DesktopRegressionTests(unittest.TestCase):
 
     def test_open_geometry_audit_report_uses_latest_report(self):
         self.project()
-        report = self.folder / "audit.json"
+        output = Path(self.app.output_var.get())
+        output.mkdir()
+        blend = output / "01_geometry_strip_auto_002.blend"
+        blend.write_bytes(b"checkpoint")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        report_dir = self.folder / "reports" / "geometry_audits"
+        report_dir.mkdir(parents=True)
+        stale = report_dir / "01_geometry_strip_auto_002_audit_002.json"
+        newest = report_dir / "01_geometry_strip_auto_002_audit_010.json"
+        stale.write_text("{}", encoding="utf-8")
+        newest.write_text("{}", encoding="utf-8")
+        # A report copied or touched later must not override the larger sequence.
+        os.utime(stale, (2_000_000_000, 2_000_000_000))
+        self.app.audit_report_path = self.folder.parent / "old_project" / "reports" / "old.json"
+        with patch.object(gui.os, "startfile") as startfile:
+            self.app.open_geometry_audit_report()
+
+        startfile.assert_called_once_with(str(newest))
+        self.assertEqual(self.app.audit_report_path, newest)
+
+    def test_open_geometry_audit_report_recovers_after_reopen(self):
+        self.project()
+        output = Path(self.app.output_var.get())
+        output.mkdir()
+        blend = output / "01_geometry_strip_auto_001.blend"
+        blend.write_bytes(b"checkpoint")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        report = self.folder / "reports" / "geometry_audits" / "01_geometry_strip_auto_001_audit_001.json"
+        report.parent.mkdir(parents=True)
         report.write_text("{}", encoding="utf-8")
-        self.app.audit_report_path = report
+        self.app.audit_report_path = None
         with patch.object(gui.os, "startfile") as startfile:
             self.app.open_geometry_audit_report()
 
         startfile.assert_called_once_with(str(report))
+
+    def test_open_geometry_audit_report_rejects_other_checkpoint_report(self):
+        self.project()
+        output = Path(self.app.output_var.get())
+        output.mkdir()
+        blend = output / "01_geometry_strip_auto_002.blend"
+        blend.write_bytes(b"checkpoint")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        other = self.folder / "reports" / "geometry_audits" / "01_geometry_strip_auto_001_audit_001.json"
+        other.parent.mkdir(parents=True)
+        other.write_text("{}", encoding="utf-8")
+        self.app.audit_report_path = other
+        with patch.object(gui.messagebox, "showinfo") as showinfo:
+            self.app.open_geometry_audit_report()
+
+        showinfo.assert_called_once()
 
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()
