@@ -281,3 +281,7 @@ M44 проверил ещё 10 partial-ливерей 103Solo, B787-10 и Baron 
 M45 improves the texture-stage status when code 2 means maps are missing but a checkpoint exists: the GUI now says textures were applied partially, names the saved `.blend`, and directs the user to the journal. A desktop regression covers the callback.
 
 M45 уточняет статус этапа текстурирования при code 2: если карты отсутствуют, но checkpoint создан, GUI сообщает о частично применённых текстурах, показывает имя `.blend` и направляет к журналу. Callback покрыт desktop-регрессией.
+
+M46 tests ten additional partial C152 Aerobat, C172 Classic and DA40 TDI liveries. All ten texture checkpoints passed Blender audit despite expected code 2 for incomplete maps. A cross-package `find-textures` probe for C152 Aerobat found 22 of 23 missing maps: 19 unique matches, three ambiguous basenames, one absent, and eight suggested folders. Ambiguous matches need explicit user choice. Report: [headless_texture_partial_sample_m46.json](../compatibility/headless_texture_partial_sample_m46.json).
+
+M46 проверил ещё 10 partial-ливерей C152 Aerobat, C172 Classic и DA40 TDI. Все текстурированные checkpoint прошли аудит Blender, несмотря на ожидаемый code 2 для неполных карт. Штатный `find-textures` для C152 Aerobat нашёл 22 из 23 отсутствующих карт: 19 однозначных совпадений, три неоднозначных имени, одну ненайденную карту и восемь рекомендуемых папок. Неоднозначности требуют явного выбора пользователя. Отчёт: [headless_texture_partial_sample_m46.json](../compatibility/headless_texture_partial_sample_m46.json).

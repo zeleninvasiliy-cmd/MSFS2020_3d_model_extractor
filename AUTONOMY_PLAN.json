@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/texture-partial-status-ux",
+  "working_branch": "codex/partial-texture-sample-second-tranche",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -609,6 +609,20 @@
       "acceptance": "GUI displays completion, partial texture status, saved filename and journal guidance for code 2; 206-test suite and GUI self-test pass.",
       "result": "When the texture stage returns code 2 with a saved checkpoint, the GUI now says “Текстуры применены частично”, names the created .blend, and directs the user to the journal for missing maps. The stage remains marked completed. Focused GUI regression, all 206 unit tests, GUI self-test, compileall and diff check passed.",
       "next": "M46: continue texture-stage validation on the next ten untested partial livery packages; use find-textures on representative reports to separate absent maps from resolver misses."
+    },
+    {
+      "id": "M46",
+      "name": "Partial livery texture sample, second tranche",
+      "status": "complete",
+      "deliverables": [
+        "test ten additional partial Aerobat/Classic/TDI livery packages",
+        "run normal geometry and texture stages and audit every checkpoint",
+        "use find-textures on representative Aerobat reports",
+        "measure unique versus ambiguous cross-package map hits"
+      ],
+      "acceptance": "All ten create texture checkpoints and pass Blender audit; path-free map availability metrics distinguish unique, ambiguous and absent candidates; outputs cleaned.",
+      "result": "Ten partial C152 Aerobat, C172 Classic and DA40 TDI liveries built geometry and texture checkpoints and passed Blender 5.2 final audit. `find-textures` on a C152 Aerobat report found 22/23 missing maps in other installed packages; 19 basenames had a single match, three had multiple matches, and one was not found; eight extra directories were suggested. This is an actionable GUI recovery opportunity, but conflicting basename matches must stay explicit. Report: compatibility/headless_texture_partial_sample_m46.json.",
+      "next": "M47: add a graphical “search missing maps in installed Packages” recovery flow using the existing find-textures tool. Show unique and ambiguous matches separately, allow the user to add suggested folders or choose per-map overrides, and test it with an Aerobat partial report."
     }
   ],
   "rolling_roadmap": [
@@ -767,6 +781,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M46-partial-livery-texture-sample-second-tranche",
-  "updated_utc": "2026-11-11T08:45:00Z"
+  "next_stage": "M47-graphical-missing-texture-recovery",
+  "updated_utc": "2026-11-11T09:00:00Z"
 }
