@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M27-full-live-catalog-build-plan-remeasurement",
-  "active_stage": "M28-multivariant-a320neo-manual-selection",
-  "working_branch": "codex/full-live-plan-audit",
-  "last_commit": "2e8e371",
+  "last_completed_stage": "M28-multivariant-a320neo-manual-selection",
+  "active_stage": "M29-broad-live-catalog-import-sample",
+  "working_branch": "codex/a320neo-model-choice-import",
+  "last_commit": "18177f9",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -38,7 +38,9 @@
     "live_audit_plans": "default root: 226/226 validated, 0 rejected, 0 index errors; scope complete",
     "live_audit_plans_an2": "with supplied An-2 package root: 230/230 validated, 4 An-2 variants OK/buildable",
     "live_reason_codes": "174 OK, 48 partial, 6 shared-resource-only, 2 invalid model.cfg, 2 missing model.cfg, 1 unresolved alias",
-    "live_plan_report": "compatibility/live_plan_audit_m27.json; no personal absolute paths"
+    "live_plan_report": "compatibility/live_plan_audit_m27.json; no personal absolute paths",
+    "m28_a320neo_sample": "A320neo missing model.cfg: explicit GUI model chooser selected 2 available filename-hint candidates (exterior/interior LOD01); normal CLI geometry build succeeded; one 129,308,721-byte checkpoint; Blender 5.2 audit passed (2,259 mesh objects); no render/source changes; temp outputs cleaned.",
+    "m28_report": "compatibility/headless_a320neo_model_choice_m28.json; no personal absolute paths"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -152,11 +154,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Use the models command and GUI role-separated chooser on microsoft-aircraft-a320neo (15 variants, missing model.cfg); check explicit provenance and build/audit where possible.",
-  "next_stage": "M28-multivariant-a320neo-manual-selection",
+  "next_step": "M29: build and audit a broad remaining set of live catalog entries not present in prior headless-import reports; prioritize unusual families and source/topology features, then fix/report every reproducible failure.",
+  "next_stage": "M29-broad-live-catalog-import-sample",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T05:32:35Z"
+  "updated_utc": "2026-11-11T05:41:00Z"
 }

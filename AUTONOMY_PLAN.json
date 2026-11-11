@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/full-live-plan-audit",
+  "working_branch": "codex/a320neo-model-choice-import",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -362,13 +362,27 @@
     {
       "id": "M28",
       "name": "Multi-variant A320neo manual source selection",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "inspect candidates for the missing-model.cfg A320neo package through the models command",
         "explicitly choose exterior/interior roles and variants via the GUI chooser path",
         "build and audit if candidate source files are complete; classify missing dependencies precisely"
       ],
-      "acceptance": "No role or variant is silently inferred; each selected source has provenance and available BIN; the build result is recorded without rendering or altering the package."
+      "acceptance": "No role or variant is silently inferred; each selected source has provenance and available BIN; the build result is recorded without rendering or altering the package.",
+      "result": "The A320neo exposes 15 model variants despite missing model.cfg. The normal GUI model chooser confirmed model/A320NEO_EXT_LOD01.gltf as exterior and model.Interior/A320NEO_INT_LOD01.gltf as interior (both filename-derived role hints), then make_config and the regular geometry CLI produced one checkpoint; Blender 5.2 audit passed over 2,259 mesh objects. No source package changed and outputs were temporary. Audit reported 3 same-world-geometry groups and 484 far-disconnected objects, which remain visual-review hints rather than errors. Path-free report: compatibility/headless_a320neo_model_choice_m28.json.",
+      "next": "M29 compatibility: systematically import a broad set of remaining live catalog entries not yet covered by headless samples, prioritizing source formats, unusual aircraft families, and packages requiring model-choice confirmation; turn every failure into a minimized reproducible case or an explicit source limitation."
+    },
+    {
+      "id": "M29",
+      "name": "Broad remaining live-catalog geometry import sample",
+      "status": "in_progress",
+      "deliverables": [
+        "derive a deterministic sample from live catalog records not covered by previous reports",
+        "run normal CLI geometry builds and Blender checkpoint audits in temporary project directories",
+        "classify import/audit failures by source feature and preserve minimized regressions where actionable",
+        "update bilingual user-facing compatibility guidance and the next-stage roadmap"
+      ],
+      "acceptance": "Every attempted record has one normal geometry outcome and audit result; no source package or user project is modified; each software defect is fixed or documented with a stable blocker code; reports contain no personal absolute paths."
     }
   ],
   "rolling_roadmap": [
@@ -525,7 +539,7 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M19-GUI-checkpoint-audit-and-review-hints"
+    "next_stage": "M29-broad-live-catalog-import-sample"
   },
-  "next_stage": "M28-multivariant-a320neo-manual-selection"
+  "next_stage": "M29-broad-live-catalog-import-sample"
 }
