@@ -52,6 +52,44 @@
       "result": "Built and smoke-tested 1.2.1 Setup and Portable artifacts; docs and licenses are included and SHA256SUMS.txt was regenerated."
     }
   ],
+  "rolling_roadmap": [
+    {
+      "id": "M1",
+      "name": "Resolver edge-case hardening",
+      "status": "complete",
+      "focus": ["surface texture fallback ambiguity", "preserve useful unresolved paths", "verify dependency diagnostics end to end"],
+      "exit_criteria": ["synthetic regression fixtures", "full unit and GUI self checks", "documentation updated", "checkpoint committed"],
+      "result": "Texture fallback ambiguity now lists all candidate package folders; unresolved diagnostics retain the original path instead of returning the string None. 150 unit tests, GUI self-test, compileall and diff check passed."
+    },
+    {
+      "id": "M2",
+      "name": "Catalog identity and availability",
+      "status": "in_progress",
+      "focus": ["duplicate aircraft names across real packages and history stubs", "status counts vs deep scan", "stable grouping and filters"],
+      "exit_criteria": ["dedup policy is explicit and tested", "catalog report explains retained alternatives", "GUI list remains stable"]
+    },
+    {
+      "id": "M3",
+      "name": "GUI diagnostics and recovery",
+      "status": "planned",
+      "focus": ["show dependency provenance and ambiguity clearly", "validate edits before Blender starts", "audit checkpoint selection and error recovery"],
+      "exit_criteria": ["actionable errors for invalid rules", "no raw traceback for expected user input", "self-test covers navigation and recovery"]
+    },
+    {
+      "id": "M4",
+      "name": "Format compatibility matrix",
+      "status": "planned",
+      "focus": ["glTF/GLB buffers and extensions", "skin and primitive variants", "texture decoding edge cases"],
+      "exit_criteria": ["each supported/rejected feature has a fixture and clear diagnosis", "no unsupported feature is silently guessed"]
+    },
+    {
+      "id": "M5",
+      "name": "Compatibility measurement and next release",
+      "status": "planned",
+      "focus": ["repeatable catalog compatibility snapshot", "prioritize blockers by affected aircraft", "package bilingual docs and release artifacts"],
+      "exit_criteria": ["before/after measurements", "release audit passes", "versioned checkpoint and CI success"]
+    }
+  ],
   "blocked_policy": {
     "attempt_limit": 3,
     "after_limit": "record blocker and evidence, stop guessing, continue independent tasks",

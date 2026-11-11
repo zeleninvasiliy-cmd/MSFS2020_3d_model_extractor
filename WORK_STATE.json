@@ -1,23 +1,25 @@
 {
   "version": "1.2.1",
   "last_completed_stage": "D-release-1.2.1",
-  "last_commit": "cd1a0b6",
+  "active_stage": "M2-catalog-identity-and-availability",
+  "last_commit": "8ca190b",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "149 passed",
+    "unittest": "150 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
-    "release_build": "passed"
+    "release_build": "passed",
+    "git_diff_check": "passed"
   },
-  "current_blocker": "GitHub Wiki repository is enabled but has not been initialized with its first page.",
-  "next_step": "Continue post-release compatibility audit: prioritize partial/livery resolver edge cases and repeat full checks after each change. GitHub Wiki initialization remains the only external blocker.",
-  "next_stage": "post-release-compatibility-maintenance",
+  "current_blocker": null,
+  "next_step": "Audit duplicate aircraft identities (including history stubs), catalog status accounting, and stable grouping/filter behavior. Add synthetic regressions, inspect current catalog output, then decide whether GUI or resolver policy needs a change. GitHub Wiki first-page setup is external and must not block independent maintenance.",
+  "next_stage": "M2-catalog-identity-and-availability",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T01:00:00Z"
+  "updated_utc": "2026-11-11T01:02:43Z"
 }

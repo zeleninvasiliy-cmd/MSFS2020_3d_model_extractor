@@ -647,11 +647,16 @@ def collect_dependencies(folder, roots=(), index=None):
         for key, value in values:
             target = resolve(texture, value.replace("\\", "/"))
             if folder not in target.parents:
-                found, origin, _ = rebase(target, folder, index)
-                entry = {"kind": "texture_fallback", "name": key, "path": str(found),
-                         "resolved": found.is_dir(), "source": str(cfg)}
-                if origin:
+                found, origin, ambiguous = rebase(target, folder, index)
+                resolved_path = found if found is not None else target
+                entry = {"kind": "texture_fallback", "name": key, "path": str(resolved_path),
+                         "resolved": bool(found is not None and found.is_dir()), "source": str(cfg)}
+                if ambiguous:
+                    entry["detail"] = "несколько установленных пакетов: " + "; ".join(ambiguous)
+                elif origin:
                     entry["origin"] = origin
+                elif not entry["resolved"]:
+                    entry["detail"] = "папка fallback не найдена"
                 dependencies.append(entry)
     unique = []
     seen = set()

@@ -325,6 +325,25 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         self.assertEqual(entry["origin"], "base_package")
         self.assert_path_equal(Path(entry["path"]), gauges)
 
+    def test_ambiguous_texture_fallback_is_reported_without_none_path(self):
+        _, livery = self.base_and_livery()
+        aircraft(self.root, "test-base-copy", "Test_Plane")
+        first_gauges = self.root / "test-base" / "texture" / "Gauges"
+        second_gauges = self.root / "test-base-copy" / "texture" / "Gauges"
+        first_gauges.mkdir(parents=True)
+        second_gauges.mkdir(parents=True)
+        cfg = livery / "texture.TEST" / "texture.cfg"
+        cfg.write_text("[fltsim]\nfallback.1=..\\..\\..\\..\\texture\\Gauges\n", encoding="utf-8")
+
+        result = resolver.resolve_aircraft(livery, index=PackageIndex.build([self.root]))
+
+        entry = next(d for d in result["dependencies"] if d["kind"] == "texture_fallback")
+        self.assertFalse(entry["resolved"])
+        self.assertNotEqual(entry["path"], "None")
+        self.assertIn("несколько установленных пакетов", entry["detail"])
+        self.assertIn(str(first_gauges), entry["detail"])
+        self.assertIn(str(second_gauges), entry["detail"])
+
 
 if __name__ == "__main__":
     unittest.main()

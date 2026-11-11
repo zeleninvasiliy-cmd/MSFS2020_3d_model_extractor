@@ -6,6 +6,8 @@ The package index is a no-`bpy` cache built from selected MSFS roots. It maps ai
 
 When a relative VFS path does not exist in the livery, the resolver tries the indexed aircraft or base package. The origin is preserved in diagnostics. If two packages can own the same resource, the index reports ambiguity and the user must choose; an inaccessible package does not abort the scan.
 
+Texture fallback diagnostics keep the original unresolved path when no package matches. If multiple base packages contain the fallback directory, the dependency stays unresolved and lists all candidates instead of returning an empty path.
+
 ---
 
 Индекс установленных пакетов решает одну задачу: **ресурсы лежат в соседнем пакете, а конфиг ливреи указывает внутрь себя**. Реализован в `scripts/package_index.py` — модуле без `bpy`, который используют и CLI, и GUI.
@@ -57,7 +59,7 @@ interior = ..\..\Asobo_208B_GRAND_CARAVAN_EX\model\208B_GRAND_CARAVAN_EX_INTERIO
 
 Второе правило нужно для `texture.cfg`: `fallback.1=..\..\..\..\texture\Gauges` указывает не на именованный самолёт, а на каталог внутри пакета.
 
-Если подходящих пакетов **несколько**, возвращается `path=None`, `origin="ambiguous"` и список кандидатов. Resolver не угадывает: он показывает список, а выбор остаётся за пользователем. Если база объявлена, но не установлена, путь не выдумывается.
+Если подходящих пакетов **несколько**, возвращается `path=None`, `origin="ambiguous"` и список кандидатов. Resolver не угадывает: он показывает список, а выбор остаётся за пользователем. Диагностика `texture.cfg` сохраняет исходный путь fallback, помечает зависимость неразрешённой и перечисляет все найденные варианты. Если база объявлена, но не установлена, путь не выдумывается.
 
 ## Что разрешается через индекс
 
