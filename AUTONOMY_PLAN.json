@@ -20,18 +20,20 @@
       "id": "G0",
       "name": "GitHub and documentation hygiene",
       "status": "in_progress",
-      "deliverables": ["initialized GitHub Wiki", "bilingual current documentation", "clean release contents"]
+      "deliverables": ["initialized GitHub Wiki", "bilingual current documentation", "clean release contents"],
+      "note": "Repository documentation and release contents are clean; GitHub Wiki still needs its first page created in the GitHub UI before the wiki mirror can be pushed."
     },
     {
       "id": "A",
       "name": "Compatibility audit",
-      "status": "planned",
-      "deliverables": ["package and glTF coverage matrix", "reproducible synthetic fixtures", "prioritized blockers"]
+      "status": "complete",
+      "deliverables": ["package and glTF coverage matrix", "reproducible synthetic fixtures", "prioritized blockers"],
+      "result": "Added catalog --deep, corrected stale format documentation, added compatibility_report.py and a path-free 1.2.0 snapshot."
     },
     {
       "id": "B",
       "name": "Resolver and format compatibility",
-      "status": "planned",
+      "status": "in_progress",
       "deliverables": ["safe package inheritance", "clear unsupported-format diagnostics", "no silent geometry guesses"]
     },
     {

@@ -12,9 +12,13 @@ python -c "import compileall; raise SystemExit(0 if compileall.compile_dir('.', 
 
 The Windows GitHub Actions job repeats compilation, GUI startup and the regression suite. Tests cover package resolution, inheritance, model selection, GUI state, editing rules, texture tables, glTF metadata and pipeline locks. Real aircraft and Blender acceptance remain user checks.
 
+The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts and blocker kinds only; machine-specific paths are discarded.
+
 ---
 
 Три уровня проверки. Игровые ресурсы не используются нигде: все входы синтетические, поэтому набор проходит на GitHub Actions без MSFS и Blender.
+
+Аудит совместимости воспроизводится отдельно: `catalog --deep` проверяет установленные glTF/GLB и BIN до создания проекта, а `scripts/compatibility_report.py` сохраняет только безопасную сводку с числами и типами блокеров без личных путей. Текущий снимок находится в `compatibility/compatibility_snapshot_1.2.0.json`.
 
 ## 1. Регрессия без Blender и без MSFS
 
@@ -39,8 +43,8 @@ python msfs_builder_gui.py --self-test
 | model.cfg | cfg без `[models]` → `INVALID_MODEL_CFG`; отсутствующий cfg → `MISSING_MODEL_CFG` |
 | model XML | LOD-список без cfg; незаэкранированный `<` в `Behaviors` не ломает разбор |
 | BIN | shallow против deep; отсутствующий BIN единственной модели блокирует сборку |
-| glTF | GLB, несколько buffers, data URI, sparse, Draco, не-треугольный mode; нечитаемый JSON; LOD01 спасает ситуацию |
-| обнаружение | объявленный XML отсутствует, но LOD glTF есть; уже отвергнутый путь не предлагается повторно; найденный GLB отклоняется в deep |
+| glTF | GLB, несколько buffers, data URI, sparse, triangle strip/fan, Draco, не-треугольный mode; нечитаемый JSON; LOD01 спасает ситуацию |
+| обнаружение | объявленный XML отсутствует, но LOD glTF есть; уже отвергнутый путь не предлагается повторно; найденный GLB с отсутствующим BIN или неподдерживаемым расширением отклоняется в deep |
 | структура | exterior/interior в разных `model.*`; одна модель на роль при нескольких кандидатах; `msfs_gui_build` исключён; ливрея без model доходит до inventory; корень пакета с общей `texture` не мешает спуску; лист под `Airplanes` с общими ресурсами и заглушка |
 | карты | геометрия без изображений → `NO_TEXTURES` |
 | отказ | отсутствующая папка → `PACKAGE_NOT_FOUND` |

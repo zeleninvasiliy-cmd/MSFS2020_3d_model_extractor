@@ -23,7 +23,7 @@ If the aircraft is absent, set the MSFS/package root and rescan. If it is partia
 | `⚠ LIVERY_ONLY` | есть `aircraft.cfg` и карты, но нет `model` | укажите базовый самолёт или добавьте корень, где он лежит |
 | `⚠ MISSING_MODEL_CFG` / `INVALID_MODEL_CFG` | нет cfg или нет секции `[models]` | подробная проверка предложит найденные LOD glTF; подтвердите назначение вручную |
 | `⚠ MISSING_BUFFER` | рядом с glTF нет BIN | восстановите пакет; один glTF без BIN собрать нельзя |
-| `⚠ UNSUPPORTED_GLTF_FEATURE` | GLB, несколько buffers, data URI, sparse, Draco, не треугольники | выберите другой LOD или отложите пакет до отдельного адаптера |
+| `⚠ UNSUPPORTED_GLTF_FEATURE` | Draco/KTX2 и другие неподдерживаемые расширения либо primitive points/lines | выберите другой LOD или отложите пакет до отдельного адаптера; GLB, несколько buffers, data URI, sparse и triangle strip/fan поддерживаются |
 | `⚠ UNREADABLE_GLTF` | JSON повреждён или недоступен | проверьте права и целостность пакета |
 | `⚠ UNRESOLVED_ALIAS` | `base_container` указывает на отсутствующий пакет | установите базовый самолёт либо добавьте его корень в «Дополнительные корни» |
 | `⚠ SCAN_FAILED` | структура пакета отличается от ожидаемой | откройте детали, укажите папку конкретного самолёта |

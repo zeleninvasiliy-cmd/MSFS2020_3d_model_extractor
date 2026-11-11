@@ -8,7 +8,7 @@ Run the source CLI with:
 python .\scripts\msfs_universal.py <command> [arguments]
 ```
 
-The important commands are `inventory`, `catalog`, `index`, `models`, `find-textures`, `build`, `audit`, `objects`, `validate` and `bones`. Machine-readable commands print JSON to stdout; diagnostics and failures use a non-zero exit code. `inventory --deep` validates glTF containers and buffers, while `index` resolves livery inheritance. `build --stage geometry|textures|final|all` writes numbered checkpoints into the project output folder. The installed package accepts the same arguments through `MSFSBuilderCLI.exe`.
+The important commands are `inventory`, `catalog`, `index`, `models`, `find-textures`, `build`, `audit`, `objects`, `validate` and `bones`. Machine-readable commands print JSON to stdout; diagnostics and failures use a non-zero exit code. `inventory --deep` validates one package; `catalog --deep` applies the same validation to every discovered aircraft before project creation. `index` resolves livery inheritance. `build --stage geometry|textures|final|all` writes numbered checkpoints into the project output folder. The installed package accepts the same arguments through `MSFSBuilderCLI.exe`.
 
 ---
 
@@ -73,6 +73,8 @@ python .\scripts\msfs_universal.py models "C:\MSFS\Packages\Official\Steam\asobo
 
 ### `catalog`
 
+The default catalog scan is shallow and fast. Add `--deep` when you need an exact pre-Blender compatibility report: each declared glTF/GLB is opened, buffers are checked and unsupported primitive features are reported. Deep mode may take longer on a full installation and never changes source packages.
+
 Скан всех установленных пакетов. Возвращает `{"searched_roots": [...], "index": {...}, "aircraft": [...]}`, отсортировано по имени. Дедупликация по разрешённому пути. Ошибка сканирования одного пакета не прерывает обход: запись получает код `SCAN_FAILED` или `PACKAGE_NOT_FOUND` и текст ошибки в `detail`.
 
 Блок `index` — сводка использованного индекса: `packages`, `aircraft_names`, `cached`, `scanned`, `errors`. GUI выводит её в журнал и в строку состояния.
@@ -81,11 +83,14 @@ python .\scripts\msfs_universal.py models "C:\MSFS\Packages\Official\Steam\asobo
 |---|---|---|
 | `--root` | путь, повторяемый | `[]` |
 | `--match` | строка, повторяемая | `[]` |
+| `--deep` | флаг | выключен |
 
 `--match` — фильтр по подстроке в имени папки самолёта, без учёта регистра.
+`--deep` — глубокая проверка glTF/GLB, BIN и поддерживаемых primitive до создания проекта; без флага каталог проверяет только структуру и наличие объявленных файлов.
 
 ```powershell
 python .\scripts\msfs_universal.py catalog --match c152 --match bonanza
+python .\scripts\msfs_universal.py catalog --deep --match c152
 ```
 
 ### `find-textures`

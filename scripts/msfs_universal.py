@@ -121,7 +121,14 @@ def inventory(source, deep=False, roots=(), index=None):
             for folder in aircraft_folders(source)]
 
 
-def catalog(extra_roots=(), matches=()):
+def catalog(extra_roots=(), matches=(), deep=False):
+    """Return the aircraft catalog.
+
+    The default scan is intentionally shallow so the GUI stays responsive.
+    ``deep=True`` performs the same pre-Blender glTF/GLB validation as
+    ``inventory --deep`` and therefore exposes missing buffers and unsupported
+    primitives before a project is created.  No source files are modified.
+    """
     roots = installed_package_roots(extra_roots)
     index = build_index(extra_roots)
     tokens = [token.casefold() for token in matches]
@@ -134,7 +141,7 @@ def catalog(extra_roots=(), matches=()):
                 continue
             seen.add(resolved)
             try:
-                [item] = inventory(folder, index=index)
+                [item] = inventory(folder, deep=deep, index=index)
             except (ValueError, OSError, ET.ParseError) as error:
                 code = "PACKAGE_NOT_FOUND" if not folder.is_dir() else "SCAN_FAILED"
                 reason, action = reason_text(code)
@@ -707,6 +714,8 @@ def main():
     discover = sub.add_parser("catalog")
     discover.add_argument("--root", type=Path, action="append", default=[])
     discover.add_argument("--match", action="append", default=[])
+    discover.add_argument("--deep", action="store_true",
+                          help="проверить glTF/GLB, BIN и поддерживаемые primitive до создания проекта")
     packages = sub.add_parser("index", help="индекс установленных пакетов и наследования ливрей")
     packages.add_argument("--root", type=Path, action="append", default=[])
     packages.add_argument("--no-cache", action="store_true", help="перестроить индекс, не используя кэш")
@@ -743,7 +752,7 @@ def main():
                              ensure_ascii=False, indent=2))
             return 0
         if args.command == "catalog":
-            print(json.dumps(catalog(args.root, args.match), ensure_ascii=False, indent=2))
+            print(json.dumps(catalog(args.root, args.match, args.deep), ensure_ascii=False, indent=2))
             return 0
         if args.command == "index":
             index = build_index(args.root, cache=not args.no_cache)

@@ -171,6 +171,23 @@ class PipelineRegressionTests(unittest.TestCase):
         self.assertTrue(all(item["duplicate_name"] for item in entries))
         self.assertEqual({item["duplicate_count"] for item in entries}, {2})
 
+    def test_catalog_deep_reports_missing_buffers_before_project_creation(self):
+        folder = self.root / "package" / "SimObjects" / "Airplanes" / "Broken_Plane"
+        model = folder / "model"
+        model.mkdir(parents=True)
+        (model / "model.cfg").write_text("[models]\nexterior=body.gltf\n", encoding="utf-8")
+        (model / "body.gltf").write_text(json.dumps({
+            "asset": {"version": "2.0"},
+            "buffers": [{"uri": "body.bin", "byteLength": 4}],
+            "meshes": []
+        }), encoding="utf-8")
+        with patch.object(pipeline, "installed_package_roots", return_value=[self.root]):
+            shallow = pipeline.catalog()
+            deep = pipeline.catalog(deep=True)
+        self.assertTrue(shallow["aircraft"][0]["can_build_geometry"])
+        self.assertFalse(deep["aircraft"][0]["can_build_geometry"])
+        self.assertEqual(deep["aircraft"][0]["reason_code"], "MISSING_BUFFER")
+
     def test_objects_stdout_is_clean_json(self):
         blend = self.root / "test.blend"
         blender = self.root / "blender.exe"
