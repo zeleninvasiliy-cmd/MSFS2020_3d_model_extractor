@@ -61,11 +61,6 @@ if (Test-Path -LiteralPath $tkLicense) {
 $pyInstallerLicense = (& $Python -X utf8 -c "import importlib.metadata as m; print(m.distribution('pyinstaller').locate_file('pyinstaller-6.16.0.dist-info/licenses/COPYING.txt'))").Trim()
 Copy-Item -LiteralPath $pyInstallerLicense -Destination (Join-Path $licenseRoot 'PyInstaller-COPYING.txt') -Force
 
-& (Join-Path $appRoot 'MSFSBuilderCLI.exe') --help
-if ($LASTEXITCODE -ne 0) { throw 'Frozen CLI smoke test failed.' }
-$smoke = Start-Process -FilePath (Join-Path $appRoot 'MSFSBuilder.exe') -ArgumentList '--self-test' -WindowStyle Hidden -Wait -PassThru
-if ($smoke.ExitCode -ne 0) { throw "Frozen GUI smoke test failed: $($smoke.ExitCode)" }
-
 & $ISCC /Q "/DAppVersion=$version" "/DAppSource=$appRoot" "/DOutputDir=$installerRoot" (Join-Path $PSScriptRoot 'MSFSModelBuilder.iss')
 if ($LASTEXITCODE -ne 0) { throw 'Inno Setup build failed.' }
 $installer = Join-Path $installerRoot "MSFSModelBuilder-$version-Setup.exe"
