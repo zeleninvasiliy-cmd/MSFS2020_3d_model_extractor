@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/gui-root-diagnostics",
+  "working_branch": "codex/aircraft-build-plan-audit",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -179,13 +179,15 @@
     {
       "id": "M14",
       "name": "Installed aircraft build-plan coverage audit",
-      "status": "planned",
+      "status": "complete",
       "deliverables": [
         "exercise the normal geometry build-plan preflight for every geometry-buildable catalog record",
         "classify plan failures by source/layout/config cause and distinguish expected partials",
         "add a path-free reproducible coverage report and fixtures for every discovered failure class"
       ],
-      "acceptance": "Every installed catalog record marked geometry-buildable either yields a validated plan or a stable actionable blocker; no mass Blender builds are launched automatically."
+      "acceptance": "Every installed catalog record marked geometry-buildable either yields a validated plan or a stable actionable blocker; no mass Blender builds are launched automatically.",
+      "result": "Added `audit-plans`, a plan-only audit that shares one package index across a deep catalog and normal geometry preflight; it never launches Blender or writes .blend files. Real installation: 233 catalog records, 226 geometry-buildable, 226/226 plans validated, 0 rejected, 0 index errors. The first run exposed AS-33 declaring the same glTF for exterior and interior; resolver defaults and model.cfg loading now deduplicate that source once, preferring exterior, preventing a duplicate import and correcting the false build-plan failure. 183 tests, GUI self-test, compileall and diff checks pass. Visual Blender output remains outside this preflight.",
+      "next": "Expose the plan-only audit in the GUI with a concise result and per-aircraft failure list; test multi-root forwarding and error/success feedback. Then select the next compatibility gap from a fresh scan."
     },
     {
       "id": "M15",
@@ -353,6 +355,6 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M14-installed-aircraft-build-plan-coverage-audit"
+    "next_stage": "M15-GUI-build-plan-audit-entry-point"
   }
 }

@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M13-GUI-root-and-dependency-diagnostics-review",
-  "active_stage": "M13-GUI-root-and-dependency-diagnostics-review",
-  "working_branch": "codex/gui-root-diagnostics",
-  "last_commit": "pending M13 checkpoint commit",
+  "last_completed_stage": "M14-installed-aircraft-build-plan-coverage-audit",
+  "active_stage": "M14-installed-aircraft-build-plan-coverage-audit",
+  "working_branch": "codex/aircraft-build-plan-audit",
+  "last_commit": "pending M14 checkpoint commit",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "181 passed",
+    "unittest": "183 passed at M14 checkpoint; 186 passed including subsequent M15 GUI tests",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -18,7 +18,8 @@
     "root_propagation": "catalog/index/inventory/models/find-textures all receive saved roots",
     "release_build": "not run; feature branch is unmerged and VERSION remains 1.2.1",
     "release_workflow": "static review only; GitHub Actions CI still required",
-    "deep_catalog": "passed; 233 aircraft, 226 geometry-buildable, 48 partial, 526 packages, 0 index errors"
+    "deep_catalog": "passed; 233 aircraft, 226 geometry-buildable, 48 partial, 526 packages, 0 index errors",
+    "audit_plans": "passed; 226/226 geometry-buildable installed entries; 0 rejected; Blender not launched"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -82,14 +83,22 @@
       "declared_model_file_missing": 4,
       "optional_texture_fallback_missing": 9,
       "optional_texture_target_aircraft_missing": 51
+    },
+    "build_plan_audit": {
+      "catalog_aircraft": 233,
+      "geometry_buildable": 226,
+      "plans_validated": 226,
+      "plans_rejected": 0,
+      "index_errors": 0,
+      "shared_dual_role_gltf_deduplicated": 1
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Commit and push M13. Then create codex/aircraft-build-plan-audit and validate the standard geometry build plan for every catalog record marked geometry-buildable, reusing one package index; do not launch Blender builds.",
-  "next_stage": "M14-installed-aircraft-build-plan-coverage-audit",
+  "next_step": "Commit/push M14 CLI audit and shared-model deduplication. Then create codex/gui-build-plan-audit, expose the audit from the GUI and verify success/failure presentation.",
+  "next_stage": "M15-GUI-build-plan-audit-entry-point",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T03:43:00Z"
+  "updated_utc": "2026-11-11T03:50:00Z"
 }

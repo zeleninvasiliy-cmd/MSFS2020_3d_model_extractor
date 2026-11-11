@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -79,6 +80,31 @@ class ResolverTests(unittest.TestCase):
         self.assertFalse(report["needs_model_selection"])
         self.assertEqual({m["role"] for m in report["best_models"]}, {"exterior", "interior"})
         self.assertEqual(report["missing_resources"], [])
+
+    def test_shared_exterior_interior_gltf_is_not_imported_twice(self):
+        folder = aircraft(self.root)
+        model = folder / "model"
+        model.mkdir()
+        gltf(model / "body.gltf")
+        (model / "model.cfg").write_text(
+            "[models]\nexterior=body.gltf\ninterior=body.gltf\n", encoding="utf-8")
+        (folder / "texture.TEST").mkdir()
+
+        report = resolver.resolve_aircraft(folder, deep=True)
+        models = resolver.model_from_cfg(model)
+        config_path = self.root / "config.json"
+        config_path.write_text(json.dumps({"source": str(folder), "output_dir": str(self.root / "output"),
+                                           "blender": sys.executable, "aircraft": folder.name,
+                                           "livery": "TEST", "model_folder": "model"}), encoding="utf-8")
+        plan = pipeline.make_plan(config_path, "geometry")
+
+        self.assertTrue(report["can_build_geometry"])
+        self.assertEqual([(item["role"], Path(item["path"]).name) for item in report["best_models"]],
+                         [("exterior", "body.gltf")])
+        self.assertEqual([(item["role"], Path(item["path"]).name) for item in models],
+                         [("exterior", "body.gltf")])
+        self.assertEqual([(item["role"], Path(item["path"]).name) for item in plan["models"]],
+                         [("exterior", "body.gltf")])
 
     def test_common_resources_only(self):
         folder = aircraft(self.root, package="test-aircraft-common", name="Test_Common")
@@ -385,6 +411,18 @@ class PlanDiagnosisTests(unittest.TestCase):
         plan = pipeline.make_plan(self.config(folder, model_folder="model",
                                               models=[{"path": exterior, "role": "exterior"}]), "geometry")
         self.assertEqual([m["role"] for m in plan["models"]], ["exterior"])
+
+    def test_audit_plans_checks_geometry_without_starting_blender(self):
+        packages = self.root / "Packages"
+        complete_aircraft(packages)
+
+        with patch.object(pipeline, "installed_package_roots", return_value=[packages]):
+            result = pipeline.audit_build_plans([packages])
+
+        self.assertEqual(result["geometry_buildable"], 1)
+        self.assertEqual(result["plans_validated"], 1)
+        self.assertEqual(result["plans_rejected"], 0)
+        self.assertEqual(result["mode"], "preflight_only_blender_not_started")
 
     def test_glb_model_is_accepted_by_build_plan(self):
         folder = complete_aircraft(self.root / "src")

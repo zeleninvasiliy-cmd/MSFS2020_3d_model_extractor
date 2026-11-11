@@ -148,7 +148,7 @@ def _suppress_shadowed_history_stubs(entries):
     return visible, suppressed
 
 
-def catalog(extra_roots=(), matches=(), deep=False):
+def catalog(extra_roots=(), matches=(), deep=False, index=None):
     """Return the aircraft catalog.
 
     The default scan is intentionally shallow so the GUI stays responsive.
@@ -157,7 +157,7 @@ def catalog(extra_roots=(), matches=(), deep=False):
     primitives before a project is created.  No source files are modified.
     """
     roots = installed_package_roots(extra_roots)
-    index = build_index(extra_roots)
+    index = index or build_index(extra_roots)
     tokens = [token.casefold() for token in matches]
     entries = []
     seen = set()
@@ -493,7 +493,7 @@ def validate_draw_mode_models(models, draw_mode):
                                      "Используйте draw_mode=auto — он выбирает чтение по содержимому файла.")
 
 
-def make_plan(config_file, stage=None):
+def make_plan(config_file, stage=None, *, index=None, require_blender=True):
     config = json.loads(config_file.read_text(encoding="utf-8-sig"))
     validate_config(config)
     base = config_file.parent
@@ -517,7 +517,7 @@ def make_plan(config_file, stage=None):
     if config.get("normal_decode", "auto") not in {"auto", "dxt5n", "off"}:
         raise ValueError("normal_decode: auto, dxt5n или off.")
 
-    index = build_index(near=source)
+    index = index or build_index(near=source)
     try:
         if "models" in config:
             models = [{"path": str(resolve(aircraft, item["path"])), "role": item["role"]} for item in config["models"]]
@@ -569,13 +569,79 @@ def make_plan(config_file, stage=None):
     if output.is_relative_to(package_root) or output.is_relative_to(aircraft):
         raise ValueError("output_dir должен быть вне каталога исходного пакета (включая SimObjects/Airplanes).")
     blender = str(resolve(base, config["blender"])) if "blender" in config else shutil.which("blender")
-    if not blender or not Path(blender).is_file():
+    if require_blender and (not blender or not Path(blender).is_file()):
         raise ValueError("Укажите путь к blender.exe в параметре blender или добавьте Blender в PATH.")
     return {**config, "blender": blender, "output_dir": str(output), "aircraft_path": str(aircraft),
             "profile": profile, "skinning": skinning, "draw_mode": draw, "models": models, "livery": livery,
             "texture_dirs": list(map(str, paths)), "missing_fallback_dirs": fallback_missing,
             "converted_normal_dir": str(converted) if converted else None,
             "texture_overrides": {name: str(path) for name, path in overrides.items()}}
+
+
+def audit_build_plans(extra_roots=()):
+    """Preflight every deep-catalog geometry candidate without launching Blender."""
+    index = build_index(extra_roots)
+    report = catalog(extra_roots, deep=True, index=index)
+    candidates = [item for item in report["aircraft"] if item.get("can_build_geometry")]
+    passed = 0
+    failures = []
+    with tempfile.TemporaryDirectory(prefix="msfs-plan-audit-") as temporary:
+        temp_root = Path(temporary)
+        for number, item in enumerate(candidates, start=1):
+            aircraft = Path(item["path"])
+            texture_variants = sorted(
+                (path for path in directories(aircraft) if path.name.casefold().startswith("texture.")),
+                key=lambda path: path.name.casefold())
+            if by_case(aircraft, "texture").is_dir():
+                livery = "base"
+            elif texture_variants:
+                livery = texture_variants[0].name.split(".", 1)[1]
+            else:
+                livery = None
+            models = [{"path": model["path"], "role": model["role"]}
+                      for model in item.get("best_models", [])]
+            config = {
+                "source": str(aircraft),
+                "aircraft": item["aircraft"],
+                "output_dir": str(temp_root / f"output-{number:04d}"),
+                "models": models,
+                "livery": livery,
+                "skinning": "strip",
+                "draw_mode": "auto",
+            }
+            config_path = temp_root / f"aircraft-{number:04d}.json"
+            config_path.write_text(json.dumps(config, ensure_ascii=False), encoding="utf-8")
+            try:
+                make_plan(config_path, "geometry", index=index, require_blender=False)
+            except (ValueError, KeyError, TypeError, OSError, ET.ParseError) as error:
+                message = str(error).casefold()
+                if "livery" in message:
+                    problem = "LIVERY_SELECTION_REQUIRED"
+                elif "models" in message or "model.cfg" in message:
+                    problem = "MODEL_SELECTION_REQUIRED"
+                elif "output_dir" in message:
+                    problem = "OUTPUT_PATH_REJECTED"
+                else:
+                    problem = "BUILD_PLAN_REJECTED"
+                failures.append({"aircraft": item["aircraft"], "catalog_reason": item.get("reason_code"),
+                                 "problem": problem, "exception_type": type(error).__name__})
+            else:
+                passed += 1
+    return {
+        "schema_version": 1,
+        "mode": "preflight_only_blender_not_started",
+        "catalog_aircraft": len(report["aircraft"]),
+        "geometry_buildable": len(candidates),
+        "plans_validated": passed,
+        "plans_rejected": len(failures),
+        "index_errors": len(report.get("index", {}).get("errors", [])),
+        "failures_by_problem": {
+            problem: sum(item["problem"] == problem for item in failures)
+            for problem in sorted({item["problem"] for item in failures})
+        },
+        "failures": failures,
+        "note": "A successful plan check validates source/config selection only; it does not prove Blender import or visual geometry quality.",
+    }
 
 
 def process_running(pid):
@@ -774,6 +840,9 @@ def main():
     discover.add_argument("--match", action="append", default=[])
     discover.add_argument("--deep", action="store_true",
                           help="проверить glTF/GLB, BIN и поддерживаемые primitive до создания проекта")
+    plan_audit = sub.add_parser("audit-plans", help="проверить build-plan всех доступных самолётов без Blender")
+    plan_audit.add_argument("--root", type=Path, action="append", default=[],
+                             help="дополнительный корень Packages или модов")
     packages = sub.add_parser("index", help="индекс установленных пакетов и наследования ливрей")
     packages.add_argument("--root", type=Path, action="append", default=[])
     packages.add_argument("--no-cache", action="store_true", help="перестроить индекс, не используя кэш")
@@ -813,6 +882,10 @@ def main():
             index = build_index(args.root, near=args.source.resolve())
             print(json.dumps(inventory(args.source.resolve(), args.deep, roots, index), ensure_ascii=False, indent=2))
             return 0
+        if args.command == "audit-plans":
+            result = audit_build_plans(args.root)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 2 if result["plans_rejected"] else 0
         if args.command == "models":
             roots = installed_package_roots(args.root)
             index = build_index(args.root, near=args.source.resolve())

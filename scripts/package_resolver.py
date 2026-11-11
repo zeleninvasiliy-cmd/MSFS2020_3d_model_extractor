@@ -243,6 +243,7 @@ def model_from_cfg(folder, index=None, aircraft=None):
         folder.parent if MODEL_DIR.fullmatch(folder.name) else folder)
     entries = {key: val for section, key, val in sections(cfg) if section == "models"}
     models = []
+    seen_paths = set()
     for role, value in (("exterior", entries.get("exterior") or entries.get("normal")),
                         ("interior", entries.get("interior"))):
         if not value:
@@ -254,6 +255,10 @@ def model_from_cfg(folder, index=None, aircraft=None):
             if error:
                 raise ValueError(f"{error} Задайте models вручную.")
             path = files[0]
+        key = _path_key(path)
+        if key in seen_paths:
+            continue
+        seen_paths.add(key)
         models.append({"path": str(path), "role": role, "origin": origin or "model.cfg"})
     if not models:
         raise ValueError(f"В {cfg} нет локальных exterior/normal/interior. Задайте models вручную.")
@@ -770,9 +775,13 @@ def resolve_aircraft(folder, *, roots=(), deep=False, index=None):
                     # wings, ...). The default build takes one per role; the full
                     # candidate list stays available for manual selection.
                     result["best_models"] = []
+                    best_model_paths = set()
                     for candidate in best["candidates"]:
-                        if any(m["role"] == candidate["role"] for m in result["best_models"]):
+                        path_key = _path_key(candidate["path"])
+                        if (candidate["role"] in {m["role"] for m in result["best_models"]}
+                                or path_key in best_model_paths):
                             continue
+                        best_model_paths.add(path_key)
                         result["best_models"].append({"path": candidate["path"], "role": candidate["role"],
                                                       "origin": candidate["origin"], "variant": candidate["variant"]})
                     result["candidates"] = [c for v in result["variants"] for c in v["candidates"]]
