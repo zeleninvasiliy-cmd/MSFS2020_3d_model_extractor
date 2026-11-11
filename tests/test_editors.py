@@ -623,6 +623,39 @@ class TextureTableTests(EditorTestCase):
         self.assertIn("уже есть", info.call_args[0][1])
         self.assertEqual(self.app.extra_text.get("1.0", "end").count(str(found)), 1)
 
+    def test_package_search_labels_ambiguity_and_requires_choice_before_adding_folders(self):
+        self.report(self.payload())
+        table = self.table()
+        found = self.folder / "found"
+        found.mkdir()
+        first, second = found / "first.png", found / "second.png"
+        payload = {"matches": {"BODY_ALBD.PNG": [str(first), str(second)]},
+                   "searched_roots": ["C:/Packages"], "suggested_extra_texture_dirs": [str(found)],
+                   "missing": []}
+
+        with patch.object(self.app, "run_command", side_effect=lambda _command, callback:
+                          (callback(0, json.dumps(payload)), True)[1]):
+            table.search_packages()
+
+        window = self.top(table)
+        box = widgets(window, ttk.Frame)[0]
+        tree = widgets(box, ttk.Treeview)[0]
+        rows = tree.get_children()
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(tree.item(rows[0], "values")[2], "Неоднозначно (2)")
+        self.assertEqual(tree.item(rows[1], "values")[2], "Неоднозначно (2)")
+        labels = widgets(window, ttk.Label)
+        self.assertIn("неоднозначно: 1", labels[0].cget("text"))
+
+        with patch.object(gui.messagebox, "askyesno", return_value=False) as ask:
+            click(window, "Добавить найденные папки в поиск")
+        ask.assert_called_once()
+        self.assertNotIn(str(found), self.app.extra_text.get("1.0", "end"))
+
+        tree.selection_set(rows[1])
+        click(window, "Использовать выбранный файл")
+        self.assertEqual(self.app.project_extra["texture_overrides"]["body_albd.png"], str(second))
+
     def test_saved_project_keeps_the_replacement(self):
         self.report(self.payload())
         replacement = self.folder / "copy.png"

@@ -8,6 +8,8 @@ The project wizard selects an aircraft and general settings. The Geometry tab se
 
 The Geometry tab can audit the latest geometry checkpoint (or the selected geometry checkpoint) with Blender, without rendering. The numbered JSON report is stored under `<project>/reports/geometry_audits/` and can be opened from the same tab, including after closing and reopening the project. Report lookup is scoped to the active project and selected/latest geometry checkpoint, and chooses the highest report sequence rather than file modification time. Mesh counts, duplicate world-geometry groups and disconnected-component candidates are review hints only; they do not prove the aircraft geometry is wrong.
 
+In the texture map table, installed-package search marks unique and ambiguous basename matches separately. Adding suggested search folders prompts for confirmation when ambiguity exists; select an exact file for a per-map override when the intended livery matters.
+
 The GUI uses automatically detected MSFS roots and multiple additional roots. **Package folders** lists automatic roots separately from user-added roots, marks missing custom paths, and lets users add or remove roots without editing JSON. Catalog, index, package diagnosis and model-selection commands receive the same configured root list.
 
 When aircraft diagnosis reports an unresolved base-aircraft link, a contextual **Add base package folder** action opens a folder picker, saves the selected Packages/Community root and rescans automatically. In an open project it refreshes that source package's inventory. The action is hidden for unrelated or healthy packages.
@@ -85,6 +87,7 @@ When aircraft diagnosis reports an unresolved base-aircraft link, a contextual *
 
 - Флажок «Подключать все texture.* варианты».
 - **«Таблица карт...»** — окно со всеми картами отчёта, их состоянием и заменой через `texture_overrides`; там же поиск недостающих карт по установленным пакетам. Подробности: [Rule Editors](Rule-Editors).
+- Поиск в таблице отмечает однозначные и неоднозначные совпадения отдельно. При неоднозначности добавление предложенных папок требует подтверждения; точный файл можно назначить заменой конкретной карты.
 - Многострочное поле дополнительных каталогов текстур (по одному на строку).
 - Список **«Собранные варианты для сравнения»** — все `*.blend`, отсортированы по номеру сборки в имени (по убыванию); файлы без номера идут последними. Время изменения используется только при равных номерах, поэтому копирование, распаковка или облачная синхронизация не выводят старый вариант наверх. Двойной клик открывает в Blender. Кнопки «Обновить список», «Открыть выбранный», «Показать в Проводнике».
 - Действия: «Добавить textures», «Собрать final», «Весь цикл», «Открыть checkpoint», переход в Проводник, «Остановить».

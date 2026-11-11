@@ -623,6 +623,19 @@
       "acceptance": "All ten create texture checkpoints and pass Blender audit; path-free map availability metrics distinguish unique, ambiguous and absent candidates; outputs cleaned.",
       "result": "Ten partial C152 Aerobat, C172 Classic and DA40 TDI liveries built geometry and texture checkpoints and passed Blender 5.2 final audit. `find-textures` on a C152 Aerobat report found 22/23 missing maps in other installed packages; 19 basenames had a single match, three had multiple matches, and one was not found; eight extra directories were suggested. This is an actionable GUI recovery opportunity, but conflicting basename matches must stay explicit. Report: compatibility/headless_texture_partial_sample_m46.json.",
       "next": "M47: add a graphical “search missing maps in installed Packages” recovery flow using the existing find-textures tool. Show unique and ambiguous matches separately, allow the user to add suggested folders or choose per-map overrides, and test it with an Aerobat partial report."
+    },
+    {
+      "id": "M48",
+      "name": "Partial livery texture sample, third tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "select ten partial livery packages not yet in texture reports",
+        "run geometry and texture stages through the standard CLI and Blender worker",
+        "audit every output checkpoint and classify missing maps",
+        "probe package-wide recovery matches for representative reports and redact local paths"
+      ],
+      "acceptance": "Each selected package either produces a valid texture checkpoint and passes Blender audit or has a reproducible pre-worker blocker; report is path-free; outputs are cleaned.",
+      "next": "Review texture-stage breadth versus unresolved source dependencies, update the multi-stage roadmap, then continue with next compatibility or GUI issue."
     }
   ],
   "rolling_roadmap": [
@@ -779,8 +792,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M34-live-geometry-sample-third-tranche"
+    "next_stage": "M48-partial-livery-texture-sample-third-tranche"
   },
-  "next_stage": "M47-graphical-missing-texture-recovery",
-  "updated_utc": "2026-11-11T09:00:00Z"
+  "next_stage": "M48-partial-livery-texture-sample-third-tranche",
+  "updated_utc": "2026-11-11T08:36:41Z"
 }
