@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M29-broad-live-catalog-import-sample",
-  "active_stage": "M30-model-choice-variant-clarity",
-  "working_branch": "codex/broad-live-import-sample",
-  "last_commit": "2cad170",
+  "last_completed_stage": "M30-model-choice-variant-clarity",
+  "active_stage": "M31-broad-live-catalog-texture-stage",
+  "working_branch": "codex/gui-model-variant-clarity",
+  "last_commit": "b4bb309",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -42,7 +42,8 @@
     "m28_a320neo_sample": "A320neo missing model.cfg: explicit GUI model chooser selected 2 available filename-hint candidates (exterior/interior LOD01); normal CLI geometry build succeeded; one 129,308,721-byte checkpoint; Blender 5.2 audit passed (2,259 mesh objects); no render/source changes; temp outputs cleaned.",
     "m28_report": "compatibility/headless_a320neo_model_choice_m28.json; no personal absolute paths",
     "m29_broad_import_sample": "17/17 previously unimported installed aircraft records built one geometry checkpoint and passed Blender 5.2 audit through GUI-generated configs and normal CLI; 7.8–30.2s including audit; no renders/source modifications; temporary outputs cleaned.",
-    "m29_report": "compatibility/headless_broad_import_sample_m29.json; JSON path-free; 17 records, 17 build exits 0, 17 audits passed"
+    "m29_report": "compatibility/headless_broad_import_sample_m29.json; JSON path-free; 17 records, 17 build exits 0, 17 audits passed",
+    "m30_variant_visibility": "Model-selection dialog now shows the model folder beside each candidate and lists selected folder/file pairs in the live summary; 203 full tests passed, GUI self-test and compileall passed."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -156,11 +157,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M30: improve the model-selection wizard so model-folder/variant differences are visible at a glance and the selected sources are summarized before confirmation; preserve explicit role confirmation and all existing chooser behavior.",
-  "next_stage": "M30-model-choice-variant-clarity",
+  "next_step": "M31: test geometry plus texturing on a diverse set of live aircraft through normal GUI-generated config and CLI stage sequencing; classify missing maps vs program defects and keep outputs temporary.",
+  "next_stage": "M31-broad-live-catalog-texture-stage",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T05:53:53Z"
+  "updated_utc": "2026-11-11T05:59:14Z"
 }

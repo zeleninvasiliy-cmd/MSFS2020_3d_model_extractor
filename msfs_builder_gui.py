@@ -1443,7 +1443,7 @@ class BuilderApp(tk.Tk):
             previous.destroy()
         window = tk.Toplevel(self)
         window.title("Состав моделей самолёта")
-        window.geometry("1080x720")
+        window.geometry("1220x720")
         window.transient(self)
         window.columnconfigure(0, weight=1)
         window.rowconfigure(2, weight=1)
@@ -1463,18 +1463,18 @@ class BuilderApp(tk.Tk):
             box.grid(row=row, column=0, sticky="nsew", padx=10, pady=4)
             box.columnconfigure(0, weight=1)
             box.rowconfigure(0, weight=1)
-            columns = ("include", "lod", "vertices", "triangles", "role_source", "origin", "status")
+            columns = ("include", "variant", "lod", "vertices", "triangles", "role_source", "origin", "status")
             tree = ttk.Treeview(box, columns=columns, show="tree headings", selectmode="browse", height=6)
-            tree.heading("#0", text="Файл")
-            tree.column("#0", width=260, stretch=True)
-            titles = {"include": "Взять", "lod": "LOD", "vertices": "Вершин", "triangles": "Треугольников",
+            tree.heading("#0", text="Файл модели")
+            tree.column("#0", width=220, stretch=True)
+            titles = {"include": "Взять", "variant": "Папка модели", "lod": "LOD", "vertices": "Вершин", "triangles": "Треугольников",
                       "role_source": "Роль по", "origin": "Источник", "status": "Состояние"}
-            widths = {"include": 50, "lod": 50, "vertices": 90, "triangles": 110,
-                      "role_source": 100, "origin": 210, "status": 150}
+            widths = {"include": 44, "variant": 130, "lod": 44, "vertices": 78, "triangles": 96,
+                      "role_source": 80, "origin": 150, "status": 120}
             for name in columns:
                 tree.heading(name, text=titles[name])
                 tree.column(name, width=widths[name], stretch=name in {"origin", "status"},
-                            anchor="w" if name in {"role_source", "origin", "status"} else "e")
+                            anchor="w" if name in {"variant", "role_source", "origin", "status"} else "e")
             tree.grid(row=0, column=0, sticky="nsew")
             scroll = ttk.Scrollbar(box, command=tree.yview)
             scroll.grid(row=0, column=1, sticky="ns")
@@ -1523,7 +1523,7 @@ class BuilderApp(tk.Tk):
             tree.delete(*tree.get_children())
             entries = data.get("roles", {}).get(role, [])
             if not entries:
-                tree.insert("", "end", text="Кандидатов нет", values=("—", "", "", "", "", "", "нет файлов"))
+                tree.insert("", "end", text="Кандидатов нет", values=("—", "", "", "", "", "", "", "нет файлов"))
                 continue
             for entry in entries:
                 key = os.path.normcase(entry["path"])
@@ -1533,7 +1533,7 @@ class BuilderApp(tk.Tk):
                 selected = (saved.get(key) == role if saved else suggested) and entry["available"]
                 lod = "—" if entry.get("lod") is None else f"{entry['lod']:02d}"
                 item_id = tree.insert("", "end", text=entry["name"], values=(
-                    "☑" if selected else "☐", lod,
+                    "☑" if selected else "☐", entry.get("variant") or "—", lod,
                     "—" if entry.get("vertices") is None else f"{entry['vertices']:,}".replace(",", " "),
                     "—" if entry.get("triangles") is None else f"{entry['triangles']:,}".replace(",", " "),
                     entry.get("role_source", ""), self.MODEL_ORIGIN_TITLES.get(entry.get("origin"), entry.get("origin", "")),
@@ -1612,6 +1612,9 @@ class BuilderApp(tk.Tk):
         guessed = [entry["name"] for entry in chosen if entry.get("role_source") == "имя файла"]
         if guessed:
             text += " Роль по имени файла подтверждаете вы: " + ", ".join(guessed) + "."
+        if chosen:
+            sources = [f"{entry.get('variant') or 'папка без имени'}/{entry['name']}" for entry in chosen]
+            text += " Источники: " + "; ".join(sources) + "."
         self.model_summary.configure(text=text)
         self.model_confirm.configure(state="normal" if chosen else "disabled")
 

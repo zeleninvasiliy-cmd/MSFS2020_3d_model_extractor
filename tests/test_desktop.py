@@ -715,6 +715,7 @@ class DesktopRegressionTests(unittest.TestCase):
         self.model_window(self.payload([declared], [guessed]))
         exterior_tree = self.app.model_trees["exterior"]
         row = exterior_tree.get_children()[0]
+        self.assertEqual(exterior_tree.set(row, "variant"), "model")
         self.assertEqual(exterior_tree.set(row, "vertices"), "171 230")
         self.assertEqual(exterior_tree.set(row, "triangles"), "851 344")
         self.assertEqual(exterior_tree.set(row, "include"), "☑")
@@ -725,6 +726,22 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertEqual(interior_tree.set(inner, "origin"), "из пакета базового самолёта")
         self.assertEqual([e["name"] for e in self.app.chosen_models()], ["ext_LOD00.gltf"])
         self.assertIn("интерьер: 0", self.app.model_summary.cget("text"))
+
+    def test_model_variant_is_visible_in_rows_and_selected_source_summary(self):
+        first = self.choice("A320NEO_EXT_LOD01.gltf", "exterior", variant="model", lod=1,
+                            role_source="имя файла", default=False, declared=False)
+        second = self.choice("A320NEO_EXT_LOD01.gltf", "exterior", variant="model.airbus", lod=1,
+                             role_source="имя файла", default=False, declared=False)
+        self.model_window(self.payload([first, second], []))
+        tree = self.app.model_trees["exterior"]
+        rows = tree.get_children()
+        self.assertEqual([tree.set(row, "variant") for row in rows], ["model", "model.airbus"])
+        self.app.model_selected[("exterior", rows[1])] = True
+        tree.set(rows[1], "include", "☑")
+        self.app.update_model_summary()
+        summary = self.app.model_summary.cget("text")
+        self.assertIn("model.airbus/A320NEO_EXT_LOD01.gltf", summary)
+        self.assertIn("Роль по имени файла подтверждаете вы", summary)
 
     def test_wizard_explains_substitute_for_missing_declared_model_file(self):
         exterior = self.choice("ext_LOD00.gltf", "exterior")

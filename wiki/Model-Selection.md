@@ -2,7 +2,7 @@
 
 ## English version
 
-The model wizard is part of the 1.2.1 workflow. It opens for a partial package or from the project settings. Exterior and interior are separate lists with LOD number, vertex count, triangle count, role source, origin and availability.
+The model wizard is part of the 1.2.1 workflow. It opens for a partial package or from the project settings. Exterior and interior are separate lists with the model-folder variant shown directly beside each filename, followed by LOD number, vertex count, triangle count, role source, origin and availability. The live selection summary repeats each chosen folder/file pair before confirmation.
 
 Only roles declared by configuration are preselected. A filename-based role is a hint and requires explicit confirmation. The confirmed list is stored in the project `models` field and partial variants keep the `_partial` suffix.
 
@@ -26,12 +26,13 @@ When an installed base is missing a model file declared by a livery, the wizard 
 
 ## Что показывает окно
 
-Два отдельных списка: **Экстерьер** и **Интерьер**. Строка — один файл glTF.
+Два отдельных списка: **Экстерьер** и **Интерьер**. Строка — один файл glTF. Папка модели видна в отдельном столбце, поэтому одинаковые имена файлов в разных вариантах можно различить без открытия подробностей. Итог выбора перечисляет выбранные пары «папка/файл».
 
 | Столбец | Смысл |
 |---|---|
 | Взять | галочка включения файла в сборку |
-| Файл | имя glTF; полный путь показывается под списками при выборе строки |
+| Файл модели | имя glTF; полный путь показывается под списками при выборе строки |
+| Папка модели | вариант источника (`model`, `model.01`, `model.Interior` и т. п.); помогает отличить файлы с одинаковыми именами |
 | LOD | номер уровня детализации из имени файла (`ext_LOD06` → 06); `—`, если номера в имени нет |
 | Вершин | число вершин по accessor `POSITION` |
 | Треугольников | число треугольников по accessor индексов |
@@ -53,7 +54,7 @@ LOD00 — ближайший и самый подробный уровень. Ч
 
 ## Подтверждение
 
-Кнопка **«Подтвердить состав»** записывает выбранные файлы в штатное поле `models` проекта. Никакой правки JSON не требуется.
+Итог выбора показывает пару «папка модели / файл» для каждого отмеченного источника. Кнопка **«Подтвердить состав»** записывает выбранные файлы в штатное поле `models` проекта. Никакой правки JSON не требуется.
 
 - Если экстерьер не выбран, окно отдельно спрашивает, точно ли нужен только интерьер.
 - Пустой состав подтвердить нельзя.
