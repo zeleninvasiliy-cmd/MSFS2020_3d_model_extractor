@@ -1685,6 +1685,9 @@ class BuilderApp(tk.Tk):
             state = (origin_text(base.get("origin")) if base.get("resolved")
                      else base.get("detail") or "ссылка не разрешена")
             lines.append(f"Базовый самолёт: {base.get('name')} — {state}")
+            if not base.get("resolved"):
+                lines.append("Без базы доступны только найденные модели; отсутствующие интерьер и базовые текстуры не появятся. "
+                             "Если база установлена в другом корне, нажмите «Добавить каталог базы…».")
         models = entry.get("best_models", [])
         if models:
             lines.append("Доступные модели:")
@@ -1803,6 +1806,16 @@ class BuilderApp(tk.Tk):
                              if "несколько установленных пакетов" in str(item.get("detail") or "")]
                 for dependency in ambiguous[:3]:
                     lines.append(f"      {dependency.get('name')}: {dependency['detail']}")
+        source_links = [*dependencies, *report.get("missing_resources", []), *report.get("source_gaps", [])]
+        missing_base = next((item for item in source_links if isinstance(item, dict) and (
+            item.get("kind") == "base_container" or item.get("problem_code") == "base_aircraft_missing"
+        ) and (item.get("resolved") is False or item.get("problem_code") == "base_aircraft_missing")), None)
+        if missing_base:
+            base_name = missing_base.get("name") or "базовый самолёт"
+            lines.append("")
+            lines.append(f"Базовая модель {base_name} не найдена. Сейчас можно собрать только найденные части; "
+                         "отсутствующие интерьер и базовые текстуры не появятся, а текстурный этап укажет пропущенные карты. "
+                         "Если база установлена в другом каталоге, нажмите «Добавить каталог базы…».")
         return "\n".join(lines)
 
     @staticmethod

@@ -28,6 +28,8 @@ Without `--deep`, `inventory` checks structure, configuration and declared file 
 
 For `SUPPORTED_PARTIAL`, the `models` command and GUI wizard display exterior and interior roles, every discovered LOD, vertex and triangle counts, role source and resource origin. Only roles declared by configuration are selected by default. A filename-based candidate is included only after explicit confirmation.
 
+When the base aircraft is missing, the GUI diagnosis states that the available geometry can still be built but absent interior and base textures will not be supplied. It points to **Add base catalog…** to search another Packages root. If the base package is not installed, continue with the available geometry and use the texture report to see which maps are absent.
+
 ### Package index
 
 The `index` command builds a cached index of installed packages and resolves livery VFS links to base aircraft. The GUI shows `base_container`, whether the base is installed and any ambiguous candidates. An inaccessible package does not stop the rest of the scan.
@@ -63,6 +65,8 @@ The detailed GUI report groups dependencies by type and shows resolved counts, a
 ### Частичная сборка
 
 Для `SUPPORTED_PARTIAL` команда `models` и GUI-мастер показывают две роли — exterior и interior — все найденные LOD, число вершин и треугольников, источник роли и происхождение ресурса. По умолчанию выбираются только роли, объявленные конфигурацией. Кандидат, предложенный по имени файла, включается после подтверждения пользователя.
+
+Если базовый самолёт не найден, диагностика GUI отдельно говорит, что доступную геометрию всё ещё можно собрать, но отсутствующие интерьер и базовые текстуры не появятся. Она подсказывает нажать **«Добавить каталог базы…»** и проверить другой корень Packages. Если базовый пакет не установлен, можно собрать найденную геометрию и посмотреть в отчёте текстурирования, каких карт не хватает.
 
 ### Индекс пакетов
 

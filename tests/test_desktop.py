@@ -75,6 +75,29 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertIn("Выбрать модели", detail)
         self.assertIn("Packages-каталог в «Пути и настройки»", detail)
 
+    def test_missing_base_diagnosis_explains_geometry_and_texture_consequences(self):
+        report = {"reason_code": "SUPPORTED_PARTIAL", "dependencies": [
+            {"kind": "base_container", "name": "Base_Plane", "resolved": False,
+             "problem_code": "base_aircraft_missing", "detail": "базовый самолёт не установлен"}
+        ]}
+
+        diagnosis = self.app.format_diagnosis(report)
+        detail = self.app.format_detail(report)
+
+        self.assertIn("Базовый самолёт: Base_Plane", diagnosis)
+        self.assertIn("доступны только найденные модели", diagnosis)
+        self.assertIn("отсутствующие интерьер и базовые текстуры не появятся", diagnosis)
+        self.assertIn("Добавить каталог базы", diagnosis)
+        self.assertIn("текстурный этап укажет пропущенные карты", detail)
+
+    def test_optional_texture_fallback_does_not_trigger_missing_base_warning(self):
+        report = {"reason_code": "OK", "dependencies": [
+            {"kind": "texture_fallback", "name": "fallback.1", "resolved": False,
+             "optional": True, "target_aircraft": "Other_Plane", "target_aircraft_installed": False}
+        ]}
+
+        self.assertNotIn("Базовая модель", self.app.format_diagnosis(report))
+
     def test_save_preserves_tab_and_advanced_operations(self):
         self.project()
         self.app.project_extra = {"placements": {"Rudder": {"anchor": "Tail", "offset_m": [0, 1, 0]}}}

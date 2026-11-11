@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/broad-texture-stage-sample",
+  "working_branch": "codex/partial-livery-recovery-guidance",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -417,14 +417,28 @@
     {
       "id": "M32",
       "name": "Partial livery source-gap warning and recovery",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "review current project creation and build-stage diagnosis when a partial livery has unresolved base_aircraft_missing",
         "add a concise user-facing explanation that geometry can proceed while inherited interior/textures are unavailable",
         "offer the existing package-root recovery route where a base package may exist in another root",
         "add synthetic GUI regressions and bilingual documentation"
       ],
-      "acceptance": "Before a user spends time on texture stage, the GUI clearly distinguishes an absent base source from failed texture search; existing geometry-only partial workflow remains available; no incompatible fallback maps are auto-selected."
+      "acceptance": "Before a user spends time on texture stage, the GUI clearly distinguishes an absent base source from failed texture search; existing geometry-only partial workflow remains available; no incompatible fallback maps are auto-selected.",
+      "result": "Real catalog and inventory messages for Baron G58, Pipistrel and SR22 livery packages now explicitly say that only discovered geometry can be built, absent interior/base maps cannot be supplied, and the user should click «Добавить каталог базы…» if the base package is elsewhere. The existing recovery button is visible for all three and hidden for a complete CJ4. Added two regressions (base warning and no false warning for optional texture fallback); 205 tests passed, GUI self-test, compileall and diff check passed. Updated bilingual Package Diagnosis wiki.",
+      "next": "M33: extend real geometry import coverage to another deterministic set of previously unbuilt catalog aircraft and livery variants; prioritize NXCub/Icon/Savage/Flight Design/VL3 and any model-folder alternatives not represented in M18–M29."
+    },
+    {
+      "id": "M33",
+      "name": "Live-catalog geometry import sample, second tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "select previously unbuilt aircraft and variant records using the live deep catalog",
+        "exercise GUI project/model selection followed by normal geometry build and Blender audit",
+        "preserve one result per aircraft with reason, model source and audit counts",
+        "record remaining coverage count and next tranche without personal paths"
+      ],
+      "acceptance": "Every attempted record has an explicit CLI/build/audit result; no user files or sources are modified; temporary outputs are removed; actionable failures are investigated or assigned a stable blocker code."
     }
   ],
   "rolling_roadmap": [
@@ -581,8 +595,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M32-partial-livery-source-gap-warning"
+    "next_stage": "M33-live-geometry-sample-second-tranche"
   },
-  "next_stage": "M32-partial-livery-source-gap-warning",
-  "updated_utc": "2026-11-11T06:12:29Z"
+  "next_stage": "M33-live-geometry-sample-second-tranche",
+  "updated_utc": "2026-11-11T06:23:14Z"
 }
