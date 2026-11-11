@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M49-texture-search-basename-grouping",
-  "active_stage": "M50-partial-livery-texture-sample-fourth-tranche",
+  "last_completed_stage": "M50-partial-livery-texture-sample-fourth-tranche",
+  "active_stage": "M51-final-partial-livery-texture-sample",
   "working_branch": "codex/partial-texture-sample-second-tranche",
-  "last_commit": "a36e110",
+  "last_commit": "964a709",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -84,7 +84,9 @@
     "m47_regression": "207 unit tests, GUI self-test, compileall and git diff check passed; bilingual Texture and GUI workflow docs updated.",
     "m48_texture_sample": "10/10 geometry checkpoints, 10/10 texture checkpoints and 10/10 final Blender audits; one complete (exit 0), nine expected partial (exit 2); report compatibility/headless_texture_partial_sample_m48.json.",
     "m48_recovery_probe": "DV20: 0/26 map basenames found; Longitude 4/37 and Pipistrel 3/24 found, all matches ambiguous; no local paths in report, temporary outputs/scripts removed.",
-    "m49_basename_grouping": "Search results from multiple relative URIs sharing a basename merge into one map; duplicate candidate paths are removed; ambiguity and missing counts normalize by basename. Three focused tests and 208 unit tests passed; GUI self-test, compileall, diff check passed."
+    "m49_basename_grouping": "Search results from multiple relative URIs sharing a basename merge into one map; duplicate candidate paths are removed; ambiguity and missing counts normalize by basename. Three focused tests and 208 unit tests passed; GUI self-test, compileall, diff check passed.",
+    "m50_texture_sample": "10/10 geometry, texture checkpoints and final Blender audits; 1 complete (exit 0), 9 expected partial (exit 2); report compatibility/headless_texture_partial_sample_m50.json.",
+    "m50_recovery_probe": "Longitude Global 4/37 and Savage Xbox 3/25 matches, all ambiguous; Longitude Aviators 0/34; SR22 Kenmore/Xbox each 205 missing maps; report path-free, temporary outputs/scripts removed."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -204,11 +206,11 @@
     "unresolved_aliases": 1
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M50: process ten remaining partial-livery packages absent from M31/M38/M44/M46/M48 texture reports; audit every texture checkpoint in Blender and save a path-free report.",
-  "next_stage": "M50-partial-livery-texture-sample-fourth-tranche",
+  "next_step": "M51: run geometry + textures + Blender audit on the final three partial entries not present in previous reports, then reconcile all partial deep-catalog entries against texture report coverage.",
+  "next_stage": "M51-final-partial-livery-texture-sample",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T08:49:00Z"
+  "updated_utc": "2026-11-11T09:12:00Z"
 }

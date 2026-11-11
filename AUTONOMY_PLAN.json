@@ -655,7 +655,7 @@
     {
       "id": "M50",
       "name": "Partial livery texture sample, fourth tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "select ten partial livery records absent from all previous texture reports",
         "run geometry, textures and final Blender audit using the standard CLI",
@@ -663,7 +663,21 @@
         "publish a path-free report and clean all temporary outputs"
       ],
       "acceptance": "10/10 selected packages either produce texture checkpoints and pass final Blender audits or show a reproducible blocker; expected partial results are counted separately from failures; report is path-free.",
-      "next": "After M50 review whether any residual partial livery records remain, then continue with the last unmeasured candidates and architecture/UI review."
+      "next": "M51: process the final three not-yet-sampled partial records (SR22 Aviators and two Volocity Aviators liveries), then reconcile exact partial-texture sample coverage.",
+      "result": "Ten additional previously untested partial-livery records built geometry and texture checkpoints and passed all final Blender 5.2 audits. One Pitts S1 Reno Xbox Aviators livery completed texture processing (exit 0); nine expected partial results (exit 2) had 21–205 missing maps, including two SR22 packages with 205 each. Three recovery probes found 4/37 Longitude Global and 3/25 Savage Xbox basenames, all ambiguous; the Longitude Aviators probe found 0/34. No source paths or temporary outputs remain. Report: compatibility/headless_texture_partial_sample_m50.json."
+    },
+    {
+      "id": "M51",
+      "name": "Final partial livery texture sample",
+      "status": "in_progress",
+      "deliverables": [
+        "build texture checkpoints for the final three partial records absent from previous reports",
+        "audit each final checkpoint in Blender",
+        "reconcile deep catalog partial records against all texture sample reports",
+        "record remaining map/source gaps and an exact coverage index"
+      ],
+      "acceptance": "All three records have a classified texture result and passing final audit or a reproducible blocker; unique report coverage is compared against the deep catalog; no paths in published report.",
+      "next": "Move from partial-package coverage to broad texture assurance on buildable complete entries; prioritize any new failures discovered in the final reconciliation."
     }
   ],
   "rolling_roadmap": [
@@ -820,8 +834,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M50-partial-livery-texture-sample-fourth-tranche"
+    "next_stage": "M51-final-partial-livery-texture-sample"
   },
-  "next_stage": "M50-partial-livery-texture-sample-fourth-tranche",
-  "updated_utc": "2026-11-11T08:49:00Z"
+  "next_stage": "M51-final-partial-livery-texture-sample",
+  "updated_utc": "2026-11-11T09:12:00Z"
 }
