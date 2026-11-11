@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/live-texture-sample-first-tranche",
+  "working_branch": "codex/live-geometry-sample-seventh-tranche",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -511,6 +511,20 @@
       "acceptance": "All ten records produce a textured checkpoint and pass final Blender audit; missing source maps remain explicit; complete sources do not show a fallback warning that requires no action; Blender regression and full suite pass.",
       "result": "Ten representative livery records created geometry and textured checkpoints and passed final Blender 5.2 audits. Eight were complete; partial DA40 TDI and DV20 had 15 and 26 unique missing maps and returned expected code 2 while still producing auditable texture checkpoints. Fixed noisy fallback-folder recommendation when no required map is missing/unreadable; missing fallback data remains in JSON. Verified both warning conditions using Blender worker checks, plus 205 unit tests, GUI self-test and compileall. Path-free report: compatibility/headless_texture_sample_m38.json.",
       "next": "M39: resume geometry coverage in the next set of unreported catalog records and perform a focused GUI usability/architecture audit; batch any user-facing fixes with regression coverage."
+    },
+    {
+      "id": "M39",
+      "name": "Live-catalog geometry import sample, seventh tranche",
+      "status": "complete",
+      "deliverables": [
+        "continue on remaining livery and generic aircraft records",
+        "verify GUI choice flow for partial packages",
+        "build and Blender-audit each geometry checkpoint",
+        "refresh report coverage and next-step plan"
+      ],
+      "acceptance": "All selected records not present in previous reports produce one checkpoint and pass Blender audit; temporary outputs are removed and sources unchanged.",
+      "result": "20 previously unreported records across generic piston/turboprop, King Air 350, Longitude, LS8, Pipistrel, Pitts and Savage Shock Ultra created one geometry checkpoint each and passed Blender 5.2 audit. Twelve catalog records were complete; eight partial entries, including Longitude/Pipistrel/Savage, were assembled after explicit GUI chooser confirmation. Report: compatibility/headless_live_geometry_sample_m39.json.",
+      "next": "M40: perform GUI-focused usability review of aircraft grouping/availability states and package-root recovery; make one targeted improvement with regression coverage, then continue remaining live-catalog imports."
     }
   ],
   "rolling_roadmap": [
@@ -669,6 +683,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M39-live-geometry-sample-seventh-tranche",
-  "updated_utc": "2026-11-11T07:28:00Z"
+  "next_stage": "M40-GUI-usability-audit",
+  "updated_utc": "2026-11-11T07:48:00Z"
 }
