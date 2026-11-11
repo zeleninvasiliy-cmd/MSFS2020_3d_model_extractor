@@ -1938,6 +1938,9 @@ class BuilderApp(tk.Tk):
 
     def populate_aircraft(self, entries=None):
         """Render the catalog as expandable base-name groups."""
+        selected_path = None
+        if not self.project_open and self.selected_aircraft:
+            selected_path = str(self.selected_aircraft.get("path", "")) or None
         if entries is not None:
             self.catalog_entries = list(entries)
         visible = [entry for entry in self.catalog_entries
@@ -1974,6 +1977,23 @@ class BuilderApp(tk.Tk):
                 path = str(entry.get("path", ""))
                 if path:
                     self._aircraft_tree_paths[path] = child_iid
+        if selected_path:
+            selected_iid = self._aircraft_tree_paths.get(selected_path)
+            if selected_iid:
+                tree.selection_set(selected_iid)
+                tree.focus(selected_iid)
+                self.on_aircraft_select()
+            else:
+                # Filtering must not leave an invisible aircraft selected for
+                # the Next button or a new-project action.
+                self.selected_aircraft = None
+                self.aircraft_var.set("")
+                self.source_var.set("")
+                self.model_var.set("")
+                self.model_combo["values"] = ()
+                self.livery_combo["values"] = ()
+                self.aircraft_reason.configure(text="")
+                self._set_text(self.aircraft_detail, "")
         if was_disabled:
             tree.state(["disabled"])
         counts = {status: sum(1 for entry in self.catalog_entries if aircraft_status(entry) == status)

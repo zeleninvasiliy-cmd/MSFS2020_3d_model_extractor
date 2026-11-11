@@ -654,9 +654,24 @@ class DesktopRegressionTests(unittest.TestCase):
         c152_group = next(group for group in groups
                           if self.app.aircraft_list.item(group, "text").startswith("Asobo_C152"))
         self.assertEqual(len(self.app.aircraft_list.get_children(c152_group)), 2)
+        self.assertFalse(self.app.aircraft_list.item(c152_group, "open"))
+
+        self.app._show_catalog_step()
+        child = self.app.aircraft_list.get_children(c152_group)[0]
+        self.app.aircraft_list.selection_set(child)
+        self.app.on_aircraft_select()
+        selected_path = self.app.selected_aircraft["path"]
+
+        self.app.aircraft_filter_var.set("Полностью доступные")
+        self.app.populate_aircraft()
+        self.assertEqual(self.app.selected_aircraft["path"], selected_path)
+        self.assertTrue(self.app.aircraft_list.selection())
 
         self.app.aircraft_filter_var.set("Недоступные")
         self.app.populate_aircraft()
+        self.assertIsNone(self.app.selected_aircraft)
+        self.assertIn("disabled", self.app.nav_next.state())
+
         self.assertEqual([entry["aircraft"] for entry in self.app.active_entries], ["Asobo_L39"])
         self.assertEqual(len(self.app.aircraft_list.get_children("")), 1)
 

@@ -257,3 +257,7 @@ M38 проверил 10 ливрей по циклу «геометрия → т
 M39 covers 20 more previously unreported geometry records: generic piston/turboprop, King Air 350, Longitude, LS8, Pipistrel, Pitts and Savage Shock Ultra. All 20 created one checkpoint and passed Blender 5.2 audit; partial packages used explicit GUI model confirmation. Report: [headless_live_geometry_sample_m39.json](../compatibility/headless_live_geometry_sample_m39.json).
 
 M39 добавил 20 ранее не охваченных геометрических записей: типовые piston/turboprop, King Air 350, Longitude, LS8, Pipistrel, Pitts и Savage Shock Ultra. Все создали по одному checkpoint и прошли аудит Blender 5.2; частичные пакеты подтверждались в GUI-мастере. Отчёт: [headless_live_geometry_sample_m39.json](../compatibility/headless_live_geometry_sample_m39.json).
+
+M40 hardens aircraft availability filters: a selected aircraft remains selected when it still matches the filter, and a hidden aircraft is cleared so the Next action cannot use invisible state. The GUI regression also verifies collapsed-by-default groups.
+
+M40 исправляет состояние фильтра каталога: самолёт остаётся выбранным, если он всё ещё виден; если фильтр его скрывает, выбор сбрасывается, и кнопка «Далее» выключается. GUI-регрессия также проверяет, что группы изначально свёрнуты.

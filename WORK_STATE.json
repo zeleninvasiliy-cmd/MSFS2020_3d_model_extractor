@@ -1,7 +1,7 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M39-live-geometry-sample-seventh-tranche",
-  "active_stage": "M40-GUI-usability-audit",
+  "last_completed_stage": "M40-GUI-aircraft-filter-selection-integrity",
+  "active_stage": "M41-live-geometry-sample-eighth-tranche",
   "working_branch": "codex/live-geometry-sample-seventh-tranche",
   "last_commit": "01c9ecd",
   "ci": {
@@ -62,7 +62,9 @@
     "m38_regression": "205 unit tests, GUI self-test, compileall and git diff check passed.",
     "m38_report": "compatibility/headless_texture_sample_m38.json; path-free, ten records.",
     "m39_geometry_sample": "20/20 newly unreported entries built one geometry checkpoint and passed Blender 5.2 audit; 12 OK, 8 partial confirmed in GUI chooser; temp outputs cleaned.",
-    "m39_report": "compatibility/headless_live_geometry_sample_m39.json; path-free, all 20 build and audit checks passed."
+    "m39_report": "compatibility/headless_live_geometry_sample_m39.json; path-free, all 20 build and audit checks passed.",
+    "m40_gui_selection": "Filtering preserves the selected entry if it remains visible; otherwise clears stale selection and disables Next. Collapsed groups and both transitions covered in test_desktop.",
+    "m40_regression": "205 unit tests, GUI self-test, compileall and diff check passed."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -177,11 +179,11 @@
     "unique_real_import_report_records": 196
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M40: audit the GUI aircraft selection and partial-package recovery flow, make a targeted fix if evidence supports it, then resume catalog sampling.",
+  "next_step": "M41: resume geometry coverage on the remaining live catalog, then review duplicate package grouping.",
   "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T07:48:00Z"
+  "updated_utc": "2026-11-11T07:55:00Z"
 }

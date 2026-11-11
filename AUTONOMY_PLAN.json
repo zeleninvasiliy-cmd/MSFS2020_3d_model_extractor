@@ -525,6 +525,20 @@
       "acceptance": "All selected records not present in previous reports produce one checkpoint and pass Blender audit; temporary outputs are removed and sources unchanged.",
       "result": "20 previously unreported records across generic piston/turboprop, King Air 350, Longitude, LS8, Pipistrel, Pitts and Savage Shock Ultra created one geometry checkpoint each and passed Blender 5.2 audit. Twelve catalog records were complete; eight partial entries, including Longitude/Pipistrel/Savage, were assembled after explicit GUI chooser confirmation. Report: compatibility/headless_live_geometry_sample_m39.json.",
       "next": "M40: perform GUI-focused usability review of aircraft grouping/availability states and package-root recovery; make one targeted improvement with regression coverage, then continue remaining live-catalog imports."
+    },
+    {
+      "id": "M40",
+      "name": "GUI aircraft-filter selection integrity",
+      "status": "complete",
+      "deliverables": [
+        "preserve selected aircraft when an availability filter still includes it",
+        "clear the selection when filtering hides it",
+        "keep Next state and visible tree selection consistent",
+        "cover initial collapsed groups and both filter transitions"
+      ],
+      "acceptance": "Tk GUI regression proves visible selection persistence, hidden selection cleanup, collapsed groups and disabled Next; full unit suite and GUI startup self-test pass.",
+      "result": "Aircraft catalog filtering now restores the selected catalog entry when it remains visible and clears the aircraft/source/model/livery selection when the active filter hides it, preventing an invisible stale selection from enabling Next. Existing grouping test now asserts collapsed-by-default state and exercises both transitions. Focused regression and all 205 tests, GUI self-test, compileall and diff check pass.",
+      "next": "M41: continue through remaining unreported geometry entries, then review whether catalog grouping exposes duplicate package/livery records clearly without presenting duplicate variants as separate aircraft families."
     }
   ],
   "rolling_roadmap": [
@@ -683,6 +697,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M40-GUI-usability-audit",
-  "updated_utc": "2026-11-11T07:48:00Z"
+  "next_stage": "M41-live-geometry-sample-eighth-tranche",
+  "updated_utc": "2026-11-11T07:55:00Z"
 }
