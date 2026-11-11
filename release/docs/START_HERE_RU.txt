@@ -1,25 +1,31 @@
-MSFS MODEL BUILDER 1.2.1
+MSFS MODEL BUILDER 1.3.0 — QUICK START
 
-1. Запустите MSFSModelBuilder-1.2.1-Setup.exe.
-2. При желании укажите каталог Packages MSFS и blender.exe в установщике.
-3. Запустите программу из меню Пуск.
-4. Создайте новый проект, выберите самолёт, настройте вариант модели и Blender.
-   Если самолёт помечен значком, прочитайте причину под списком и нажмите
-   «Проверить пакет подробно». Частичный состав требует подтверждения и даёт
-   файл с суффиксом _partial.
-5. Соберите геометрию и проверьте её в Blender.
-6. На вкладке Текстуры выберите нужный файл geometry и запустите текстурирование.
+1. Run MSFSModelBuilder-1.3.0-Setup.exe.
+2. Optionally select the MSFS Packages folder and blender.exe in the installer.
+3. Start the program from the Start menu and choose Files > New project.
+4. Select a simulator package or mod, then choose an aircraft and variant.
+5. Build geometry, inspect the .blend in Blender, then run texturing.
 
-Python и Inno Setup на компьютере пользователя не требуются.
-Blender устанавливается отдельно. Проверено с Blender 5.2.3 LTS на Windows x64.
-MSFS ищется по UserCfg.opt. Путь можно задать вручную в меню «Пути и настройки».
+Python and Inno Setup are not required on the user’s PC. Blender is installed separately.
+Tested with Blender 5.2.3 LTS on Windows x64. The program searches UserCfg.opt;
+a Packages folder can also be selected in Paths and settings.
 
-USER_MANUAL_RU.html — полное руководство пользователя.
-USER_GUIDE.md и USER_GUIDE_EN.md — руководство из исходного репозитория на русском и английском.
-SHA256SUMS.txt — контрольные суммы установщика и переносимой версии.
+The full manuals are USER_GUIDE_EN.md and USER_GUIDE.md. The package includes
+USER_MANUAL_RU.html. The Setup and Portable packages do not include Blender,
+aircraft source files, textures, or user projects.
 
-Portable.zip содержит самостоятельную папку программы: распакуйте её целиком.
-Один EXE нельзя переносить отдельно от MSFSBuilderCLI.exe и каталога _internal.
+MSFS MODEL BUILDER 1.3.0 — КРАТКОЕ РУКОВОДСТВО
 
-Установщик не имеет цифровой подписи издателя. Программа не включает Blender,
-самолёты, текстуры или ваши проекты. Геометрию и внешний вид проверяет пользователь.
+1. Запустите MSFSModelBuilder-1.3.0-Setup.exe.
+2. При желании укажите папку Packages MSFS и blender.exe в установщике.
+3. Запустите программу из меню Пуск и выберите Файлы > Новый проект.
+4. Выберите пакет симулятора или мод, затем самолёт и вариант.
+5. Соберите геометрию, проверьте .blend в Blender, затем запустите текстурирование.
+
+Python и Inno Setup на компьютере пользователя не требуются. Blender устанавливается отдельно.
+Проверено с Blender 5.2.3 LTS на Windows x64. Путь MSFS ищется по UserCfg.opt;
+его также можно указать в меню «Пути и настройки».
+
+Полные руководства находятся в USER_GUIDE.md и USER_GUIDE_EN.md. В установочный
+пакет входит USER_MANUAL_RU.html. Blender, исходники самолётов, текстуры и проекты
+пользователя в Setup и Portable не входят.

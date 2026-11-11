@@ -2,7 +2,7 @@
 
 ## English version
 
-The model wizard is part of the 1.2.1 workflow. It opens for a partial package or from the project settings. Exterior and interior are separate lists with the model-folder variant shown directly beside each filename, followed by LOD number, vertex count, triangle count, role source, origin and availability. The live selection summary repeats each chosen folder/file pair before confirmation.
+The model wizard is part of the 1.3.0 workflow. It opens for a partial package or from the project settings. Exterior and interior are separate lists with the model-folder variant shown directly beside each filename, followed by LOD number, vertex count, triangle count, role source, origin and availability. The live selection summary repeats each chosen folder/file pair before confirmation.
 
 Only roles declared by configuration are preselected. A filename-based role is a hint and requires explicit confirmation. The confirmed list is stored in the project `models` field and partial variants keep the `_partial` suffix.
 
@@ -10,7 +10,7 @@ When an installed base is missing a model file declared by a livery, the wizard 
 
 ---
 
-Мастер выбора состава моделей. Открывается автоматически, когда самолёт помечен `◐ нужен выбор моделей`, и вручную кнопкой **«Выбрать модели...»** на шаге 2 «Параметры проекта». Это штатная часть версии 1.2.1.
+Мастер выбора состава моделей. Открывается автоматически, когда самолёт помечен `◐ нужен выбор моделей`, и вручную кнопкой **«Выбрать модели...»** на шаге 2 «Параметры проекта». Это штатная часть версии 1.3.0.
 
 ## Зачем он нужен
 

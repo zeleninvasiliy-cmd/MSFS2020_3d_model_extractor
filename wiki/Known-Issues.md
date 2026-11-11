@@ -2,7 +2,7 @@
 
 ## English version
 
-This list describes the current development state based on release **1.2.1**; changes on feature branches are not release artifacts.
+This list describes the current development state based on release **1.3.0**; changes on feature branches are not release artifacts.
 
 ### Source-data limits
 
@@ -33,7 +33,7 @@ This list describes the current development state based on release **1.2.1**; ch
 
 ## Русская версия
 
-Список относится к версии **1.2.1** и описывает действующие ограничения программы.
+Список относится к версии **1.3.0** и описывает действующие ограничения программы.
 
 ### Ограничения исходных данных
 

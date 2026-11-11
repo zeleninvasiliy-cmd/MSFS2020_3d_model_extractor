@@ -36,3 +36,6 @@ __pycache__/
 .idea/
 Thumbs.db
 Desktop.ini
+# Local maintenance state (not part of the public source package)
+/AUTONOMY_PLAN.json
+/WORK_STATE.json

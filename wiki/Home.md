@@ -2,7 +2,7 @@
 
 ## English version
 
-This wiki documents the current **1.2.1** release: a Windows pipeline that imports available static MSFS 2020 geometry into Blender. It imports geometry and PBR textures, organizes objects into collections and saves separate `.blend` variants. Animations are not imported.
+This wiki documents the current **1.3.0** release: a Windows pipeline that imports available static MSFS 2020 geometry into Blender. It imports geometry and PBR textures, organizes objects into collections and saves separate `.blend` variants. Animations are not imported.
 
 ### Start here
 
@@ -39,7 +39,7 @@ Top-level documents: [README](../README.md), [Russian user guide](../USER_GUIDE.
 
 ## Русская версия
 
-Эта wiki описывает текущую версию **1.2.1** — Windows-конвейер для импорта доступной статической геометрии MSFS 2020 в Blender. Программа импортирует геометрию и PBR-текстуры, распределяет объекты по коллекциям и сохраняет отдельные варианты `.blend`. Анимации не импортируются.
+Эта wiki описывает текущую версию **1.3.0** — Windows-конвейер для импорта доступной статической геометрии MSFS 2020 в Blender. Программа импортирует геометрию и PBR-текстуры, распределяет объекты по коллекциям и сохраняет отдельные варианты `.blend`. Анимации не импортируются.
 
 ### Быстрый путь
 

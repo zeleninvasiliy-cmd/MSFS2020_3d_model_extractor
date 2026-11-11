@@ -1,10 +1,10 @@
 # MSFS Model Builder — User Guide (English)
 
-This guide matches **1.2.1**. Blender is installed separately; animations are outside the current workflow.
+This guide matches **1.3.0**. Blender is installed separately; animations are outside the current workflow.
 
 ## 1. Installation
 
-Download the Setup or Portable package from the [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.2.1). End users do not need Python or Inno Setup. Install Blender 5.x with the glTF importer and NumPy.
+Download the Setup or Portable package from the [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.3.0). End users do not need Python or Inno Setup. Install Blender 5.x with the glTF importer and NumPy.
 
 To run from source, use Windows, Python 3.13 x64 and a separate Blender installation:
 
