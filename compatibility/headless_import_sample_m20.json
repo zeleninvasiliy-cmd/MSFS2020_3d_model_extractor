@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T04:42:00Z",
+  "mode": "normal_cli_geometry_build_and_audit_no_render",
+  "blender_major": "5.2",
+  "catalog_aircraft": 233,
+  "sample_size": 8,
+  "builds_succeeded": 8,
+  "checkpoint_audits_passed": 8,
+  "build_seconds_range": [
+    5.7,
+    15.5
+  ],
+  "temporary_outputs_cleaned": true,
+  "rendered": false,
+  "interpretation": "same_world_geometry_groups and far_disconnected_objects are review hints only; they do not prove geometry is wrong.",
+  "results": [
+    {
+      "aircraft": "BlackbirdSims_DHC2_Floats",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "build_exit": 0,
+      "seconds": 14.8,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 533,
+        "same_world_geometry_groups": 3,
+        "far_disconnected_objects": 85
+      }
+    },
+    {
+      "aircraft": "BlackbirdSims_DHC2_Wheels",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "build_exit": 0,
+      "seconds": 9.0,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 517,
+        "same_world_geometry_groups": 3,
+        "far_disconnected_objects": 83
+      }
+    },
+    {
+      "aircraft": "microsoft-aircraft-g-21",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "build_exit": 0,
+      "seconds": 13.9,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1917,
+        "same_world_geometry_groups": 10,
+        "far_disconnected_objects": 233
+      }
+    },
+    {
+      "aircraft": "microsoft-aircraft-jn4",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "build_exit": 0,
+      "seconds": 12.2,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1949,
+        "same_world_geometry_groups": 5,
+        "far_disconnected_objects": 139
+      }
+    },
+    {
+      "aircraft": "douglas-dc3",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model.PaxCargo",
+      "build_exit": 0,
+      "seconds": 15.5,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1951,
+        "same_world_geometry_groups": 9,
+        "far_disconnected_objects": 328
+      }
+    },
+    {
+      "aircraft": "Microsoft_Spirit_of_StLouis",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model.1928",
+      "build_exit": 0,
+      "seconds": 8.3,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 392,
+        "same_world_geometry_groups": 1,
+        "far_disconnected_objects": 100
+      }
+    },
+    {
+      "aircraft": "Asobo_A320_NEO",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "build_exit": 0,
+      "seconds": 12.6,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 1599,
+        "same_world_geometry_groups": 1,
+        "far_disconnected_objects": 146
+      }
+    },
+    {
+      "aircraft": "Asobo_Generic_Airliner_QuadEngines",
+      "catalog_reason_code": "OK",
+      "selected_model_folder": "model",
+      "build_exit": 0,
+      "seconds": 5.7,
+      "checkpoint_count": 1,
+      "audit_passed": true,
+      "audit": {
+        "mesh_objects": 68,
+        "same_world_geometry_groups": 0,
+        "far_disconnected_objects": 56
+      }
+    }
+  ]
+}

@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M19-GUI-checkpoint-audit-and-review-hints",
-  "active_stage": "M20-expanded-real-aircraft-import-coverage",
-  "working_branch": "codex/gui-checkpoint-audit",
+  "last_completed_stage": "M20-expanded-real-aircraft-import-coverage",
+  "active_stage": "M21-partial-package-model-choice-import-coverage",
+  "working_branch": "codex/expanded-headless-import-sample",
   "last_commit": "2e8e371",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "194 passed",
+    "unittest": "194 passed (last product-code validation at M19; M20 changed only docs and a path-free report)",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -22,7 +22,9 @@
     "audit_plans": "passed; 226/226 geometry-buildable installed entries; 0 rejected; Blender not launched",
     "community_mod_audit": "An-2 package root: 230/230 plans; direct Wheels aircraft root: 227/227; missing requested root exits 2 and scope_complete=false",
     "headless_geometry_builds": "5/5 passed through normal CLI and Blender 5.2; 5/5 checkpoint audits passed; outputs cleaned from temporary folder",
-    "gui_checkpoint_audit": "project-local numbered reports, review-hint wording and report opening covered by 3 GUI regressions; no render"
+    "gui_checkpoint_audit": "project-local numbered reports, review-hint wording and report opening covered by 3 GUI regressions; no render",
+    "headless_m20_sample": "8/8 real aircraft built one checkpoint and passed normal CLI audit using Blender 5.2; 5.7–15.5 s/build; no render; temporary outputs cleaned; report compatibility/headless_import_sample_m20.json",
+    "m20_report": "JSON parses; 8 entries; all build_exit=0, checkpoint_count=1 and audit_passed=true; no absolute source paths"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -136,11 +138,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Inspect the live deep catalog for aircraft classes and source layouts not represented in M18, then run a broader isolated headless geometry build sample through the user-facing CLI; do not render or modify aircraft sources.",
-  "next_stage": "M20-expanded-real-aircraft-import-coverage",
+  "next_step": "Inspect live partial and missing-model.cfg records, run the models command to expose explicit candidates/provenance, select role files as a GUI user would, then build and audit a varied sample with isolated outputs.",
+  "next_stage": "M21-partial-package-model-choice-import-coverage",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T04:34:10Z"
+  "updated_utc": "2026-11-11T04:45:33Z"
 }
