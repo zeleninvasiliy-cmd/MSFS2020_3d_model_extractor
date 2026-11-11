@@ -12,15 +12,15 @@ python -c "import compileall; raise SystemExit(0 if compileall.compile_dir('.', 
 
 The Windows GitHub Actions job repeats compilation, GUI startup and the regression suite. Tests cover package resolution, inheritance, model selection, GUI state, editing rules, texture tables, glTF metadata and pipeline locks. Real aircraft and Blender acceptance remain user checks.
 
-The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts and blocker kinds only; machine-specific paths are discarded. The detailed GUI diagnosis groups dependency states and gives a next step for missing or ambiguous links; optional texture fallbacks point users to the texturing report.
+The compatibility audit is reproducible without committing aircraft files: run `python scripts/msfs_universal.py catalog --deep > catalog.json`, then `python scripts/compatibility_report.py catalog.json --output compatibility/compatibility_snapshot.json`. The report keeps counts, dependency states and a path-free format matrix (unique models, source formats, extensions, primitive modes and sparse accessors); machine-specific paths are discarded. The detailed GUI diagnosis groups dependency states and gives a next step for missing or ambiguous links; optional texture fallbacks point users to the texturing report.
 
-The shared configuration validator rejects unknown fields in both the graphical rule preflight and the build command. The catalog suppresses only a non-buildable `fs-base-history` placeholder shadowed by a same-name geometry-buildable package, and records the suppressed path for diagnostics. Package-index fixtures also cover resource-only packages, manifest dependency resolution and ambiguity-safe VFS rebasing.
+The shared configuration validator rejects unknown fields in both the graphical rule preflight and the build command. The catalog suppresses only a non-buildable `fs-base-history` placeholder shadowed by a same-name geometry-buildable package, and records the suppressed path for diagnostics. Package-index fixtures also cover resource-only packages, manifest dependency resolution and ambiguity-safe VFS rebasing. Format regressions cover compression declarations on glTF primitives and buffer views; the resolver and worker both reject Draco/Meshopt geometry before importing it as ordinary triangles.
 
 ---
 
 Три уровня проверки. Игровые ресурсы не используются нигде: все входы синтетические, поэтому набор проходит на GitHub Actions без MSFS и Blender.
 
-Аудит совместимости воспроизводится отдельно: `catalog --deep` проверяет установленные glTF/GLB и BIN до создания проекта, а `scripts/compatibility_report.py` сохраняет только безопасную сводку с числами и типами блокеров без личных путей. Снимок для 1.2.1 создаётся той же командой после обновления каталога.
+Аудит совместимости воспроизводится отдельно: `catalog --deep` проверяет установленные glTF/GLB и BIN до создания проекта, а `scripts/compatibility_report.py` сохраняет только безопасную сводку: уникальные модели, форматы, расширения, primitive modes, sparse accessors и типы блокеров — без личных путей. Снимок для текущей рабочей версии создаётся той же командой после обновления каталога.
 
 ## 1. Регрессия без Blender и без MSFS
 
@@ -31,7 +31,7 @@ python msfs_builder_gui.py --self-test
 
 Тесты не сканируют установленный MSFS и не пишут в пользовательский кэш. Реальные самолёты и визуальная приёмка Blender остаются ручной проверкой пользователя.
 
-### `tests/test_resolver.py` — 29 сценариев
+### `tests/test_resolver.py` — 30 сценариев
 
 Диагностика пакетов до сборки. Каждый сценарий создаёт минимальное дерево во временном каталоге.
 
@@ -45,13 +45,15 @@ python msfs_builder_gui.py --self-test
 | model.cfg | cfg без `[models]` → `INVALID_MODEL_CFG`; отсутствующий cfg → `MISSING_MODEL_CFG` |
 | model XML | LOD-список без cfg; незаэкранированный `<` в `Behaviors` не ломает разбор |
 | BIN | shallow против deep; отсутствующий BIN единственной модели блокирует сборку |
-| glTF | GLB, несколько buffers, data URI, sparse, triangle strip/fan, Draco, не-треугольный mode; нечитаемый JSON; LOD01 спасает ситуацию |
+| glTF | GLB, несколько buffers, data URI, sparse, triangle strip/fan; Draco и Meshopt отклоняются до worker; не-треугольный mode; нечитаемый JSON; LOD01 спасает ситуацию |
 | обнаружение | объявленный XML отсутствует, но LOD glTF есть; уже отвергнутый путь не предлагается повторно; найденный GLB с отсутствующим BIN или неподдерживаемым расширением отклоняется в deep |
 | структура | exterior/interior в разных `model.*`; одна модель на роль при нескольких кандидатах; `msfs_gui_build` исключён; ливрея без model доходит до inventory; корень пакета с общей `texture` не мешает спуску; лист под `Airplanes` с общими ресурсами и заглушка |
 | карты | геометрия без изображений → `NO_TEXTURES` |
 | отказ | отсутствующая папка → `PACKAGE_NOT_FOUND` |
 
 `PlanDiagnosisTests`: частичный пакет требует явных `models` (ошибка содержит «Диагностика пакета» и `SUPPORTED_PARTIAL`, затем сборка проходит с заданным составом); common-only отклоняется с причиной.
+
+`tests/test_gltf.py` проверяет JSON/GLB контейнеры, несколько буферов, data URI и общий детектор сжатия Draco/Meshopt на primitive и bufferView.
 
 ### `tests/test_index.py` — 35 сценариев
 

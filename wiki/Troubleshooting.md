@@ -4,7 +4,7 @@
 
 Use this order: diagnose the package, verify the selected geometry, then investigate textures.
 
-If the aircraft is absent, set the MSFS/package root and rescan. If it is partial, inspect the base package and confirm models in the wizard. If geometry is displaced, compare another mode and use a placement/mirror rule. If a texture is missing, search installed package roots and inspect the map table. A missing original glTF/BIN cannot be fixed by changing a build mode. Keep the detailed Journal log and the failed checkpoint when reporting a reproducible problem.
+If the aircraft is absent, set the MSFS/package root and rescan. If it is partial, inspect the base package and confirm models in the wizard. If geometry is displaced, compare another mode and use a placement/mirror rule. If a texture is missing, search installed package roots and inspect the map table. For `KHR_draco_mesh_compression` or `EXT_meshopt_compression`, choose another LOD or decompress the source in its exporter; build modes cannot decode compressed geometry. A missing original glTF/BIN cannot be fixed by changing a build mode. Keep the detailed Journal log and the failed checkpoint when reporting a reproducible problem.
 
 ---
 
@@ -23,7 +23,7 @@ If the aircraft is absent, set the MSFS/package root and rescan. If it is partia
 | `⚠ LIVERY_ONLY` | есть `aircraft.cfg` и карты, но нет `model` | укажите базовый самолёт или добавьте корень, где он лежит |
 | `⚠ MISSING_MODEL_CFG` / `INVALID_MODEL_CFG` | нет cfg или нет секции `[models]` | подробная проверка предложит найденные LOD glTF; подтвердите назначение вручную |
 | `⚠ MISSING_BUFFER` | рядом с glTF нет BIN | восстановите пакет; один glTF без BIN собрать нельзя |
-| `⚠ UNSUPPORTED_GLTF_FEATURE` | Draco/KTX2 и другие неподдерживаемые расширения либо primitive points/lines | выберите другой LOD или отложите пакет до отдельного адаптера; GLB, несколько buffers, data URI, sparse и triangle strip/fan поддерживаются |
+| `⚠ UNSUPPORTED_GLTF_FEATURE` | Draco/Meshopt-сжатие (`KHR_draco_mesh_compression`, `EXT_meshopt_compression`), KTX2 и другие неподдерживаемые расширения либо primitive points/lines | выберите другой LOD или распакуйте геометрию в экспортёре; режимы сборки не декодируют сжатую геометрию. GLB, несколько buffers, data URI и triangle strip/fan поддерживаются |
 | `⚠ UNREADABLE_GLTF` | JSON повреждён или недоступен | проверьте права и целостность пакета |
 | `⚠ UNRESOLVED_ALIAS` | `base_container` указывает на отсутствующий пакет | установите базовый самолёт либо добавьте его корень в «Дополнительные корни» |
 | `⚠ SCAN_FAILED` | структура пакета отличается от ожидаемой | откройте детали, укажите папку конкретного самолёта |

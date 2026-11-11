@@ -6,6 +6,8 @@ The adapter reads the glTF JSON and its available buffers, maps MSFS attributes 
 
 Supported resources depend on the installed package and the current adapter. Missing buffers, unsupported extensions and malformed containers are reported before Blender. The program does not silently replace a failed primitive with an approximate mesh. See [Known Issues](Known-Issues) for the current limits.
 
+Geometry compressed with `KHR_draco_mesh_compression` or `EXT_meshopt_compression` is not decoded. Deep diagnosis detects the extension at its declaration/use site, and the Blender worker repeats the guard so a build cannot silently import compressed bytes as ordinary geometry. Decompress the source in its exporter or choose another LOD. Neither extension appeared in the 285 glTF models selected by the current local deep catalog scan.
+
 ---
 
 Microsoft Flight Simulator 2020 хранит модели в glTF 2.0 с расширениями Asobo. Стандартный импортёр Blender такие файлы читает неверно: индексы упакованы в draw ranges, атрибуты сжаты, winding обратный. Эта страница описывает особенности, которые обрабатывает `scripts/msfs_geometry.py`.
@@ -72,8 +74,12 @@ MSFS часто хранит привязку к одной кости как SC
 Перед импортом Blender подготовленный glTF получает единый `geometry.bin`,
 поэтому MSFS draw-range декодер и статический skinning работают одинаково для
 JSON glTF и GLB. Sparse accessors и стандартные `TRIANGLE_STRIP`/`TRIANGLE_FAN`
-материализуются перед импортом; точки, линии и Draco пока остаются отдельными
-ограничениями и диагностируются до запуска Blender.
+материализуются перед импортом; точки, линии, Draco и Meshopt пока не декодируются.
+Сжатие `KHR_draco_mesh_compression` и `EXT_meshopt_compression` обнаруживается по
+extensions и местам его применения как resolver-ом, так и перед обработкой в
+Blender worker. У сжатого источника можно выбрать другой LOD или распаковать
+геометрию в экспортёре. В 285 glTF-моделях текущего локального каталога эти два
+расширения не встретились.
 
 ## Runtime и невидимые узлы
 

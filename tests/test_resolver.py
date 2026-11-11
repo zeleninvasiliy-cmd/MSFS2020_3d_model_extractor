@@ -188,6 +188,8 @@ class ResolverTests(unittest.TestCase):
     def test_unsupported_gltf_features(self):
         cases = [
             ({"extensionsUsed": ["KHR_draco_mesh_compression"]}, ("model.bin",)),
+            ({"extensionsUsed": ["EXT_meshopt_compression"],
+              "bufferViews": [{"extensions": {"EXT_meshopt_compression": {"buffer": 0}}}]}, ("model.bin",)),
             ({"meshes": [{"primitives": [{"mode": 1}]}]}, ("model.bin",)),
         ]
         for index, (extra, buffers) in enumerate(cases):
@@ -199,6 +201,21 @@ class ResolverTests(unittest.TestCase):
                 self.assertIn(report["reason_code"], {"UNSUPPORTED_GLTF_FEATURE", "SUPPORTED_PARTIAL"})
                 self.assertTrue(report["variants"][0]["models"][0]["unsupported"])
                 self.assertIn("gltf_feature", {item["kind"] for item in report["missing_resources"]})
+
+    def test_deep_inventory_preserves_format_metadata_for_compatibility_report(self):
+        folder = complete_aircraft(self.root / "metadata")
+        path = folder / "model" / "ext_LOD00.gltf"
+        gltf(path, ("model.bin",), extensionsUsed=["ASOBO_test"],
+             accessors=[{"sparse": {"count": 1}}], meshes=[{"primitives": [{"mode": 5}]}])
+
+        report = resolver.resolve_aircraft(folder, deep=True)
+        model = report["variants"][0]["models"][0]
+
+        self.assertEqual(model["source_format"], "gltf")
+        self.assertEqual(model["extensions_used"], ["ASOBO_test"])
+        self.assertEqual(model["primitive_modes"], [5])
+        self.assertEqual(model["sparse_accessors"], 1)
+        self.assertEqual(model["buffer_count"], 1)
 
     def test_sparse_accessor_is_supported_by_geometry_adapter(self):
         path = self.root / "sparse.gltf"

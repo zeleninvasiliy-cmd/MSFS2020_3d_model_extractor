@@ -2,7 +2,7 @@
 
 ## English version
 
-This list applies to the **1.2.1** release. It describes current operating limits rather than historical findings.
+This list describes the current development state based on release **1.2.1**; changes on feature branches are not release artifacts.
 
 ### Source-data limits
 
@@ -10,7 +10,7 @@ This list applies to the **1.2.1** release. It describes current operating limit
 - Shared packages containing only XML, sounds or textures are reported as `COMMON_RESOURCES_ONLY`.
 - A livery without an installed `base_container` remains partial.
 - Packages with multiple candidates require an explicit role and LOD selection.
-- Draco-compressed geometry and other features reported as unsupported by deep diagnosis are not decoded; the program does not guess replacement geometry.
+- Draco- and Meshopt-compressed geometry (`KHR_draco_mesh_compression`, `EXT_meshopt_compression`) is detected but not decoded; use another LOD or decompress it in the source exporter. Other features reported as unsupported by deep diagnosis are not guessed.
 - Protected or encrypted resources are not decrypted.
 
 ### Build limits
@@ -41,7 +41,7 @@ This list applies to the **1.2.1** release. It describes current operating limit
 - Общие пакеты только с XML, звуками или текстурами получают статус `COMMON_RESOURCES_ONLY`.
 - Ливрея без установленного `base_container` остаётся частичной.
 - Для пакетов с несколькими кандидатами пользователь явно выбирает роль и LOD.
-- Геометрия, сжатая Draco, и другие возможности, отмеченные глубокой диагностикой как неподдерживаемые, не декодируются; программа не подменяет их геометрию догадкой.
+- Геометрия, сжатая Draco или Meshopt (`KHR_draco_mesh_compression`, `EXT_meshopt_compression`), распознаётся, но не декодируется; выберите другой LOD или распакуйте её в исходном экспортёре. Другие отмеченные диагностикой возможности программа не подменяет догадкой.
 - Защищённые или зашифрованные ресурсы не расшифровываются.
 
 ### Ограничения сборки

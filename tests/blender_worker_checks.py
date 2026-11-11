@@ -117,6 +117,22 @@ def main():
         filtered_path.write_text(json.dumps(filtered), encoding="utf-8")
         message = raises_value_error(lambda: geometry.prepare_gltf(filtered_path, import_dir, draw_mode="msfs"))
         assert "primitive 1" in message, message
+        compressed_cases = (
+            ("meshopt", "EXT_meshopt_compression", "Meshopt compression", "buffer_view"),
+            ("draco", "KHR_draco_mesh_compression", "Draco compression", "primitive"),
+        )
+        for name, extension, label, location in compressed_cases:
+            compressed_path = folder / f"{name}.gltf"
+            compressed_doc = dict(doc, extensionsUsed=[extension])
+            if location == "buffer_view":
+                compressed_doc["bufferViews"] = [{"extensions": {extension: {"buffer": 0}}}]
+            else:
+                compressed_doc["meshes"] = [{"primitives": [{"attributes": {"POSITION": 0},
+                                                               "extensions": {extension: {"bufferView": 0}}}]}]
+            compressed_path.write_text(json.dumps(compressed_doc), encoding="utf-8")
+            message = raises_value_error(lambda: geometry.prepare_gltf(
+                compressed_path, import_dir, draw_mode="auto"))
+            assert label in message, message
         # Sparse POSITION data and a non-indexed triangle strip are normalized
         # before Blender import, so common glTF exporters do not need a
         # hand-written conversion step.

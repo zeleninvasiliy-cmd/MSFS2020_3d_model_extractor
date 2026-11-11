@@ -15,7 +15,7 @@ import bpy
 import numpy as np
 from mathutils import Vector
 
-from msfs_gltf import combine_buffers, load_gltf
+from msfs_gltf import combine_buffers, load_gltf, unsupported_geometry_extensions
 
 
 RUNTIME_NODE_TOKENS = ("blur", "frost", "colision", "collision", "occluder", "_slow", "tuto_")
@@ -359,6 +359,10 @@ def prepare_gltf(source_path: Path, import_dir: Path, *, draw_mode="msfs", filte
     """Adapt packaged MSFS geometry into a standalone, untextured glTF."""
     asset = load_gltf(source_path)
     document = asset.document
+    unsupported = unsupported_geometry_extensions(document)
+    if unsupported:
+        raise ValueError(f"{source_path}: неподдерживаемое сжатие геометрии: {', '.join(unsupported)}. "
+                         "Распакуйте glTF в экспортёре и повторите сборку.")
     original = combine_buffers(asset, document)
     buffer = document["buffers"][0]
     binary = bytearray(original)

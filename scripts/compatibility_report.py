@@ -28,6 +28,7 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
     dependency_kinds: Counter[str] = Counter()
     unresolved_dependencies: Counter[str] = Counter()
     ambiguous_dependencies = 0
+    feature_models: dict[str, dict[str, Any]] = {}
     for item in aircraft:
         for dependency in _as_records(item.get("dependencies")):
             kind = str(dependency.get("kind") or "UNKNOWN")
@@ -42,12 +43,31 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
                 missing_kinds[str(resource["kind"])] += 1
         for variant in _as_records(item.get("variants")):
             for model in _as_records(variant.get("models")):
+                path = str(model.get("path") or "")
+                if path:
+                    feature_models.setdefault(path.casefold(), model)
                 code = model.get("reason_code")
                 if code and str(code) not in {"OK", "SUPPORTED_PARTIAL"}:
                     nested_reason_codes[str(code)] += 1
             for resource in _as_records(variant.get("missing_resources")):
                 if resource.get("kind"):
                     missing_kinds[str(resource["kind"])] += 1
+    formats: Counter[str] = Counter()
+    extensions_used: Counter[str] = Counter()
+    extensions_required: Counter[str] = Counter()
+    unsupported_features: Counter[str] = Counter()
+    primitive_modes: Counter[str] = Counter()
+    sparse_accessors = 0
+    buffers = 0
+    for model in feature_models.values():
+        if model.get("source_format"):
+            formats[str(model["source_format"]).casefold()] += 1
+        extensions_used.update(str(value) for value in model.get("extensions_used") or [])
+        extensions_required.update(str(value) for value in model.get("extensions_required") or [])
+        unsupported_features.update(str(value) for value in model.get("unsupported") or [])
+        primitive_modes.update(str(value) for value in model.get("primitive_modes") or [])
+        sparse_accessors += int(model.get("sparse_accessors") or 0)
+        buffers += int(model.get("buffer_count") or 0)
     return {
         "schema_version": 1,
         "generated_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
@@ -68,6 +88,16 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
         "dependencies": {"by_kind": dict(sorted(dependency_kinds.items())),
                          "unresolved_by_kind": dict(sorted(unresolved_dependencies.items())),
                          "ambiguous": ambiguous_dependencies},
+        "format_features": {
+            "unique_models": len(feature_models),
+            "source_formats": dict(sorted(formats.items())),
+            "extensions_used": dict(sorted(extensions_used.items())),
+            "extensions_required": dict(sorted(extensions_required.items())),
+            "unsupported_features": dict(sorted(unsupported_features.items())),
+            "primitive_modes": dict(sorted(primitive_modes.items())),
+            "sparse_accessors": sparse_accessors,
+            "buffers": buffers,
+        },
         "index": catalog.get("index") if isinstance(catalog.get("index"), dict) else {},
         "notes": [
             "Counts describe the selected local MSFS installation, not a guarantee for every third-party package.",

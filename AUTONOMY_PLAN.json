@@ -24,7 +24,7 @@
     ],
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release."
   },
-  "working_branch": "codex/gui-dependency-actions",
+  "working_branch": "codex/gltf-feature-matrix",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -202,7 +202,7 @@
     {
       "id": "M7",
       "name": "Community format compatibility",
-      "status": "in_progress",
+      "status": "complete",
       "focus": [
         "GLB buffers and extensions",
         "skin and primitive variants",
@@ -211,21 +211,24 @@
       "exit_criteria": [
         "features are measured against installed add-ons",
         "each supported/rejected feature has a fixture and clear diagnosis"
-      ]
+      ],
+      "result": "Added shared Draco/Meshopt detection in deep diagnosis and a worker-side fail-closed guard. Added a path-free format feature matrix to compatibility_report and inventory metadata required to populate it. Measured 285 unique selected models across the local deep catalog: all 285 JSON glTF, 285 use TRIANGLES, zero sparse accessors, 285 local buffers, zero GLB, zero Draco/Meshopt and zero unsupported geometry features; 526 package roots indexed. Resolver and Blender 5.2 worker regressions passed; 167 unit tests, GUI self-test and compile checks passed."
     },
     {
       "id": "M8",
       "name": "Compatibility measurement and next release",
-      "status": "planned",
+      "status": "in_progress",
       "focus": [
-        "repeatable catalog compatibility snapshot",
-        "prioritize blockers by affected aircraft",
-        "package bilingual docs and release artifacts"
+        "review compatibility deltas and classify remaining missing-resource blockers by affected aircraft",
+        "audit release build and GitHub release workflow so versioned releases can be reproduced",
+        "prepare bilingual release notes and artifact checksums only after integration",
+        "keep feature branch and release lineage clear while PR permission is blocked"
       ],
       "exit_criteria": [
-        "before/after measurements",
-        "release audit passes",
-        "versioned checkpoint and CI success"
+        "path-free compatibility snapshot is regenerated and validated",
+        "release artifacts build reproducibly from an integrated revision",
+        "GitHub Actions passes on the integration PR",
+        "release is tagged only after merge; 403 publication blocker is documented"
       ]
     }
   ],

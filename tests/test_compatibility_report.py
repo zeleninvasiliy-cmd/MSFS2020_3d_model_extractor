@@ -25,7 +25,11 @@ class CompatibilityReportTests(unittest.TestCase):
                  "dependencies": [{"kind": "manifest", "resolved": True, "origin": "package_index"},
                                   {"kind": "texture_fallback", "resolved": False,
                                    "detail": "несколько установленных пакетов: A; B"}],
-                 "variants": [{"models": [{"reason_code": "MISSING_BUFFER"}],
+                 "variants": [{"models": [{"path": "C:/pkg/a.gltf", "reason_code": "MISSING_BUFFER",
+                                             "source_format": "gltf", "extensions_used": ["EXT_test"],
+                                             "extensions_required": [], "unsupported": ["Meshopt compression"],
+                                             "primitive_modes": [4, 5], "sparse_accessors": 1,
+                                             "buffer_count": 2}],
                                "missing_resources": [{"kind": "buffer"}]}]},
             ],
         }
@@ -39,6 +43,13 @@ class CompatibilityReportTests(unittest.TestCase):
         self.assertEqual(report["dependencies"]["by_kind"], {"manifest": 1, "texture_fallback": 1})
         self.assertEqual(report["dependencies"]["unresolved_by_kind"], {"texture_fallback": 1})
         self.assertEqual(report["dependencies"]["ambiguous"], 1)
+        self.assertEqual(report["format_features"]["unique_models"], 1)
+        self.assertEqual(report["format_features"]["source_formats"], {"gltf": 1})
+        self.assertEqual(report["format_features"]["extensions_used"], {"EXT_test": 1})
+        self.assertEqual(report["format_features"]["unsupported_features"], {"Meshopt compression": 1})
+        self.assertEqual(report["format_features"]["primitive_modes"], {"4": 1, "5": 1})
+        self.assertEqual(report["format_features"]["sparse_accessors"], 1)
+        self.assertEqual(report["format_features"]["buffers"], 2)
         self.assertEqual(report["source"]["name"], "fixture.json")
 
     def test_summary_does_not_copy_aircraft_paths(self):

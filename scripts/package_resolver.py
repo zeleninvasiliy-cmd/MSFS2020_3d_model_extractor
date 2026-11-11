@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import unquote
 
-from msfs_gltf import load_gltf, read_document
+from msfs_gltf import load_gltf, read_document, unsupported_geometry_extensions
 
 
 GENERATED_AIRCRAFT_DIRS = {"msfs_gui_build"}
@@ -287,7 +287,10 @@ def _geometry_counts(document):
 def inspect_gltf(path):
     """Deep check of one glTF/GLB using the shared container loader."""
     result = {"path": str(path), "available": path.is_file(), "missing_buffers": [], "unsupported": [],
-              "read_error": None, "vertices": None, "triangles": None, "source_format": path.suffix.casefold().lstrip(".")}
+              "read_error": None, "vertices": None, "triangles": None,
+              "source_format": path.suffix.casefold().lstrip("."), "extensions_used": [],
+              "extensions_required": [], "primitive_modes": [], "sparse_accessors": 0,
+              "buffer_count": 0}
     if not result["available"]:
         return result
     try:
@@ -312,10 +315,15 @@ def inspect_gltf(path):
         result["available"] = False
         result["read_error"] = "ожидался JSON-объект glTF"
         return result
-    if "KHR_draco_mesh_compression" in (document.get("extensionsUsed") or []):
-        result["unsupported"].append("Draco compression")
+    result["extensions_used"] = sorted(str(value) for value in (document.get("extensionsUsed") or []))
+    result["extensions_required"] = sorted(str(value) for value in (document.get("extensionsRequired") or []))
+    result["buffer_count"] = len(document.get("buffers") or [])
+    result["sparse_accessors"] = sum(1 for accessor in document.get("accessors") or []
+                                     if isinstance(accessor, dict) and "sparse" in accessor)
+    result["unsupported"].extend(unsupported_geometry_extensions(document))
     modes = {primitive.get("mode", 4) for mesh in document.get("meshes") or []
              for primitive in mesh.get("primitives") or []}
+    result["primitive_modes"] = sorted(mode for mode in modes if isinstance(mode, int))
     # The geometry adapter triangulates the standard strip/fan modes before
     # handing the document to Blender. Points/lines/line loops remain outside
     # the aircraft mesh contract and are reported before a worker is started.
@@ -444,6 +452,9 @@ def inspect_variant(folder, aircraft, deep=False, index=None):
                 model["reason_code"] = "MISSING_GLTF"
             elif deep:
                 checked = inspect_gltf(path)
+                for key in ("source_format", "extensions_used", "extensions_required", "primitive_modes",
+                            "sparse_accessors", "buffer_count"):
+                    model[key] = checked[key]
                 model["missing_buffers"] = checked["missing_buffers"]
                 model["unsupported"] = checked["unsupported"]
                 model["available"] = checked["available"] and not checked["missing_buffers"] and not checked["unsupported"]
