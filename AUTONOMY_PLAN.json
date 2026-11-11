@@ -40,8 +40,9 @@
     {
       "id": "C",
       "name": "GUI workflow and editors",
-      "status": "planned",
-      "deliverables": ["project-gated workflow", "graphical rules", "recoverable checkpoints", "clear errors"]
+      "status": "in_progress",
+      "deliverables": ["project-gated workflow", "graphical rules", "recoverable checkpoints", "clear errors"],
+      "result": "Added graphical controls for deep catalog diagnosis, normal_decode, converted_normal_dir, pose_position and repair_skin_roots; unified custom/system catalog callbacks. Existing rule editors and checkpoint workflow remain covered by regression tests."
     },
     {
       "id": "D",
