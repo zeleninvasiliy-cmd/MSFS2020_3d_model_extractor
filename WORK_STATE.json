@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M54-full-catalog-texture-coverage-third-tranche",
-  "active_stage": "M55-full-catalog-texture-coverage-fourth-tranche",
+  "last_completed_stage": "M55-full-catalog-texture-coverage-fourth-tranche",
+  "active_stage": "M56-full-catalog-texture-coverage-fifth-tranche",
   "working_branch": "codex/full-catalog-texture-validation",
-  "last_commit": "fabe6f2",
+  "last_commit": "4d70922",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -94,7 +94,9 @@
     "m53_texture_sample": "10/10 geometry/texture checkpoints and Blender audits; all 10 fully textured, exit 0, zero missing maps; report compatibility/headless_texture_ok_sample_m53.json.",
     "m53_coverage": "35/174 OK records sampled; 139 remain. All 48/48 partial records remain covered. Index compatibility/ok_texture_coverage_m53.json.",
     "m54_texture_sample": "10/10 geometry/texture checkpoints and Blender audits; all 10 returned exit 0 with zero missing maps; includes A320neo/B747-8i livery coverage; report compatibility/headless_texture_ok_sample_m54.json.",
-    "m54_coverage": "45/174 OK records sampled; 129 remain. All 48/48 partial records covered; path-free index compatibility/ok_texture_coverage_m54.json."
+    "m54_coverage": "45/174 OK records sampled; 129 remain. All 48/48 partial records covered; path-free index compatibility/ok_texture_coverage_m54.json.",
+    "m55_texture_sample": "10/10 geometry/texture checkpoints and Blender audit; all fully textured, exit 0; report compatibility/headless_texture_ok_sample_m55.json.",
+    "m55_coverage": "55/174 OK sampled, 119 remain; partial 48/48 sampled; path-free index compatibility/ok_texture_coverage_m55.json."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -214,11 +216,11 @@
     "unresolved_aliases": 1
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M55: process the next ten unsampled OK records from compatibility/ok_texture_coverage_m54.json (G36/C152/C172 variants), audit and report.",
-  "next_stage": "M55-full-catalog-texture-coverage-fourth-tranche",
+  "next_step": "M56: process the next ten unsampled C172 ski/tow, Cap10C and CJ4 variants; run full texture and Blender audit, refresh coverage.",
+  "next_stage": "M56-full-catalog-texture-coverage-fifth-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T10:03:00Z"
+  "updated_utc": "2026-11-11T10:14:00Z"
 }

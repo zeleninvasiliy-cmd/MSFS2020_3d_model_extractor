@@ -725,7 +725,7 @@
     {
       "id": "M55",
       "name": "Full catalog texture coverage, fourth tranche",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "process next ten unsampled OK records across G36, C152 and C172",
         "audit each geometry/texture checkpoint with Blender",
@@ -733,7 +733,21 @@
         "continue on a dedicated full-catalog texture-validation branch"
       ],
       "acceptance": "Ten unique unsampled OK records produce texture checkpoints and pass Blender audit; report/index path-free; branch lineage is explicit.",
-      "next": "Continue ten-record batches until all 174 OK records are covered, reconcile zero-sample entries, then investigate any anomalous status."
+      "next": "M56: test the next ten unsampled records: C172 ski/tow variants, Cap10C liveries and the first CJ4 liveries.",
+      "result": "Ten previously unsampled OK/buildable entries (three Bonanza G36, three C152 and four C172SP livery variants) each produced geometry and texture checkpoints and passed final Blender 5.2 audit. All texture runs returned exit 0 with zero missing maps. Exact coverage is now 55/174 OK records; 119 remain, while partial coverage is 48/48. Reports: compatibility/headless_texture_ok_sample_m55.json and compatibility/ok_texture_coverage_m55.json."
+    },
+    {
+      "id": "M56",
+      "name": "Full catalog texture coverage, fifth tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "process next ten unsampled C172/Cap10C/CJ4 records",
+        "audit all texture outputs in Blender 5.2",
+        "refresh exact coverage and remaining list",
+        "record missing-map status separately from build/audit failures"
+      ],
+      "acceptance": "Ten new records pass geometry and texture checkpoint audit with expected exit classification; exact coverage index contains no duplicates or local paths.",
+      "next": "Continue ten-record batches through the 174 OK records and pause only for a reproducible blocker or when all are covered."
     }
   ],
   "rolling_roadmap": [
@@ -890,8 +904,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M55-full-catalog-texture-coverage-fourth-tranche"
+    "next_stage": "M56-full-catalog-texture-coverage-fifth-tranche"
   },
-  "next_stage": "M55-full-catalog-texture-coverage-fourth-tranche",
-  "updated_utc": "2026-11-11T10:03:00Z"
+  "next_stage": "M56-full-catalog-texture-coverage-fifth-tranche",
+  "updated_utc": "2026-11-11T10:14:00Z"
 }
