@@ -438,7 +438,7 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         self.assertFalse(dependency["resolved"])
         self.assertIn("несколько установленных пакетов", dependency["detail"])
         for candidate in candidates:
-            self.assertIn(str(candidate), dependency["detail"])
+            self.assertIn(str(candidate.resolve()), dependency["detail"])
 
     def test_vfs_rebase_searches_unique_resource_package(self):
         owner = aircraft(self.root, "owner-package", "Owner_Plane")
@@ -484,7 +484,7 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         self.assertEqual(origin, "ambiguous")
         self.assertEqual(len(candidates), 2)
         for package in packages:
-            self.assertTrue(any(str(package) in candidate for candidate in candidates))
+            self.assertTrue(any(str(package.resolve()) in candidate for candidate in candidates))
 
     def test_ambiguous_model_dependency_is_reported_without_crashing(self):
         _, livery = self.base_and_livery()
@@ -522,8 +522,8 @@ class ResolverIndexTests(_PathAssertions, unittest.TestCase):
         self.assertFalse(entry["resolved"])
         self.assertNotEqual(entry["path"], "None")
         self.assertIn("несколько установленных пакетов", entry["detail"])
-        self.assertIn(str(first_gauges), entry["detail"])
-        self.assertIn(str(second_gauges), entry["detail"])
+        self.assertIn(str(first_gauges.resolve()), entry["detail"])
+        self.assertIn(str(second_gauges.resolve()), entry["detail"])
 
 
 if __name__ == "__main__":
