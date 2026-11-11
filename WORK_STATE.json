@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M16-third-party-mod-root-coverage-audit",
+  "last_completed_stage": "M17-GUI-recovery-actions-for-plan-audit-failures",
   "active_stage": "M17-GUI-recovery-actions-for-plan-audit-failures",
-  "working_branch": "codex/community-mod-coverage",
-  "last_commit": "pending M16 checkpoint commit",
+  "working_branch": "codex/gui-plan-audit-recovery",
+  "last_commit": "pending M17 checkpoint commit",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "189 passed",
+    "unittest": "191 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -114,11 +114,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Commit/push M16 root-scope reporting and An-2 measurements. Then create codex/gui-plan-audit-recovery; add direct GUI actions to fix missing roots and inspect rejected aircraft without editing JSON.",
-  "next_stage": "M17-GUI-recovery-actions-for-plan-audit-failures",
+  "next_step": "Commit/push M17 GUI recovery flow. Then create codex/headless-aircraft-import-audit and run geometry through the normal CLI for a diverse installed/mod sample, keeping all generated files in a temporary output folder.",
+  "next_stage": "M18-representative-headless-blender-import-audit",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T04:10:00Z"
+  "updated_utc": "2026-11-11T04:12:00Z"
 }

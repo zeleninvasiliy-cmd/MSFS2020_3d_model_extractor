@@ -222,6 +222,7 @@ class DesktopRegressionTests(unittest.TestCase):
         output = json.dumps({"plans_validated": 1, "geometry_buildable": 2,
                              "failures": [{"aircraft": "Test_Plane", "problem": "MODEL_SELECTION_REQUIRED"}]})
         with patch.object(gui.messagebox, "showwarning") as showwarning, \
+             patch.object(gui.messagebox, "askyesno", return_value=False), \
              patch.object(self.app, "append_log") as append_log:
             self.app.on_geometry_plan_audit_result(2, output)
 
@@ -242,13 +243,38 @@ class DesktopRegressionTests(unittest.TestCase):
         missing = r"D:\MissingCommunity"
         output = json.dumps({"plans_validated": 226, "geometry_buildable": 226,
                              "failures": [], "missing_roots": [missing], "scope_complete": False})
-        with patch.object(gui.messagebox, "showwarning") as showwarning:
+        with patch.object(gui.messagebox, "showwarning") as showwarning, \
+             patch.object(gui.messagebox, "askyesno", return_value=False):
             self.app.on_geometry_plan_audit_result(2, output)
 
         self.assertIn("не найдено корней: 1", showwarning.call_args.args[1])
         self.assertIn(missing, showwarning.call_args.args[1])
         self.assertIn("Каталоги Packages", showwarning.call_args.args[1])
         self.assertIn("Не все каталоги проверены", self.app.status_var.get())
+
+    def test_geometry_plan_audit_can_open_missing_root_manager(self):
+        output = json.dumps({"plans_validated": 0, "geometry_buildable": 0,
+                             "failures": [], "missing_roots": [r"D:\MissingCommunity"]})
+        with patch.object(gui.messagebox, "showwarning"), \
+             patch.object(gui.messagebox, "askyesno", return_value=True), \
+             patch.object(self.app, "manage_package_roots") as manager:
+            self.app.on_geometry_plan_audit_result(2, output)
+
+        manager.assert_called_once()
+
+    def test_plan_audit_rejection_focuses_exact_catalog_entry(self):
+        entry = {"aircraft": "Test_Plane", "path": r"C:\Packages\Test_Plane",
+                 "can_build_geometry": True, "variants": [], "textures": []}
+        self.app.populate_aircraft([entry])
+        item_id = self.app._aircraft_tree_paths[entry["path"]]
+        with patch.object(self.app, "on_aircraft_select") as selected, \
+             patch.object(self.app, "diagnose_selected") as diagnose:
+            self.app.focus_audited_aircraft({"aircraft": entry["aircraft"], "path": entry["path"]})
+
+        self.assertEqual(self.app.aircraft_list.selection(), (item_id,))
+        self.assertTrue(self.app.aircraft_list.item(self.app.aircraft_list.parent(item_id), "open"))
+        selected.assert_called_once()
+        diagnose.assert_called_once()
 
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()

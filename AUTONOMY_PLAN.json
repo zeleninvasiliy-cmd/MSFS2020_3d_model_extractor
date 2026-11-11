@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/community-mod-coverage",
+  "working_branch": "codex/gui-plan-audit-recovery",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -218,13 +218,37 @@
     {
       "id": "M17",
       "name": "GUI recovery actions for plan audit failures",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "connect rejected plan codes to the selected aircraft diagnosis and model chooser",
         "make root-scope issues open the multi-root manager",
         "preserve quick recovery without requiring JSON edits"
       ],
-      "acceptance": "For each audited failure the GUI names the package and offers the existing matching recovery action, or clearly states source data is absent."
+      "acceptance": "For each audited failure the GUI names the package and offers the existing matching recovery action, or clearly states source data is absent.",
+      "result": "Plan-audit warnings now offer direct recovery: a missing requested root can open the multi-root manager; a rejected aircraft can be selected by exact path in the catalog, and its deep package diagnosis starts immediately. If the audit’s catalog is stale, the app refreshes it first. Project-open state is preserved and asks the user to close the project before switching aircraft. 191 tests, GUI self-test, compileall and diff checks pass.",
+      "next": "Run real headless geometry builds through the standard CLI on a small representative sample (simple/dual-role, community mod, and complex aircraft). Keep outputs in a temporary project folder and audit checkpoints; no renders or source-package writes. Use failures to guide one more compatibility fix."
+    },
+    {
+      "id": "M18",
+      "name": "Representative headless Blender import audit",
+      "status": "planned",
+      "deliverables": [
+        "select a diverse installed/add-on sample using catalog diagnostics",
+        "run the user-facing build command for geometry in isolated temporary outputs",
+        "audit resulting checkpoints and classify worker/import failures without rendering"
+      ],
+      "acceptance": "The sample builds through the normal CLI with no source package modifications; each Blender failure has a reproducible input and a concrete compatibility classification."
+    },
+    {
+      "id": "M19",
+      "name": "Compatibility recovery GUI review",
+      "status": "planned",
+      "deliverables": [
+        "review sample failures surfaced by M18",
+        "provide GUI guidance for unsupported or missing-source cases",
+        "remove stale assumptions from diagnostics and bilingual docs"
+      ],
+      "acceptance": "A failed geometry import produces a clear actionable category and does not leave a partial checkpoint reported as successful."
     }
   ],
   "rolling_roadmap": [
@@ -381,6 +405,6 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M17-GUI-recovery-actions-for-plan-audit-failures"
+    "next_stage": "M18-representative-headless-blender-import-audit"
   }
 }

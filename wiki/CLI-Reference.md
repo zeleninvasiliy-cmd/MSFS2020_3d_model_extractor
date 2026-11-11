@@ -19,7 +19,7 @@ python .\scripts\msfs_universal.py audit-plans
 python .\scripts\msfs_universal.py audit-plans --root "D:\MSFS\Community"
 ```
 
-The JSON response reports buildable, validated and rejected plan counts, index errors and each rejected aircraft's problem code. Requested roots that do not exist appear in `missing_roots`; `scope_complete` becomes `false`, and the command exits with code 2 so a partial scan cannot look like full success. Inspect a rejected package with `inventory --deep` or the GUI.
+The JSON response reports buildable, validated and rejected plan counts, index errors and each rejected aircraft's path and problem code. Requested roots that do not exist appear in `missing_roots`; `scope_complete` becomes `false`, and the command exits with code 2 so a partial scan cannot look like full success. Inspect a rejected package with `inventory --deep` or the GUI.
 
 ---
 

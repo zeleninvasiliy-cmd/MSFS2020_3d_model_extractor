@@ -1115,6 +1115,55 @@ class BuilderApp(tk.Tk):
             summary + ("\n\n" + detail if detail else "")
             + "\n\n" + advice,
         )
+        if missing_roots:
+            if messagebox.askyesno("Исправить корни Packages?", "Открыть окно каталогов, чтобы убрать или заменить отсутствующий путь?"):
+                self.manage_package_roots()
+        elif failures and messagebox.askyesno(
+                "Открыть диагностику самолёта?",
+                f"Перейти к первому отклонённому самолёту: {failures[0].get('aircraft', '?')}?"):
+            self.focus_audited_aircraft(failures[0])
+
+    def focus_audited_aircraft(self, failure):
+        """Select an audit failure in the catalog and open its package details."""
+        if self.project_open:
+            messagebox.showinfo("Проект открыт", "Сначала закройте текущий проект, чтобы перейти к другому самолёту.")
+            return
+        self._show_catalog_step()
+        self.aircraft_filter_var.set(AIRCRAFT_FILTERS[0])
+        self.populate_aircraft()
+        source_path = str(failure.get("path") or "")
+        item_id = self._aircraft_tree_paths.get(source_path) if source_path else None
+        if item_id is None:
+            name = str(failure.get("aircraft") or "").casefold()
+            matches = [candidate_id for candidate_id, entry in self._aircraft_tree_entries.items()
+                       if str(entry.get("aircraft", "")).casefold() == name]
+            item_id = matches[0] if len(matches) == 1 else None
+        if item_id:
+            self._select_catalog_entry(item_id)
+            return
+
+        command = self.append_package_roots(cli_command("catalog"), self.package_roots())
+
+        def scanned(code, output):
+            self.on_catalog_result(code, output)
+            if code == 0:
+                fresh_id = self._aircraft_tree_paths.get(source_path) if source_path else None
+                if fresh_id:
+                    self._select_catalog_entry(fresh_id)
+                    return
+            messagebox.showinfo("Самолёт не найден", "Обновите корни Packages и повторите проверку планов.")
+
+        self.run_command(command, scanned)
+
+    def _select_catalog_entry(self, item_id):
+        group_id = self.aircraft_list.parent(item_id)
+        if group_id:
+            self.aircraft_list.item(group_id, open=True)
+        self.aircraft_list.selection_set(item_id)
+        self.aircraft_list.focus(item_id)
+        self.aircraft_list.see(item_id)
+        self.on_aircraft_select()
+        self.diagnose_selected()
 
     def scan_custom(self):
         if self.busy or self.project_open:

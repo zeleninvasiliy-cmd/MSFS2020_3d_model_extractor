@@ -625,7 +625,8 @@ def audit_build_plans(extra_roots=()):
                     problem = "OUTPUT_PATH_REJECTED"
                 else:
                     problem = "BUILD_PLAN_REJECTED"
-                failures.append({"aircraft": item["aircraft"], "catalog_reason": item.get("reason_code"),
+                failures.append({"aircraft": item["aircraft"], "path": str(aircraft),
+                                 "catalog_reason": item.get("reason_code"),
                                  "problem": problem, "exception_type": type(error).__name__})
             else:
                 passed += 1
