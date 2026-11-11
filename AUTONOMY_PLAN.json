@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/gui-model-variant-clarity",
+  "working_branch": "codex/broad-texture-stage-sample",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -403,14 +403,28 @@
     {
       "id": "M31",
       "name": "Broad live-catalog texture-stage sample",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "select a diverse subset from the M29 geometry sample",
         "build geometry then add textures through normal CLI stage sequencing and GUI-generated configs",
         "record texture-stage outcomes, missing maps and final audit summaries without personal paths",
         "fix reproducible generic texture-stage failures and update bilingual guidance"
       ],
-      "acceptance": "Every attempted aircraft has a complete geometry+textures stage outcome; all outputs remain in temporary directories; source files are unchanged; failures have stable explanations; reports distinguish missing source maps from builder defects."
+      "acceptance": "Every attempted aircraft has a complete geometry+textures stage outcome; all outputs remain in temporary directories; source files are unchanged; failures have stable explanations; reports distinguish missing source maps from builder defects.",
+      "result": "Ran the ordinary GUI-generated project configuration, geometry stage, texture stage and Blender 5.2 audit on 11 packages, including the large 15-variant A320neo. All 11 made geometry and textured checkpoints and passed final structural audit. Eight texture reports were complete (CLI 0); three partial liveries returned incomplete code 2 because their base aircraft packages are absent. find-textures confirmed 27/28 Baron, 21/22 Pipistrel and 203/206 SR22 unique required maps are not present anywhere in the installed roots. Temporary outputs cleaned; no render or source edits. Report: compatibility/headless_texture_stage_sample_m31.json.",
+      "next": "M32: review catalog/project/build messaging and recovery for partial livery packages with unresolved base_aircraft_missing; explain that exterior geometry can build while inherited interior and maps cannot, and expose the existing package-root recovery action clearly."
+    },
+    {
+      "id": "M32",
+      "name": "Partial livery source-gap warning and recovery",
+      "status": "in_progress",
+      "deliverables": [
+        "review current project creation and build-stage diagnosis when a partial livery has unresolved base_aircraft_missing",
+        "add a concise user-facing explanation that geometry can proceed while inherited interior/textures are unavailable",
+        "offer the existing package-root recovery route where a base package may exist in another root",
+        "add synthetic GUI regressions and bilingual documentation"
+      ],
+      "acceptance": "Before a user spends time on texture stage, the GUI clearly distinguishes an absent base source from failed texture search; existing geometry-only partial workflow remains available; no incompatible fallback maps are auto-selected."
     }
   ],
   "rolling_roadmap": [
@@ -567,8 +581,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M31-broad-live-catalog-texture-stage"
+    "next_stage": "M32-partial-livery-source-gap-warning"
   },
-  "next_stage": "M31-broad-live-catalog-texture-stage",
-  "updated_utc": "2026-11-11T05:59:14Z"
+  "next_stage": "M32-partial-livery-source-gap-warning",
+  "updated_utc": "2026-11-11T06:12:29Z"
 }
