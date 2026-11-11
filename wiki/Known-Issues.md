@@ -5,7 +5,7 @@
 
 ## Русская версия
 
-Список относится к версии **1.2.0**. Это рабочие ограничения, а не исторический аудит старых этапов.
+Список относится к версии **1.2.1**. Это рабочие ограничения, а не исторический аудит старых этапов.
 
 ### Ограничения исходных данных
 
@@ -34,7 +34,7 @@
 
 ## English version
 
-This list applies to **1.2.0**. These are current operating limits, not a historical audit of earlier milestones.
+This list applies to **1.2.1**. These are current operating limits, not a historical audit of earlier milestones.
 
 ### Source-data limits
 

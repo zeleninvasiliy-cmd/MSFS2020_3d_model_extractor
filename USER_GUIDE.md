@@ -1,10 +1,10 @@
 # MSFS Model Builder — руководство пользователя (русский)
 
-Версия документации соответствует **1.2.0**. Blender устанавливается отдельно; анимации в текущий цикл не входят.
+Версия документации соответствует **1.2.1**. Blender устанавливается отдельно; анимации в текущий цикл не входят.
 
 ## 1. Установка
 
-Для готовой версии скачайте Setup или Portable из [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.2.0). Python и Inno Setup на компьютере пользователя не нужны. Нужен Blender 5.x с включённым glTF importer и NumPy.
+Для готовой версии скачайте Setup или Portable из [GitHub Release](https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/releases/tag/v1.2.1). Python и Inno Setup на компьютере пользователя не нужны. Нужен Blender 5.x с включённым glTF importer и NumPy.
 
 Для запуска исходников нужен Windows, Python 3.13 x64 и установленный Blender:
 

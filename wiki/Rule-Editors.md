@@ -8,7 +8,7 @@ The texture table is on the Textures tab. It shows map state and material, searc
 
 ---
 
-Графическое редактирование правил сборки без правки JSON. Появилось на этапе D (версия 1.2.0) и закрывает пункты 7 и 17 списка [Known Issues](Known-Issues).
+Графическое редактирование правил сборки без правки JSON. Появилось на этапе D (версия 1.2.1) и закрывает пункты 7 и 17 списка [Known Issues](Known-Issues).
 
 Два окна:
 

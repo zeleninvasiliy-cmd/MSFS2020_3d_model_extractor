@@ -54,8 +54,8 @@ powershell -ExecutionPolicy Bypass -File .\release\build_release.ps1 -Python C:\
 
 ```
 release/dist/MSFSBuilder/                          автономная переносимая папка
-release/output/MSFSModelBuilder-1.2.0-Setup.exe    установщик
-release/output/MSFSModelBuilder-1.2.0-Portable.zip переносимая версия
+release/output/MSFSModelBuilder-1.2.1-Setup.exe    установщик
+release/output/MSFSModelBuilder-1.2.1-Portable.zip переносимая версия
 release/output/SHA256SUMS.txt                      контрольные суммы
 ```
 

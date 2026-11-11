@@ -4,8 +4,8 @@ VSVersionInfo(
                    subtype=0x0, date=(0, 0)),
   kids=[StringFileInfo([StringTable('040904B0', [
     StringStruct('FileDescription', 'MSFS Model Builder'),
-    StringStruct('FileVersion', '1.2.0'),
+    StringStruct('FileVersion', '1.2.1'),
     StringStruct('ProductName', 'MSFS Model Builder'),
-    StringStruct('ProductVersion', '1.2.0')
+    StringStruct('ProductVersion', '1.2.1')
   ])]), VarFileInfo([VarStruct('Translation', [1033, 1200])])]
 )

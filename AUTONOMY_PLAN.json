@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "purpose": "Long-running maintenance plan for unattended repository work",
   "working_branch": "main",
   "checkpoint_policy": {
@@ -28,7 +28,7 @@
       "name": "Compatibility audit",
       "status": "complete",
       "deliverables": ["package and glTF coverage matrix", "reproducible synthetic fixtures", "prioritized blockers"],
-      "result": "Added catalog --deep, corrected stale format documentation, added compatibility_report.py and a path-free 1.2.0 snapshot."
+      "result": "Added catalog --deep, corrected stale format documentation, added compatibility_report.py and a path-free compatibility snapshot."
     },
     {
       "id": "B",
