@@ -371,6 +371,36 @@ class DesktopRegressionTests(unittest.TestCase):
 
         showinfo.assert_called_once()
 
+    def test_unresolved_alias_shows_direct_package_root_action(self):
+        entry = {"reason_code": "UNRESOLVED_ALIAS", "can_build_geometry": False}
+        self.app.update_package_root_recovery(entry)
+
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "grid")
+        with patch.object(self.app, "manage_package_roots") as manage:
+            self.app.package_root_recovery_button.invoke()
+        manage.assert_called_once()
+
+    def test_unresolved_base_dependency_shows_package_root_action(self):
+        entry = {"reason_code": "SUPPORTED_PARTIAL", "dependencies": [
+            {"kind": "base_container", "resolved": False, "problem_code": "base_aircraft_missing"}
+        ]}
+
+        self.app.update_package_root_recovery(entry)
+
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "grid")
+
+    def test_healthy_or_unrelated_diagnosis_hides_package_root_action(self):
+        self.app.update_package_root_recovery({"reason_code": "UNRESOLVED_ALIAS"})
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "grid")
+
+        self.app.update_package_root_recovery({"reason_code": "OK", "dependencies": []})
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "")
+
+        self.app.update_package_root_recovery({"reason_code": "SUPPORTED_PARTIAL", "dependencies": [
+            {"kind": "texture_fallback", "resolved": False}
+        ]})
+        self.assertEqual(self.app.package_root_recovery_button.winfo_manager(), "")
+
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()
         self.app.normal_decode_var.set("dxt5n")

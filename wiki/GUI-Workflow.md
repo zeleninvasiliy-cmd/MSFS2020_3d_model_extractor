@@ -10,6 +10,8 @@ The Geometry tab can audit the latest geometry checkpoint (or the selected geome
 
 The GUI uses automatically detected MSFS roots and multiple additional roots. **Package folders** lists automatic roots separately from user-added roots, marks missing custom paths, and lets users add or remove roots without editing JSON. Catalog, index, package diagnosis and model-selection commands receive the same configured root list.
 
+When aircraft diagnosis reports an unresolved base-aircraft link, a contextual **Add base package folder** action opens the Package folders manager. After adding the base package root, rescan the catalog. This action is hidden for unrelated or healthy packages.
+
 ---
 
 Оконная оболочка `msfs_builder_gui.py` — тонкая обёртка над CLI. Blender запускается отдельным процессом, все долгие операции выполняются в фоне, интерфейс остаётся отзывчивым.
@@ -23,6 +25,8 @@ The GUI uses automatically detected MSFS roots and multiple additional roots. **
 Отдельно: **Пути и настройки…** (Blender и добавление каталога), **Каталоги Packages…** (автоматические корни MSFS, несколько вручную добавленных корней и управление ими), **Индекс пакетов…** (состав индекса, состояние баз, фильтр по имени, перестроение) и **Руководство**.
 
 Автоматически найденные пути показаны отдельно от вручную добавленных. Можно добавить несколько библиотек или мод-каталогов; отсутствующий вручную добавленный путь отмечается и может быть удалён. Один и тот же список используется каталогом, индексом, диагностикой пакета и мастером моделей.
+
+Если диагностика самолёта показывает неразрешённую ссылку на базовый самолёт, рядом появляется кнопка **«Добавить каталог базы…»**. Она открывает менеджер Packages; после добавления корня базового пакета пересканируйте каталог. Для исправных пакетов и других причин кнопка скрыта.
 
 Пункты сохранения, закрытия и удаления активны только при открытом проекте.
 

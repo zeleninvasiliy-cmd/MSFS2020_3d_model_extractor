@@ -537,6 +537,10 @@ class BuilderApp(tk.Tk):
                                          wraplength=900, justify="left")
         self.aircraft_reason.grid(row=0, column=0, sticky="ew")
         ttk.Button(diagnose, text="Проверить пакет подробно", command=self.diagnose_selected).grid(row=0, column=1, padx=(8, 0))
+        self.package_root_recovery_button = ttk.Button(
+            diagnose, text="Добавить каталог базы…", command=self.open_package_root_recovery)
+        self.package_root_recovery_button.grid(row=0, column=2, padx=(8, 0))
+        self.package_root_recovery_button.grid_remove()
         self.aircraft_detail = tk.Text(tab, height=8, wrap="word", state="disabled")
         self.aircraft_detail.grid(row=4, column=0, sticky="ew", pady=(8, 0))
 
@@ -1854,11 +1858,37 @@ class BuilderApp(tk.Tk):
             report = data[0]
             self._set_text(self.aircraft_detail, self.format_detail(report))
             self.aircraft_reason.configure(text=self.format_diagnosis(report))
+            self.update_package_root_recovery(report)
             if self.selected_aircraft and self.selected_aircraft.get("path") == report.get("path"):
                 self.selected_aircraft.update(report)
             self.append_log(f"Диагностика {report.get('aircraft')}: {report.get('reason_code')}")
 
         self.run_command(command, diagnosed)
+
+    @staticmethod
+    def has_unresolved_base_package(entry):
+        if not isinstance(entry, dict):
+            return False
+        if entry.get("reason_code") == "UNRESOLVED_ALIAS":
+            return True
+        dependencies = [*(entry.get("dependencies") or []), *(entry.get("missing_resources") or []),
+                        *(entry.get("source_gaps") or [])]
+        return any(isinstance(item, dict) and item.get("resolved") is False and (
+            item.get("kind") == "base_container" or item.get("problem_code") == "base_aircraft_missing"
+        ) for item in dependencies)
+
+    def update_package_root_recovery(self, entry):
+        button = getattr(self, "package_root_recovery_button", None)
+        if button is None:
+            return
+        if self.has_unresolved_base_package(entry):
+            button.grid()
+        else:
+            button.grid_remove()
+
+    def open_package_root_recovery(self):
+        if not self.busy:
+            self.manage_package_roots()
 
     @staticmethod
     def _aircraft_marker(entry):
@@ -1883,6 +1913,7 @@ class BuilderApp(tk.Tk):
                    if self.aircraft_filter_var.get() in {AIRCRAFT_FILTERS[0], aircraft_status(entry)}]
         self.active_entries = visible
         tree = self.aircraft_list
+        self.update_package_root_recovery(None)
         was_disabled = "disabled" in tree.state()
         tree.state(["!disabled"])
         tree.delete(*tree.get_children())
@@ -1930,10 +1961,12 @@ class BuilderApp(tk.Tk):
     def on_aircraft_select(self, _event=None):
         selection = self.aircraft_list.selection()
         if not selection or selection[0] not in self._aircraft_tree_entries:
+            self.update_package_root_recovery(None)
             return
         if self.project_open:
             return
         entry = self._aircraft_tree_entries[selection[0]]
+        self.update_package_root_recovery(entry)
         self.aircraft_reason.configure(text=self.format_diagnosis(entry))
         self._set_text(self.aircraft_detail, self.format_detail(entry))
         if not entry.get("can_build_geometry"):
@@ -2302,6 +2335,7 @@ class BuilderApp(tk.Tk):
                 self.model_combo["values"] = [variant["folder"] for variant in entry.get("variants", [])]
                 self.livery_combo["values"] = self.available_liveries(entry)
                 self.aircraft_reason.configure(text=self.format_diagnosis(entry))
+                self.update_package_root_recovery(entry)
                 item_id = self._aircraft_tree_paths.get(str(entry.get("path", "")))
                 if item_id:
                     self.aircraft_list.selection_set(item_id)

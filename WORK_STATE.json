@@ -1,15 +1,15 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M23-new-aircraft-class-compatibility-audit",
-  "active_stage": "M24-contextual-base-package-recovery",
-  "working_branch": "codex/rotorcraft-compatibility-audit",
+  "last_completed_stage": "M24-contextual-base-package-recovery",
+  "active_stage": "M25-floats-skis-and-large-flying-boat-coverage",
+  "working_branch": "codex/contextual-base-package-recovery",
   "last_commit": "2e8e371",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "196 passed",
+    "unittest": "199 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
@@ -30,7 +30,8 @@
     "gui_checkpoint_audit_recovery": "report recovered after reopen; selected checkpoint matching, numeric report order and stale-project isolation covered",
     "test_output_isolation": "all desktop project fixtures now use temporary project/blend folders; verified stray placeholder removed",
     "rotorcraft_sample": "7/7 real installed rotorcraft built one checkpoint and passed Blender 5.2 audit; 7.7–30.6 s/build; RSP R44 blocked pre-worker as UNRESOLVED_ALIAS; temp outputs cleaned; compatibility/headless_rotorcraft_sample_m23.json",
-    "rotorcraft_source_formats": "all 7 builds: glTF, one local buffer, TRIANGLES, MSFT_texture_dds"
+    "rotorcraft_source_formats": "all 7 builds: glTF, one local buffer, TRIANGLES, MSFT_texture_dds",
+    "package_root_recovery": "contextual Packages action tested for UNRESOLVED_ALIAS and missing base dependency; hidden for healthy package and unrelated texture fallback"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -144,11 +145,11 @@
     }
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "Add a contextual Packages-root recovery button to aircraft diagnosis only when the selected/diagnosed package has an unresolved base aircraft link, with tests and a clear rescan instruction.",
-  "next_stage": "M24-contextual-base-package-recovery",
+  "next_step": "Scan the deep catalog for unusual float/skis variants and large flying-boat models not already in the smoke sample, then build and audit each selected source.",
+  "next_stage": "M25-floats-skis-and-large-flying-boat-coverage",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T05:14:01Z"
+  "updated_utc": "2026-11-11T05:18:12Z"
 }

@@ -39,6 +39,8 @@ When an aircraft is missing or marked partial, click **Deep package check**. The
 | `UNRESOLVED_ALIAS` | `base_container` was not found | add the root containing the base aircraft |
 | `UNSUPPORTED_GLTF_FEATURE` | the format or primitive is unsupported | choose another LOD or keep the package for a separate adapter |
 
+If diagnosis reports `UNRESOLVED_ALIAS` or a missing base aircraft, click **Add base package folder** beside the message. The Packages manager opens; add the folder containing the base aircraft, close the manager, and scan again.
+
 The package index resolves livery references to a base aircraft. Ambiguous matches are shown to the user instead of guessed.
 
 ## 4. Model wizard
