@@ -276,6 +276,50 @@ class DesktopRegressionTests(unittest.TestCase):
         selected.assert_called_once()
         diagnose.assert_called_once()
 
+    def test_geometry_checkpoint_audit_writes_report_inside_project(self):
+        self.project()
+        output = Path(self.app.output_var.get())
+        output.mkdir(exist_ok=True)
+        blend = output / "01_geometry_strip_auto_001.blend"
+        blend.write_bytes(b"placeholder")
+        self.app.blend_paths = [blend]
+        self.app.blend_list.insert("end", blend.name)
+        self.app.blend_list.selection_set(0)
+        with patch.object(self.app, "run_command", return_value=True) as runner:
+            self.app.audit_geometry_checkpoint()
+
+        command = runner.call_args.args[0]
+        self.assertIn("audit", command)
+        self.assertEqual(command[command.index("audit") + 1], str(blend))
+        report = Path(command[command.index("--output") + 1])
+        self.assertEqual(report.parent, Path(self.app.project_var.get()).parent / "reports" / "geometry_audits")
+        self.assertIn("проверяет geometry checkpoint", self.app.status_var.get())
+
+    def test_geometry_checkpoint_audit_reports_review_hints(self):
+        self.project()
+        report = self.folder / "reports" / "audit.json"
+        report.parent.mkdir()
+        report.write_text(json.dumps({"summary": {"mesh_objects": 20,
+                                                   "same_world_geometry_groups": 2,
+                                                   "far_disconnected_objects": 5}}), encoding="utf-8")
+        with patch.object(gui.messagebox, "showinfo") as showinfo:
+            self.app.on_geometry_audit_result(0, "{}", report)
+
+        self.assertIn("Mesh-объектов: 20", self.app.build_detail_var.get())
+        self.assertIn("не означают автоматически", self.app.build_result_var.get())
+        self.assertEqual(self.app.audit_report_path, report)
+        showinfo.assert_called_once()
+
+    def test_open_geometry_audit_report_uses_latest_report(self):
+        self.project()
+        report = self.folder / "audit.json"
+        report.write_text("{}", encoding="utf-8")
+        self.app.audit_report_path = report
+        with patch.object(gui.os, "startfile") as startfile:
+            self.app.open_geometry_audit_report()
+
+        startfile.assert_called_once_with(str(report))
+
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()
         self.app.normal_decode_var.set("dxt5n")

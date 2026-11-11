@@ -157,6 +157,7 @@ class BuilderApp(tk.Tk):
         self.build_result_var = tk.StringVar(value="")
         self.build_variant_var = tk.StringVar(value="")
         self.last_blend_path: Path | None = None
+        self.audit_report_path: Path | None = None
         self.explorer_button_visible = False
         self.object_include: dict[str, bool] = {}
         self.object_details: dict[str, dict] = {}
@@ -646,6 +647,8 @@ class BuilderApp(tk.Tk):
         buttons.grid(row=4, column=0, sticky="w", pady=12)
         ttk.Button(buttons, text="Собрать geometry", command=lambda: self.start_build("geometry")).pack(side="left", padx=(0, 8))
         ttk.Button(buttons, text="Открыть checkpoint", command=self.open_checkpoint).pack(side="left", padx=8)
+        ttk.Button(buttons, text="Проверить checkpoint", command=self.audit_geometry_checkpoint).pack(side="left", padx=8)
+        ttk.Button(buttons, text="Открыть отчёт аудита", command=self.open_geometry_audit_report).pack(side="left", padx=8)
         self.geometry_explorer_button = ttk.Button(buttons, text="Перейти к .blend в проводнике", command=self.open_blend_in_explorer)
         ttk.Button(buttons, text="Остановить", command=self.stop_build).pack(side="left", padx=8)
         ttk.Label(tab, text="Повторная сборка того же режима создаёт новый пронумерованный checkpoint.", foreground="#555").grid(row=5, column=0, sticky="w", pady=(2, 0))
@@ -1189,7 +1192,7 @@ class BuilderApp(tk.Tk):
         self._set_busy_widgets(True)
         self.append_log("$ " + " ".join(f'\"{part}\"' if " " in part else part for part in command))
         self.status_var.set("Выполняется...")
-        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "roots", "models", "validate", "bones", "audit-plans",
+        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "roots", "models", "validate", "bones", "audit-plans", "audit",
                                         "find-textures"} for part in command)
 
         def worker():
@@ -2755,6 +2758,79 @@ class BuilderApp(tk.Tk):
             return
         subprocess.Popen([blender, str(blend)])
         self.refresh_blend_list()
+
+    def audit_geometry_checkpoint(self):
+        if self.busy or not self.project_open:
+            return
+        selected = self.selected_blend_path()
+        blend = selected if selected and selected.name.casefold().startswith("01_geometry") else self.latest_geometry_file()
+        if blend is None:
+            messagebox.showwarning("Checkpoint не найден", "Сначала соберите geometry, затем проверьте её checkpoint.")
+            return
+        blender = self.blender_var.get().strip()
+        if not blender or not Path(blender).is_file():
+            messagebox.showwarning("Blender не найден", "Укажите путь к blender.exe на вкладке настройки.")
+            return
+        project = self.project_path()
+        if project is None:
+            messagebox.showwarning("Проект не найден", "Сохраните проект перед запуском аудита.")
+            return
+        report_dir = project.parent / "reports" / "geometry_audits"
+        try:
+            report_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            self.audit_report_path = None
+            self.append_log(f"Не удалось создать папку отчётов аудита {report_dir}: {exc}")
+            messagebox.showerror("Аудит checkpoint", "Не удалось создать папку отчётов проекта. Проверьте доступ к папке; подробности записаны во вкладку «Журнал».")
+            return
+        prefix = f"{blend.stem}_audit_"
+        sequence = max((int(match.group(1)) for path in report_dir.glob(f"{prefix}*.json")
+                        if (match := re.search(r"_(\d+)$", path.stem))), default=0) + 1
+        report = report_dir / f"{prefix}{sequence:03d}.json"
+        command = cli_command("audit", str(blend), "--output", str(report), "--blender", blender)
+        self.audit_report_path = None
+        if self.run_command(command, lambda code, output: self.on_geometry_audit_result(code, output, report)):
+            self.status_var.set("Blender проверяет geometry checkpoint; рендер не запускается…")
+
+    def on_geometry_audit_result(self, code, output, report):
+        if code:
+            self.audit_report_path = None
+            self.status_var.set("Аудит geometry checkpoint завершился ошибкой")
+            self.append_log("Ошибка аудита checkpoint: " + (output[-1800:] if output else "нет подробностей"))
+            messagebox.showerror("Аудит checkpoint", "Не удалось проверить файл. Технические подробности записаны во вкладку «Журнал».")
+            return
+        try:
+            data = json.loads(report.read_text(encoding="utf-8-sig"))
+            summary = data["summary"]
+            mesh_objects = int(summary["mesh_objects"])
+            duplicate_groups = int(summary["same_world_geometry_groups"])
+            disconnected = int(summary["far_disconnected_objects"])
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            self.audit_report_path = None
+            self.append_log(f"Не удалось разобрать отчёт аудита: {exc}")
+            self.status_var.set("Не удалось прочитать отчёт аудита checkpoint")
+            messagebox.showerror("Аудит checkpoint", "Отчёт создан неверно. Подробности записаны во вкладку «Журнал».")
+            return
+        text = (f"Mesh-объектов: {mesh_objects}; совпадающих мировых геометрий: {duplicate_groups}; "
+                f"объектов с разнесёнными компонентами: {disconnected}.")
+        caveat = "Эти числа помогают найти места для просмотра и не означают автоматически, что геометрия неверна."
+        self.audit_report_path = report
+        self.status_var.set("Аудит geometry завершён; отчёт сохранён в проекте.")
+        self.build_stage_var.set("Аудит checkpoint: завершён")
+        self.build_detail_var.set(text)
+        self.build_result_var.set(caveat)
+        self.append_log(f"Аудит {report.stem}: {text} {caveat}")
+        messagebox.showinfo("Аудит geometry checkpoint", text + "\n\n" + caveat + f"\n\nОтчёт: {report}")
+
+    def open_geometry_audit_report(self):
+        report = self.audit_report_path
+        if report is None or not report.is_file():
+            messagebox.showinfo("Отчёт не найден", "Сначала выполните аудит geometry checkpoint.")
+            return
+        try:
+            os.startfile(str(report))
+        except OSError as exc:
+            messagebox.showerror("Отчёт аудита", str(exc))
 
     def checkpoint_name(self, stage):
         base = {"geometry": "01_geometry", "textures": "02_textured", "final": "03_model", "all": "03_model"}.get(stage, "checkpoint")

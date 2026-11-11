@@ -55,6 +55,8 @@ Every build mode has its own sequence. Repeating a mode creates the next numbere
 
 Inspect the result in Blender: left/right symmetry, landing gear, control surfaces, cockpit and unexpected objects. Use **Editing rules** for corrections instead of changing MSFS source files.
 
+For a structural check, click **Audit checkpoint**. The program runs Blender without rendering and writes a JSON report to `<project folder>/reports/geometry_audits/`. Mesh-object, identical world-geometry and disconnected-component counts are review hints, not an automatic verdict that the model is wrong. Click **Open audit report** to inspect the latest report.
+
 ## 6. Editing rules
 
 The graphical editor supports:

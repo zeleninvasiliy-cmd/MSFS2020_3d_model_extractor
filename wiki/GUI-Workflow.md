@@ -6,6 +6,8 @@ The GUI is a thin, responsive wrapper around the CLI. **Files** contains New, Op
 
 The project wizard selects an aircraft and general settings. The Geometry tab selects the build mode, object composition and editing rules; the Textures tab selects a geometry checkpoint, map replacements and texture search. The Journal tab contains detailed logs. After a successful stage, **Open in Blender** and **Show in Explorer** open the selected result. Back/Next buttons move between steps only when the minimum required fields are present.
 
+The Geometry tab can audit the latest geometry checkpoint (or the selected geometry checkpoint) with Blender, without rendering. The numbered JSON report is stored under `<project>/reports/geometry_audits/` and can be opened from the same tab. Mesh counts, duplicate world-geometry groups and disconnected-component candidates are review hints only; they do not prove the aircraft geometry is wrong.
+
 The GUI uses automatically detected MSFS roots and multiple additional roots. **Package folders** lists automatic roots separately from user-added roots, marks missing custom paths, and lets users add or remove roots without editing JSON. Catalog, index, package diagnosis and model-selection commands receive the same configured root list.
 
 ---
@@ -67,7 +69,9 @@ The GUI uses automatically detected MSFS roots and multiple additional roots. **
 - **Параметры:** `Skinning` (`strip`, `manual`, `hybrid`, `bake`), `Draw mode` (`auto`, `msfs`, `standard`), имя варианта, флажок «Удалять runtime/collision/occluder».
 - **Дерево объектов** с колонкой «Включён» (☑/☐). Клик по объекту переключает его; клик по группе — все её объекты. Группа показывает ☐, если исключён хотя бы один дочерний объект. Кнопки: «Загрузить список объектов», «Включить всё», «Исключить всё», «Hybrid: выбранная деталь» + счётчик целей.
 - **«Правила редактирования...»** — окно графических редакторов `split_by_skin`, `split_spatial`, `mirror_objects`, `placements`, `collection_overrides`, `manual_keep_pivots`. Рядом строка с числом заданных правил; без правил написано «Правила не заданы: объект собирается как есть». Подробности: [Rule Editors](Rule-Editors).
-- **Действия:** «Собрать geometry», «Открыть checkpoint», «Перейти к .blend в Проводнике» (появляется после успешной сборки), «Остановить».
+- **Действия:** «Собрать geometry», «Открыть checkpoint», «Проверить checkpoint», «Открыть отчёт аудита», «Перейти к .blend в Проводнике» (появляется после успешной сборки), «Остановить».
+
+Проверка checkpoint запускает структурный аудит Blender без рендера. Последний отчёт доступен прямо из этого окна, JSON сохраняется в `<папка проекта>/reports/geometry_audits/`. Числа mesh-объектов, совпадающих геометрий и разнесённых компонентов — подсказки для просмотра, а не автоматическая оценка правильности.
 
 Подробный журнал сборки здесь не показывается — он на вкладке «Журнал».
 
