@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/nonbuildable-catalog-audit",
+  "working_branch": "codex/texture-stage-broad-sample",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -581,6 +581,20 @@
       "acceptance": "All non-buildable catalog entries have an evidence-backed reason; fresh index has no errors; no unsupported geometry is fabricated.",
       "result": "Deep catalog contains 233 visible records: 226 are geometry-buildable and 7 are not. Six COMMON_RESOURCES_ONLY packages contain no standalone model candidates. RSP_R44_EC-NIK has no local model variant and its declared r44 base is absent; forced uncached index scanned 526 packages with zero errors and found no r44 alias. This is missing source data, not a resolver failure. Add another Packages root only if the separate base source exists elsewhere. Report: compatibility/nonbuildable_catalog_audit_m43.json.",
       "next": "M44: begin a broader texture-stage sample, prioritizing partial liveries with available maps; track true absent source maps separately from importer defects, then return to the interface/architecture review."
+    },
+    {
+      "id": "M44",
+      "name": "Broad partial-livery texture sample",
+      "status": "complete",
+      "deliverables": [
+        "run geometry then texture stages on ten additional partial liveries",
+        "exercise explicit GUI role confirmation before texture build",
+        "audit every textured checkpoint in Blender",
+        "report missing-map counts without exposing texture names or local paths"
+      ],
+      "acceptance": "Every sample produces one geometry and texture checkpoint and passes final Blender audit; incomplete texture results distinguish source gaps from worker failures; temp outputs cleaned.",
+      "result": "Ten additional partial 103Solo, B787-10 and Baron G58 livery packages all created geometry and textured checkpoints and passed Blender 5.2 final audits. Every texture stage returned expected code 2 with 29 missing maps for 103Solo, 43–48 for B787 and 32 for Baron, consistent with missing base-package maps; all ten used explicit GUI model selection. No source modifications or leftover temporary files. Report: compatibility/headless_texture_partial_sample_m44.json.",
+      "next": "M45: inspect GUI handling of texture exit code 2 when a textured checkpoint exists; make the status explain “partial output saved” rather than suggesting that the entire stage failed, with UI regression coverage. Continue sampling remaining partial liveries after that fix."
     }
   ],
   "rolling_roadmap": [
@@ -739,6 +753,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M44-texture-stage-broad-sample",
-  "updated_utc": "2026-11-11T08:30:00Z"
+  "next_stage": "M45-texture-partial-status-ux",
+  "updated_utc": "2026-11-11T08:39:00Z"
 }
