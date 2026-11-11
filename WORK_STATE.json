@@ -3,7 +3,7 @@
   "last_completed_stage": "D-release-1.2.1",
   "active_stage": "M9-GUI-model-source-decision-flow",
   "working_branch": "codex/gui-model-source-recovery",
-  "last_commit": "pending-M9-checkpoint",
+  "last_commit": "4c16254",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -68,5 +68,5 @@
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T02:56:00Z"
+  "updated_utc": "2026-11-11T03:00:00Z"
 }
