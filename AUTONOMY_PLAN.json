@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/texture-stage-broad-sample",
+  "working_branch": "codex/texture-partial-status-ux",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -595,6 +595,20 @@
       "acceptance": "Every sample produces one geometry and texture checkpoint and passes final Blender audit; incomplete texture results distinguish source gaps from worker failures; temp outputs cleaned.",
       "result": "Ten additional partial 103Solo, B787-10 and Baron G58 livery packages all created geometry and textured checkpoints and passed Blender 5.2 final audits. Every texture stage returned expected code 2 with 29 missing maps for 103Solo, 43–48 for B787 and 32 for Baron, consistent with missing base-package maps; all ten used explicit GUI model selection. No source modifications or leftover temporary files. Report: compatibility/headless_texture_partial_sample_m44.json.",
       "next": "M45: inspect GUI handling of texture exit code 2 when a textured checkpoint exists; make the status explain “partial output saved” rather than suggesting that the entire stage failed, with UI regression coverage. Continue sampling remaining partial liveries after that fix."
+    },
+    {
+      "id": "M45",
+      "name": "Partial texture checkpoint status UX",
+      "status": "complete",
+      "deliverables": [
+        "distinguish texture code 2 from full stage failure in the GUI",
+        "state that the textured checkpoint was saved",
+        "direct the user to the journal for missing-map details",
+        "cover the callback with a desktop regression"
+      ],
+      "acceptance": "GUI displays completion, partial texture status, saved filename and journal guidance for code 2; 206-test suite and GUI self-test pass.",
+      "result": "When the texture stage returns code 2 with a saved checkpoint, the GUI now says “Текстуры применены частично”, names the created .blend, and directs the user to the journal for missing maps. The stage remains marked completed. Focused GUI regression, all 206 unit tests, GUI self-test, compileall and diff check passed.",
+      "next": "M46: continue texture-stage validation on the next ten untested partial livery packages; use find-textures on representative reports to separate absent maps from resolver misses."
     }
   ],
   "rolling_roadmap": [
@@ -753,6 +767,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M45-texture-partial-status-ux",
-  "updated_utc": "2026-11-11T08:39:00Z"
+  "next_stage": "M46-partial-livery-texture-sample-second-tranche",
+  "updated_utc": "2026-11-11T08:45:00Z"
 }

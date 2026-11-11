@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M44-broad-partial-livery-texture-sample",
-  "active_stage": "M45-texture-partial-status-ux",
-  "working_branch": "codex/texture-stage-broad-sample",
-  "last_commit": "0d76a91",
+  "last_completed_stage": "M45-partial-texture-checkpoint-status-ux",
+  "active_stage": "M46-partial-livery-texture-sample-second-tranche",
+  "working_branch": "codex/texture-partial-status-ux",
+  "last_commit": "8ca35df",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -74,7 +74,9 @@
     "m43_nonbuildable_audit": "7/7 catalog records classified; six shared-resource-only packages have zero model candidates; R44 base alias absent in forced uncached 526-package index (0 errors).",
     "m43_report": "compatibility/nonbuildable_catalog_audit_m43.json; path-free.",
     "m44_texture_sample": "10/10 partial 103Solo/B787/Baron livery packages produced geometry and textured checkpoint; all final Blender audits passed; all reported missing maps (29, 43–48, 32), returned expected code 2; explicit GUI model selection; temp outputs cleaned.",
-    "m44_report": "compatibility/headless_texture_partial_sample_m44.json; path-free, ten records."
+    "m44_report": "compatibility/headless_texture_partial_sample_m44.json; path-free, ten records.",
+    "m45_partial_texture_status": "GUI code 2 keeps the saved checkpoint, marks stage completed, says textures were applied partially and points to journal; focused regression passed.",
+    "m45_regression": "206 unit tests, GUI self-test, compileall and git diff check passed."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -194,11 +196,11 @@
     "unresolved_aliases": 1
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M45: audit GUI presentation of texture code 2 when a textured checkpoint exists, improve success-with-missing-maps status and regression test.",
+  "next_step": "M46: test textures on ten more untested partial liveries, including CLI find-textures for representative misses.",
   "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T08:39:00Z"
+  "updated_utc": "2026-11-11T08:45:00Z"
 }

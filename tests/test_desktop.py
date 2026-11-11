@@ -638,6 +638,21 @@ class DesktopRegressionTests(unittest.TestCase):
         self.app.on_catalog_result(0, json.dumps(payload))
         self.assertIn("скрыто history-заглушек: 1", self.app.status_var.get())
 
+    def test_partial_texture_exit_keeps_checkpoint_and_explains_missing_maps(self):
+        self.app.active_stage = "textures"
+        self.app.cancel_requested = False
+        output = "[textures] C:/project/blend/02_textured_strip_auto_partial_001.blend\n"
+        with patch.object(self.app, "_set_explorer_target") as set_target, \
+             patch.object(self.app, "refresh_blend_list"):
+            self.app.on_build_finished(2, output)
+
+        self.assertEqual(self.app.build_stage_var.get(), "Этап textures: завершён")
+        self.assertIn("частично", self.app.build_result_var.get().casefold())
+        self.assertIn("02_textured_strip_auto_partial_001.blend", self.app.build_result_var.get())
+        self.assertIn("Не все карты найдены", self.app.build_detail_var.get())
+        self.assertIn("журнале", self.app.build_detail_var.get())
+        set_target.assert_called_once()
+
     def test_catalog_groups_liveries_and_filters_by_availability(self):
         entries = [
             {"aircraft": "Asobo_C152", "path": "C:/base/C152", "can_build_geometry": True,

@@ -277,3 +277,7 @@ M43 разобрал семь записей каталога, которые н
 M44 runs ten additional partial livery packages (103Solo, B787-10 and Baron G58) through GUI-configured geometry, textures and Blender audit. All ten textured checkpoints passed audit, but texture code 2 correctly indicated missing maps (29 for 103Solo, 43–48 for B787, 32 for Baron). The resulting `.blend` remains available; missing maps reflect incomplete source packages. Report: [headless_texture_partial_sample_m44.json](../compatibility/headless_texture_partial_sample_m44.json).
 
 M44 проверил ещё 10 partial-ливерей 103Solo, B787-10 и Baron G58 по циклу «GUI → геометрия → текстуры → Blender-аудит». Все десять текстурированных checkpoint прошли аудит, но ожидаемо получили code 2 из-за отсутствующих карт: 29 для 103Solo, 43–48 для B787, 32 для Baron. `.blend` при этом создан; причина — неполные исходные пакеты. Отчёт: [headless_texture_partial_sample_m44.json](../compatibility/headless_texture_partial_sample_m44.json).
+
+M45 improves the texture-stage status when code 2 means maps are missing but a checkpoint exists: the GUI now says textures were applied partially, names the saved `.blend`, and directs the user to the journal. A desktop regression covers the callback.
+
+M45 уточняет статус этапа текстурирования при code 2: если карты отсутствуют, но checkpoint создан, GUI сообщает о частично применённых текстурах, показывает имя `.blend` и направляет к журналу. Callback покрыт desktop-регрессией.

@@ -2714,10 +2714,15 @@ class BuilderApp(tk.Tk):
             self._set_explorer_target(blend)
             self.refresh_blend_list()
             self.build_stage_var.set(f"Этап {stage}: завершён")
-            self.build_result_var.set(f"{'Готово с замечаниями' if code == 2 else 'Сборка выполнена успешно'}. Создан файл {checkpoint}.")
+            if stage == "textures" and code == 2:
+                self.build_result_var.set(f"Текстуры применены частично. Создан файл {checkpoint}.")
+            else:
+                self.build_result_var.set(f"{'Готово с замечаниями' if code == 2 else 'Сборка выполнена успешно'}. Создан файл {checkpoint}.")
             if stage in {"geometry", "all"}:
                 self.build_detail_var.set("Геометрия готова. Список объектов обновлён; проверьте модель в Blender.")
                 self.load_object_catalog(silent=True)
+            elif stage == "textures" and code == 2:
+                self.build_detail_var.set("Не все карты найдены. Смотрите список в журнале; созданный .blend можно открыть в Blender.")
             else:
                 self.build_detail_var.set("Проверьте результат в Blender. Подробный журнал сохранён во вкладке «Журнал».")
         elif self.cancel_requested:
