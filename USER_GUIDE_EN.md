@@ -21,6 +21,8 @@ python .\msfs_builder_gui.py
 4. If several entries share a name, select the required package and livery.
 5. In the general settings choose Blender and the output directory. Work outside an open project is disabled.
 
+MSFS roots are detected from `UserCfg.opt` and common install locations. If an aircraft or its base is in another library, click **Package folders...** and add the required folders. The window separates automatically detected roots from manual entries and marks paths that no longer exist. **Choose catalog** also adds the selected path and starts a scan.
+
 Projects store settings, selected models, rules, map replacements and the `.blend` variant history. The original aircraft folder is never modified.
 
 ## 3. Diagnose the package
@@ -76,6 +78,8 @@ If a map is missing, search installed packages first. DDS normal maps may requir
 ```powershell
 python .\scripts\msfs_universal.py inventory "C:\Path\To\Aircraft" --deep
 python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Packages"
+python .\scripts\msfs_universal.py catalog --root "D:\Official" --root "E:\Community"
+python .\scripts\msfs_universal.py roots --root "D:\Mods"
 python .\scripts\msfs_universal.py catalog --deep --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py models "C:\Path\To\Aircraft"
@@ -84,6 +88,8 @@ python .\scripts\msfs_universal.py build .\project.json --stage geometry
 ```
 
 `inventory` checks one package; `catalog` lists aircraft; add `--deep` to validate every glTF/GLB and BIN before project creation. `index` resolves package inheritance, `models` prints role candidates, `validate` checks configuration without Blender, and `build` runs a stage. The GUI exposes the same option as **Deep glTF/BIN check**. See [wiki/CLI-Reference.md](wiki/CLI-Reference.md) for the complete reference.
+
+`roots` lists automatically detected roots, added roots and the effective search set. Repeat `--root` to pass multiple directories.
 
 ## 9. When the result is wrong
 

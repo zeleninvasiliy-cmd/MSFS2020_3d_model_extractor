@@ -118,11 +118,54 @@ class DesktopRegressionTests(unittest.TestCase):
 
     def test_deep_catalog_toggle_is_forwarded_to_cli(self):
         self.app.catalog_deep_var.set(True)
-        self.app.settings["msfs_root"] = str(self.folder)
+        first = self.folder / "packages_a"
+        second = self.folder / "packages_b"
+        self.app.settings["msfs_roots"] = [str(first), str(second)]
         with patch.object(self.app, "run_command") as runner:
             self.app.scan_installed()
         command = runner.call_args.args[0]
         self.assertEqual(command[-1], "--deep")
+        self.assertEqual([command[i + 1] for i, value in enumerate(command[:-1])
+                          if value == "--root"], [str(first), str(second)])
+
+    def test_package_roots_migrate_legacy_setting_and_deduplicate(self):
+        self.app.settings["msfs_roots"] = [r"C:\MSFS\Packages", r"C:\msfs\packages"]
+        self.app.settings["msfs_root"] = r"D:\Community"
+
+        roots = self.app.package_roots()
+
+        self.assertEqual(roots, [r"C:\MSFS\Packages", r"D:\Community"])
+
+    def test_saving_package_roots_preserves_legacy_compatibility(self):
+        roots = [str(self.folder / "official"), str(self.folder / "community")]
+        with patch.object(gui, "save_settings") as save:
+            self.app.save_package_roots(roots)
+
+        self.assertEqual(self.app.settings["msfs_roots"], [os.path.abspath(path) for path in roots])
+        self.assertEqual(self.app.settings["msfs_root"], os.path.abspath(roots[0]))
+        save.assert_called_once()
+
+    def test_texture_search_receives_all_package_roots(self):
+        self.app.project_open = True
+        self.app.settings["msfs_roots"] = [r"D:\Official", r"E:\Community"]
+        with patch.object(gui, "TextureTable") as table:
+            self.app.open_texture_table()
+
+        factory = table.call_args.args[1]
+        command = factory("find-textures", "report.json")
+        self.assertEqual([command[i + 1] for i, value in enumerate(command[:-1])
+                          if value == "--root"], [r"D:\Official", r"E:\Community"])
+
+    def test_root_manager_lists_detected_and_warns_on_missing_custom_path(self):
+        with patch.object(self.app, "run_command", return_value=False):
+            self.app.manage_package_roots()
+        self.app.settings["msfs_roots"] = [r"D:\Custom\Packages"]
+        self.app.render_package_roots({"automatic_roots": [r"C:\MSFS\Packages"],
+                                       "missing_additional_roots": [r"D:\Custom\Packages"]})
+
+        self.assertIn(r"C:\MSFS\Packages", self.app.package_roots_auto_list.get(0))
+        self.assertIn("каталог не найден", self.app.package_roots_custom_list.get(0))
+        self.app.package_roots_window.destroy()
 
     def test_normal_decode_is_saved_from_texture_controls(self):
         self.project()

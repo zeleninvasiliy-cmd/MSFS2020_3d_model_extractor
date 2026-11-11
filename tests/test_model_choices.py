@@ -199,6 +199,21 @@ class ModelChoicesTests(unittest.TestCase):
         self.assertEqual(set(data["roles"]), {"exterior", "interior"})
         self.assertEqual(data["aircraft"], "Test_Plane")
 
+    def test_cli_roots_reports_multiple_additional_roots(self):
+        first = self.root / "Packages_A"
+        second = self.root / "Packages_B"
+        missing = self.root / "Packages_Missing"
+        first.mkdir()
+        second.mkdir()
+        result = subprocess.run([sys.executable, str(SCRIPTS / "msfs_universal.py"), "roots",
+                                 "--root", str(first), "--root", str(second), "--root", str(missing)],
+                                capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual([Path(path) for path in data["additional_roots"]],
+                         [first.resolve(), second.resolve(), missing.resolve()])
+        self.assertEqual([Path(path) for path in data["missing_additional_roots"]], [missing.resolve()])
+
 
 if __name__ == "__main__":
     unittest.main()

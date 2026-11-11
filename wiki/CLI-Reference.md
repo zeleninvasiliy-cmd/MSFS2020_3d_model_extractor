@@ -8,7 +8,7 @@ Run the source CLI with:
 python .\scripts\msfs_universal.py <command> [arguments]
 ```
 
-The important commands are `inventory`, `catalog`, `index`, `models`, `find-textures`, `build`, `audit`, `objects`, `validate` and `bones`. Machine-readable commands print JSON to stdout; diagnostics and failures use a non-zero exit code. `inventory --deep` validates one package; `catalog --deep` applies the same validation to every discovered aircraft before project creation. `index` resolves livery inheritance. `build --stage geometry|textures|final|all` writes numbered checkpoints into the project output folder. The installed package accepts the same arguments through `MSFSBuilderCLI.exe`.
+The important commands are `roots`, `inventory`, `catalog`, `index`, `models`, `find-textures`, `build`, `audit`, `objects`, `validate` and `bones`. Machine-readable commands print JSON to stdout; diagnostics and failures use a non-zero exit code. `roots` shows detected and additional package roots. The repeatable `--root` option can combine multiple libraries. `inventory --deep` validates one package; `catalog --deep` applies the same validation to every discovered aircraft before project creation. `index` resolves livery inheritance. `build --stage geometry|textures|final|all` writes numbered checkpoints into the project output folder. The installed package accepts the same arguments through `MSFSBuilderCLI.exe`.
 
 ---
 
@@ -19,6 +19,21 @@ python .\scripts\msfs_universal.py <command> [args]
 ```
 
 ## Команды
+
+### `roots`
+
+Показывает корни Packages, которые программа находит автоматически, дополнительные пути и итоговый набор поиска. Команду использует GUI-окно **«Каталоги Packages...»**.
+
+| Аргумент | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `--root` | путь, **повторяемый** | `[]` | дополнительный каталог Packages, Community, Official или модов |
+
+```powershell
+python .\scripts\msfs_universal.py roots
+python .\scripts\msfs_universal.py roots --root "D:\MSFS\Community" --root "E:\CustomPackages"
+```
+
+Ответ содержит `automatic_roots`, `additional_roots`, `searched_roots` и `missing_additional_roots`. Дополнительные пути хранятся в `%LOCALAPPDATA%\MSFSModelBuilder\settings.json`; редактировать файл вручную не нужно.
 
 ### `inventory`
 
@@ -91,6 +106,7 @@ The default catalog scan is shallow and fast. Add `--deep` when you need an exac
 ```powershell
 python .\scripts\msfs_universal.py catalog --match c152 --match bonanza
 python .\scripts\msfs_universal.py catalog --deep --match c152
+python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Official" --root "E:\MSFS\Community"
 ```
 
 ### `find-textures`

@@ -149,7 +149,8 @@ class BuilderApp(tk.Tk):
         self.exclude_var = tk.StringVar()
         self.extra_texture_var = tk.StringVar()
         self.project_var = tk.StringVar()
-        self.catalog_root_var.set(self.settings.get("msfs_root", ""))
+        roots = self.package_roots()
+        self.catalog_root_var.set(roots[0] if roots else "")
         self.status_var = tk.StringVar(value="Готово. Выберите каталог или выполните сканирование MSFS.")
         self.build_stage_var = tk.StringVar(value="Этап не запущен")
         self.build_detail_var = tk.StringVar(value="Перейдите по шагам и запустите нужный этап сборки.")
@@ -171,6 +172,7 @@ class BuilderApp(tk.Tk):
         toolbar.grid(row=0, column=0, sticky="ew")
         ttk.Button(toolbar, text="Сканировать MSFS", command=self.scan_installed).pack(side="left", padx=3)
         ttk.Button(toolbar, text="Выбрать каталог", command=self.choose_catalog).pack(side="left", padx=3)
+        ttk.Button(toolbar, text="Каталоги Packages...", command=self.manage_package_roots).pack(side="left", padx=3)
         ttk.Label(toolbar, textvariable=self.status_var).pack(side="left", padx=16)
 
         notebook = ttk.Notebook(self)
@@ -245,6 +247,7 @@ class BuilderApp(tk.Tk):
         menu.add_cascade(label="Файлы", menu=files)
         self.file_menu = files
         menu.add_command(label="Пути и настройки...", command=self.configure_paths)
+        menu.add_command(label="Каталоги Packages...", command=self.manage_package_roots)
         menu.add_command(label="Индекс пакетов...", command=self.show_package_index)
         menu.add_command(label="Руководство", command=self.open_help)
         self.config(menu=menu)
@@ -266,9 +269,172 @@ class BuilderApp(tk.Tk):
         directory = self.directory_dialog("Папка Packages MSFS (Official/Community) или каталог модов", self.catalog_root_var.get())
         if directory:
             self.catalog_root_var.set(directory)
-            self.settings["msfs_root"] = directory
+            self._remember_package_root(directory)
         self.choose_blender()
         self._save_user_settings()
+
+    def package_roots(self):
+        """Return configured extra roots, including the legacy single-root setting."""
+        values = self.settings.get("msfs_roots", [])
+        if not isinstance(values, list):
+            values = []
+        legacy = self.settings.get("msfs_root")
+        if legacy:
+            values = [*values, legacy]
+        roots = []
+        seen = set()
+        for value in values:
+            if not isinstance(value, str) or not value.strip():
+                continue
+            path = os.path.abspath(os.path.expandvars(os.path.expanduser(value.strip())))
+            key = os.path.normcase(path)
+            if key not in seen:
+                seen.add(key)
+                roots.append(path)
+        return roots
+
+    @staticmethod
+    def append_package_roots(command, roots):
+        for root in roots:
+            command.extend(["--root", str(root)])
+        return command
+
+    def save_package_roots(self, roots):
+        normalized = []
+        seen = set()
+        for value in roots:
+            raw = os.path.expandvars(os.path.expanduser(str(value).strip()))
+            if not raw:
+                continue
+            path = os.path.abspath(raw)
+            key = os.path.normcase(path)
+            if path and key not in seen:
+                seen.add(key)
+                normalized.append(path)
+        self.settings["msfs_roots"] = normalized
+        # Preserve compatibility with v1 settings and command-line setup.
+        self.settings["msfs_root"] = normalized[0] if normalized else ""
+        if not self.project_open:
+            self.catalog_root_var.set(normalized[0] if normalized else "")
+        self._save_user_settings()
+        if hasattr(self, "package_roots_custom_list") and self.package_roots_window.winfo_exists():
+            self.render_package_roots(getattr(self, "package_roots_data", {}))
+
+    def _remember_package_root(self, path):
+        roots = self.package_roots()
+        candidate = os.path.abspath(os.path.expandvars(os.path.expanduser(str(path).strip())))
+        if candidate and os.path.normcase(candidate) not in {os.path.normcase(item) for item in roots}:
+            roots.append(candidate)
+            self.save_package_roots(roots)
+
+    def manage_package_roots(self):
+        if self.busy:
+            return
+        window = getattr(self, "package_roots_window", None)
+        if window is not None and window.winfo_exists():
+            window.deiconify()
+            window.lift()
+            self.refresh_package_roots()
+            return
+        window = tk.Toplevel(self)
+        window.title("Каталоги MSFS и модов")
+        window.geometry("980x590")
+        window.minsize(760, 460)
+        window.transient(self)
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=1)
+        window.rowconfigure(1, weight=1)
+        self.package_roots_window = window
+        ttk.Label(window, text="Автоматически найденные корни Packages (UserCfg.opt и стандартные расположения):",
+                  wraplength=920, justify="left").grid(row=0, column=0, columnspan=2, sticky="w", padx=10, pady=(10, 4))
+        auto_box = ttk.LabelFrame(window, text="Найдены автоматически", padding=6)
+        auto_box.grid(row=1, column=0, sticky="nsew", padx=(10, 5), pady=5)
+        auto_box.columnconfigure(0, weight=1)
+        auto_box.rowconfigure(0, weight=1)
+        self.package_roots_auto_list = tk.Listbox(auto_box, exportselection=False)
+        self.package_roots_auto_list.grid(row=0, column=0, sticky="nsew")
+        auto_scroll = ttk.Scrollbar(auto_box, command=self.package_roots_auto_list.yview)
+        auto_scroll.grid(row=0, column=1, sticky="ns")
+        self.package_roots_auto_list.configure(yscrollcommand=auto_scroll.set)
+        custom_box = ttk.LabelFrame(window, text="Добавлены вручную", padding=6)
+        custom_box.grid(row=1, column=1, sticky="nsew", padx=(5, 10), pady=5)
+        custom_box.columnconfigure(0, weight=1)
+        custom_box.rowconfigure(0, weight=1)
+        self.package_roots_custom_list = tk.Listbox(custom_box, exportselection=False)
+        self.package_roots_custom_list.grid(row=0, column=0, sticky="nsew")
+        custom_scroll = ttk.Scrollbar(custom_box, command=self.package_roots_custom_list.yview)
+        custom_scroll.grid(row=0, column=1, sticky="ns")
+        self.package_roots_custom_list.configure(yscrollcommand=custom_scroll.set)
+        controls = ttk.Frame(window, padding=(10, 4))
+        controls.grid(row=2, column=0, columnspan=2, sticky="ew")
+        ttk.Button(controls, text="Добавить каталог...", command=self.add_package_root).pack(side="left")
+        ttk.Button(controls, text="Убрать выбранный", command=self.remove_package_root).pack(side="left", padx=6)
+        ttk.Button(controls, text="Обновить список", command=self.refresh_package_roots).pack(side="left", padx=6)
+        ttk.Button(controls, text="Закрыть", command=window.destroy).pack(side="right")
+        self.package_roots_data = {}
+        self.render_package_roots({})
+        self.refresh_package_roots()
+
+    def render_package_roots(self, data):
+        if not hasattr(self, "package_roots_auto_list") or not self.package_roots_window.winfo_exists():
+            return
+        self.package_roots_data = data or {}
+        automatic = self.package_roots_data.get("automatic_roots", [])
+        custom = self.package_roots()
+        custom_keys = {os.path.normcase(os.path.abspath(path)) for path in custom}
+        automatic = [path for path in automatic if os.path.normcase(os.path.abspath(path)) not in custom_keys]
+        self.package_roots_auto_list.delete(0, "end")
+        self.package_roots_custom_list.delete(0, "end")
+        for path in automatic:
+            self.package_roots_auto_list.insert("end", path)
+        missing = {os.path.normcase(os.path.abspath(path)) for path in data.get("missing_additional_roots", [])}
+        for path in custom:
+            label = f"⚠ {path} — каталог не найден" if os.path.normcase(os.path.abspath(path)) in missing else path
+            self.package_roots_custom_list.insert("end", label)
+        if not automatic:
+            self.package_roots_auto_list.insert("end", "MSFS не обнаружен автоматически")
+        if not custom:
+            self.package_roots_custom_list.insert("end", "Дополнительные каталоги не добавлены")
+
+    def refresh_package_roots(self):
+        if not hasattr(self, "package_roots_window") or not self.package_roots_window.winfo_exists():
+            return
+        command = self.append_package_roots(cli_command("roots"), self.package_roots())
+
+        def loaded(code, output):
+            if not self.package_roots_window.winfo_exists():
+                return
+            if code:
+                messagebox.showerror("Каталоги Packages", output[-1200:], parent=self.package_roots_window)
+                return
+            try:
+                data = json.loads(output)
+            except json.JSONDecodeError:
+                messagebox.showerror("Каталоги Packages", "Не удалось разобрать ответ roots.", parent=self.package_roots_window)
+                return
+            self.render_package_roots(data)
+
+        self.run_command(command, loaded)
+
+    def add_package_root(self):
+        path = self.directory_dialog("Добавить папку Packages, Community или каталог пакета", self.catalog_root_var.get())
+        if path:
+            roots = self.package_roots()
+            if os.path.normcase(os.path.abspath(path)) not in {os.path.normcase(item) for item in roots}:
+                roots.append(path)
+                self.save_package_roots(roots)
+                self.catalog_root_var.set(path)
+            self.refresh_package_roots()
+
+    def remove_package_root(self):
+        selection = self.package_roots_custom_list.curselection()
+        roots = self.package_roots()
+        index = selection[0] if selection else None
+        if index is None or index >= len(roots):
+            return
+        roots.pop(index)
+        self.save_package_roots(roots)
+        self.refresh_package_roots()
 
     def _save_user_settings(self):
         self.settings["blender"] = self.blender_var.get().strip()
@@ -714,7 +880,8 @@ class BuilderApp(tk.Tk):
     def open_texture_table(self):
         if self.busy or not self.project_open:
             return
-        TextureTable(self, cli_command)
+        command_factory = lambda *parts: self.append_package_roots(cli_command(*parts), self.package_roots())
+        TextureTable(self, command_factory)
 
     def scan_blend_objects(self, blend, silent=False):
         blender = self.blender_var.get().strip()
@@ -821,8 +988,7 @@ class BuilderApp(tk.Tk):
         path = self.directory_dialog("Выберите каталог MSFS или каталог с самолётами", self.catalog_root_var.get())
         if path:
             self.catalog_root_var.set(path)
-            self.settings["msfs_root"] = path
-            self._save_user_settings()
+            self._remember_package_root(path)
             self.scan_custom()
 
     def choose_output(self):
@@ -851,9 +1017,7 @@ class BuilderApp(tk.Tk):
             return
         self._show_catalog_step()
         command = cli_command("catalog")
-        root = self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
         if self.catalog_deep_var.get():
             command.append("--deep")
         self.run_command(command, self.on_catalog_result)
@@ -865,8 +1029,10 @@ class BuilderApp(tk.Tk):
         if not root:
             messagebox.showwarning("Нет каталога", "Сначала выберите каталог MSFS или каталог самолёта.")
             return
-        # A chosen Packages/Community root may contain many packages.
-        command = cli_command("catalog", "--root", root)
+        # A chosen Packages/Community root may contain many packages. All saved
+        # roots are scanned together so cross-package links can resolve.
+        self._remember_package_root(root)
+        command = self.append_package_roots(cli_command("catalog"), self.package_roots())
         if self.catalog_deep_var.get():
             command.append("--deep")
         self.run_command(command, self.on_catalog_result)
@@ -880,7 +1046,7 @@ class BuilderApp(tk.Tk):
         self._set_busy_widgets(True)
         self.append_log("$ " + " ".join(f'\"{part}\"' if " " in part else part for part in command))
         self.status_var.set("Выполняется...")
-        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "models", "validate", "bones",
+        machine_readable = any(part in {"catalog", "inventory", "objects", "index", "roots", "models", "validate", "bones",
                                         "find-textures"} for part in command)
 
         def worker():
@@ -1041,9 +1207,7 @@ class BuilderApp(tk.Tk):
         if self.busy:
             return
         command = cli_command("index")
-        root = self.catalog_root_var.get().strip() or self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
         name = self.index_filter_var.get().strip()
         if name:
             command += ["--aircraft", name]
@@ -1104,9 +1268,7 @@ class BuilderApp(tk.Tk):
             return
         self._build_model_window()
         command = cli_command("models", path)
-        root = self.catalog_root_var.get().strip() or self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
 
         def loaded(code, output):
             if not self.model_window.winfo_exists():
@@ -1530,9 +1692,7 @@ class BuilderApp(tk.Tk):
             messagebox.showinfo("Диагностика", "Сначала выберите самолёт в списке.")
             return
         command = cli_command("inventory", path, "--deep")
-        root = self.catalog_root_var.get().strip() or self.settings.get("msfs_root")
-        if root:
-            command += ["--root", root]
+        self.append_package_roots(command, self.package_roots())
 
         def diagnosed(code, output):
             if code:
@@ -1964,7 +2124,8 @@ class BuilderApp(tk.Tk):
             self._set_project_state(True)
             self.project_dirty = False
             self.catalog_root_var.set(data.get("source", ""))
-            self.run_command(cli_command("inventory", str(source)), self.on_open_project_inventory)
+            command = self.append_package_roots(cli_command("inventory", str(source)), self.package_roots())
+            self.run_command(command, self.on_open_project_inventory)
             self.status_var.set("Проект загружен. Обновляю список самолётов...")
         except Exception as exc:
             self._set_project_state(False)
@@ -2035,7 +2196,8 @@ class BuilderApp(tk.Tk):
             self.project_dirty = True
             if data[0].get("needs_model_selection"):
                 self.choose_models()
-        self.run_command(cli_command("inventory", folder), relocated)
+        command = self.append_package_roots(cli_command("inventory", folder), self.package_roots())
+        self.run_command(command, relocated)
 
     def _set_project_state(self, enabled):
         self.project_open = bool(enabled)

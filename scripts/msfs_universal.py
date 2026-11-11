@@ -760,6 +760,8 @@ def main():
             stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
+    roots_command = sub.add_parser("roots", help="показать автоматически найденные и дополнительные корни Packages")
+    roots_command.add_argument("--root", type=Path, action="append", default=[])
     scan = sub.add_parser("inventory", help="диагностика ресурсов пакета до сборки")
     scan.add_argument("source", type=Path)
     scan.add_argument("--deep", action="store_true", help="также разобрать glTF: BIN-буферы и неподдерживаемые возможности")
@@ -796,6 +798,16 @@ def main():
     bones.add_argument("gltf", type=Path)
     args = parser.parse_args()
     try:
+        if args.command == "roots":
+            additional = [path.expanduser().resolve() for path in args.root]
+            automatic = installed_package_roots()
+            searched = installed_package_roots(additional)
+            print(json.dumps({"automatic_roots": list(map(str, automatic)),
+                              "additional_roots": list(map(str, additional)),
+                              "searched_roots": list(map(str, searched)),
+                              "missing_additional_roots": [str(path) for path in additional if not path.is_dir()]},
+                             ensure_ascii=False, indent=2))
+            return 0
         if args.command == "inventory":
             roots = installed_package_roots(args.root) if (args.deep or args.root) else ()
             index = build_index(args.root, near=args.source.resolve())

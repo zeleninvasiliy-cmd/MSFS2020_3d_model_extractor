@@ -6,17 +6,21 @@ The GUI is a thin, responsive wrapper around the CLI. **Files** contains New, Op
 
 The project wizard selects an aircraft and general settings. The Geometry tab selects the build mode, object composition and editing rules; the Textures tab selects a geometry checkpoint, map replacements and texture search. The Journal tab contains detailed logs. After a successful stage, **Open in Blender** and **Show in Explorer** open the selected result. Back/Next buttons move between steps only when the minimum required fields are present.
 
+The GUI uses automatically detected MSFS roots and multiple additional roots. **Package folders** lists automatic roots separately from user-added roots, marks missing custom paths, and lets users add or remove roots without editing JSON. Catalog, index, package diagnosis and model-selection commands receive the same configured root list.
+
 ---
 
 Оконная оболочка `msfs_builder_gui.py` — тонкая обёртка над CLI. Blender запускается отдельным процессом, все долгие операции выполняются в фоне, интерфейс остаётся отзывчивым.
 
-Окно 1120×760, минимум 920×640. Заголовок содержит версию. Сверху — «Сканировать MSFS», «Выбрать каталог» и строка состояния. Снизу — «← Назад», подсказка и «Далее →».
+Окно 1120×760, минимум 920×640. Заголовок содержит версию. Сверху — «Сканировать MSFS», «Выбрать каталог», «Каталоги Packages…» и строка состояния. Снизу — «← Назад», подсказка и «Далее →».
 
 ## Меню
 
 **Файлы:** Новый проект · Открыть проект… · Сохранить (Ctrl+S) · Сохранить как… · Закрыть проект · Удалить проект… · Выход.
 
-Отдельно: **Пути и настройки…** (каталог MSFS и Blender), **Индекс пакетов…** (состав индекса, состояние баз, фильтр по имени, перестроение) и **Руководство**.
+Отдельно: **Пути и настройки…** (Blender и добавление каталога), **Каталоги Packages…** (автоматические корни MSFS, несколько вручную добавленных корней и управление ими), **Индекс пакетов…** (состав индекса, состояние баз, фильтр по имени, перестроение) и **Руководство**.
+
+Автоматически найденные пути показаны отдельно от вручную добавленных. Можно добавить несколько библиотек или мод-каталогов; отсутствующий вручную добавленный путь отмечается и может быть удалён. Один и тот же список используется каталогом, индексом, диагностикой пакета и мастером моделей.
 
 Пункты сохранения, закрытия и удаления активны только при открытом проекте.
 

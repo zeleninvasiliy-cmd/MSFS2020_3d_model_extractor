@@ -21,6 +21,8 @@ python .\msfs_builder_gui.py
 4. Если программа находит несколько вариантов одного имени, выберите нужную запись и ливрею.
 5. На вкладке общих настроек укажите Blender и папку результатов. Работа вне открытого проекта недоступна.
 
+Корни MSFS программа ищет по `UserCfg.opt` и стандартным расположениям. Если самолёт или его база лежат в другой библиотеке, нажмите **Каталоги Packages...** и добавьте нужные папки. Окно показывает найденные автоматически корни отдельно от добавленных вручную и помечает пути, которых больше нет. Кнопка **Выбрать каталог** тоже добавляет выбранный путь и начинает сканирование.
+
 Проекты сохраняют настройки, выбранные модели, правила, замены карт и историю вариантов `.blend`. Исходная папка самолёта не изменяется.
 
 ## 3. Проверка пакета
@@ -76,6 +78,8 @@ python .\msfs_builder_gui.py
 ```powershell
 python .\scripts\msfs_universal.py inventory "C:\Path\To\Aircraft" --deep
 python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Packages"
+python .\scripts\msfs_universal.py catalog --root "D:\Official" --root "E:\Community"
+python .\scripts\msfs_universal.py roots --root "D:\Mods"
 python .\scripts\msfs_universal.py catalog --deep --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py models "C:\Path\To\Aircraft"
@@ -84,6 +88,8 @@ python .\scripts\msfs_universal.py build .\project.json --stage geometry
 ```
 
 `inventory` проверяет один пакет; `catalog` строит список самолётов, а флаг `--deep` дополнительно проверяет каждый glTF/GLB и BIN до создания проекта. `index` разрешает наследование пакетов, `models` печатает кандидатов ролей, `validate` проверяет конфигурацию без Blender, а `build` запускает этап. В GUI этот же режим называется **Глубокая проверка glTF/BIN**. Полный справочник находится в [wiki/CLI-Reference.md](wiki/CLI-Reference.md).
+
+`roots` показывает автоматические, дополнительные и фактически используемые каталоги. Параметр `--root` можно повторять для нескольких путей.
 
 ## 9. Если результат неверен
 

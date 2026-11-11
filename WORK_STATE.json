@@ -1,23 +1,23 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M10-texture-fallback-source-audit",
+  "last_completed_stage": "M11-GUI-package-root-visibility",
   "active_stage": "M11-GUI-package-root-visibility",
-  "working_branch": "codex/texture-fallback-audit",
-  "last_commit": "f445c20",
+  "working_branch": "codex/gui-package-roots",
+  "last_commit": "pending-M11-checkpoint",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "174 passed",
+    "unittest": "179 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "git_diff_check": "passed",
-    "deep_catalog": "233 aircraft; 226 geometry-buildable; 48 partial; 526 packages indexed; 0 index errors",
-    "fallback_audit": "60 unresolved (51 absent target aircraft packages, 9 generic missing folders); 0 target aircraft folders missed by index",
-    "real_gui_diagnosis": "C172 AS1000 names missing Asobo_C172SP_Classic package and explains optional fallback does not block geometry",
+    "cli_roots": "passed; automatic/additional/effective/missing paths are reported",
+    "real_multi_root_index": "2 Packages roots; 526 packages, 233 aircraft names, 0 errors",
+    "root_propagation": "catalog/index/inventory/models/find-textures all receive saved roots",
     "release_build": "not run; feature branch is unmerged and VERSION remains 1.2.1",
-    "release_workflow": "statically reviewed; no actionlint/YAML parser installed; server-side CI pending"
+    "release_workflow": "static review only; GitHub Actions CI still required"
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -67,14 +67,17 @@
     "texture_fallback_false_negative_index_count": 0,
     "fallback_on_unresolved_base_aircraft": 47,
     "fallback_on_resolved_base_aircraft": 13,
-    "unit_tests": 174
+    "unit_tests": 178,
+    "multi_root_index_packages": 526,
+    "multi_root_index_aircraft_names": 233,
+    "multi_root_index_errors": 0
   },
-  "current_blocker": "GitHub integration still returns HTTP 403 when creating PRs; pushed feature branches are preserved, but merge and release are pending. Release workflow requires CI on GitHub Actions.",
-  "next_step": "Push M10 then review current GUI root settings, package discovery, and diagnostics; design the smallest useful root visibility/management change and validate with synthetic and installed catalogs.",
-  "next_stage": "M11-GUI-package-root-visibility",
+  "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
+  "next_step": "Commit and push M11. Then branch M12 off this checkpoint and inspect unresolved base_container/model links against alternate package manifests and resource ownership; modify resolver only where a source exists and can be proven.",
+  "next_stage": "M12-audit-unresolved-aircraft-model-ownership",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T03:28:00Z"
+  "updated_utc": "2026-11-11T03:27:00Z"
 }
