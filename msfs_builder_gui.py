@@ -129,6 +129,7 @@ class BuilderApp(tk.Tk):
     def _build_vars(self):
         self.source_var = tk.StringVar()
         self.catalog_root_var = tk.StringVar()
+        self.catalog_deep_var = tk.BooleanVar(value=False)
         self.aircraft_filter_var = tk.StringVar(value=AIRCRAFT_FILTERS[0])
         self.aircraft_var = tk.StringVar()
         self.model_var = tk.StringVar()
@@ -301,6 +302,8 @@ class BuilderApp(tk.Tk):
         ttk.Entry(row, textvariable=self.catalog_root_var).grid(row=0, column=1, sticky="ew", padx=6)
         ttk.Button(row, text="Обзор", command=self.choose_catalog).grid(row=0, column=2)
         ttk.Button(row, text="Сканировать", command=self.scan_custom).grid(row=0, column=3, padx=(6, 0))
+        ttk.Checkbutton(row, text="Глубокая проверка glTF/BIN", variable=self.catalog_deep_var).grid(
+            row=0, column=4, padx=(10, 0), sticky="w")
         list_header = ttk.Frame(tab)
         list_header.grid(row=1, column=0, sticky="ew", pady=(12, 4))
         list_header.columnconfigure(1, weight=1)
@@ -813,6 +816,8 @@ class BuilderApp(tk.Tk):
         root = self.settings.get("msfs_root")
         if root:
             command += ["--root", root]
+        if self.catalog_deep_var.get():
+            command.append("--deep")
         self.run_command(command, self.on_catalog_result)
 
     def scan_custom(self):
@@ -823,7 +828,10 @@ class BuilderApp(tk.Tk):
             messagebox.showwarning("Нет каталога", "Сначала выберите каталог MSFS или каталог самолёта.")
             return
         # A chosen Packages/Community root may contain many packages.
-        self.run_command(cli_command("catalog", "--root", root), self.on_inventory_result)
+        command = cli_command("catalog", "--root", root)
+        if self.catalog_deep_var.get():
+            command.append("--deep")
+        self.run_command(command, self.on_inventory_result)
 
     def run_command(self, command, callback=None):
         if self.busy:

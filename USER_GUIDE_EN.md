@@ -76,13 +76,14 @@ If a map is missing, search installed packages first. DDS normal maps may requir
 ```powershell
 python .\scripts\msfs_universal.py inventory "C:\Path\To\Aircraft" --deep
 python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Packages"
+python .\scripts\msfs_universal.py catalog --deep --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py models "C:\Path\To\Aircraft"
 python .\scripts\msfs_universal.py validate .\project.json
 python .\scripts\msfs_universal.py build .\project.json --stage geometry
 ```
 
-`inventory` checks source files, `catalog` lists aircraft, `index` resolves package inheritance, `models` prints role candidates, `validate` checks configuration without Blender, and `build` runs a stage. See [wiki/CLI-Reference.md](wiki/CLI-Reference.md) for the complete reference.
+`inventory` checks one package; `catalog` lists aircraft; add `--deep` to validate every glTF/GLB and BIN before project creation. `index` resolves package inheritance, `models` prints role candidates, `validate` checks configuration without Blender, and `build` runs a stage. The GUI exposes the same option as **Deep glTF/BIN check**. See [wiki/CLI-Reference.md](wiki/CLI-Reference.md) for the complete reference.
 
 ## 9. When the result is wrong
 

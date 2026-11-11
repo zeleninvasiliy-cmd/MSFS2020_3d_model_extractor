@@ -76,6 +76,14 @@ class DesktopRegressionTests(unittest.TestCase):
             self.assertFalse(self.app.run_command(["should-never-run"]))
         self.assertIsNone(self.app.process)
 
+    def test_deep_catalog_toggle_is_forwarded_to_cli(self):
+        self.app.catalog_deep_var.set(True)
+        self.app.settings["msfs_root"] = str(self.folder)
+        with patch.object(self.app, "run_command") as runner:
+            self.app.scan_installed()
+        command = runner.call_args.args[0]
+        self.assertEqual(command[-1], "--deep")
+
     def test_report_object_catalog_survives_exclusions(self):
         self.app._populate_catalog([
             {"name": "Wheel_Left", "type": "MESH", "collections": ["05_LANDING_GEAR"], "included": False},

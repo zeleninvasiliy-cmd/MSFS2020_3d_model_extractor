@@ -76,13 +76,14 @@ python .\msfs_builder_gui.py
 ```powershell
 python .\scripts\msfs_universal.py inventory "C:\Path\To\Aircraft" --deep
 python .\scripts\msfs_universal.py catalog --root "D:\MSFS\Packages"
+python .\scripts\msfs_universal.py catalog --deep --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py index --no-cache --root "D:\MSFS\Packages"
 python .\scripts\msfs_universal.py models "C:\Path\To\Aircraft"
 python .\scripts\msfs_universal.py validate .\project.json
 python .\scripts\msfs_universal.py build .\project.json --stage geometry
 ```
 
-`inventory` проверяет исходники, `catalog` строит список самолётов, `index` разрешает наследование пакетов, `models` печатает кандидатов ролей, `validate` проверяет конфигурацию без Blender, а `build` запускает этап. Полный справочник находится в [wiki/CLI-Reference.md](wiki/CLI-Reference.md).
+`inventory` проверяет один пакет; `catalog` строит список самолётов, а флаг `--deep` дополнительно проверяет каждый glTF/GLB и BIN до создания проекта. `index` разрешает наследование пакетов, `models` печатает кандидатов ролей, `validate` проверяет конфигурацию без Blender, а `build` запускает этап. В GUI этот же режим называется **Глубокая проверка glTF/BIN**. Полный справочник находится в [wiki/CLI-Reference.md](wiki/CLI-Reference.md).
 
 ## 9. Если результат неверен
 
