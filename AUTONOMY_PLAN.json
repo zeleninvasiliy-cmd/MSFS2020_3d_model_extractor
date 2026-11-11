@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/one-step-base-root-recovery",
+  "working_branch": "codex/full-live-plan-audit",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -344,18 +344,31 @@
       ],
       "acceptance": "GUI tests cover cancellation, deduplicated root, saved new root, scan invocation and rescan failure; existing multi-root manager remains unchanged.",
       "result": "The contextual base-recovery action now opens a Packages/Community directory picker, stores the selected root through the existing settings layer, and rescans the aircraft catalog automatically. When used from an open project it reruns inventory for the project source. Cancel leaves settings unchanged; duplicate roots are not saved again. Updated bilingual guides. 202 tests, GUI self-test, compileall and diff check pass.",
-      "next": "M27 compatibility baseline: run audit-plans and current deep catalog on the live install; list each remaining non-buildable record by stable reason code, identify if any are false blockers, and select another useful real-world batch."
+      "next": "M27 completed: 226/226 default geometry plans and 230/230 plans with the supplied An-2 root validated; zero index errors or rejected plans. Next, test the multi-variant A320neo package whose model.cfg is missing."
     },
     {
       "id": "M27",
       "name": "Full live catalog build-plan remeasurement",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "run the user-facing audit-plans command over every installed Package root",
         "reconcile catalog statuses and plan failures with the current compatibility snapshot",
         "identify actionable false blockers or exact missing-source reasons"
       ],
-      "acceptance": "Every geometry-buildable row receives a plan outcome; all rejected and non-buildable rows have stable reason codes and a documented next action."
+      "acceptance": "Every geometry-buildable row receives a plan outcome; all rejected and non-buildable rows have stable reason codes and a documented next action.",
+      "result": "Normal CLI `audit-plans` and `catalog --deep` on installed roots: 233 catalog entries, 226 geometry-buildable, 226 plans validated, 0 rejected, 0 index errors, complete scope. With the supplied Antonov-2 package root: 237 entries, 230 geometry-buildable, 230 plans validated, 0 rejected, 0 index errors; all four An-2 variants were OK/buildable. The default catalog has 48 partial, 6 common-resource-only, 2 invalid model.cfg, 2 missing model.cfg, and 1 unresolved base alias. Path-free report: compatibility/live_plan_audit_m27.json. Plan validation is not an import or visual guarantee.",
+      "next": "M28 compatibility: exercise the 15-variant Microsoft A320neo package with missing model.cfg through the explicit GUI model chooser, select candidates with provenance, and run a real geometry build/audit if the sources are complete."
+    },
+    {
+      "id": "M28",
+      "name": "Multi-variant A320neo manual source selection",
+      "status": "in_progress",
+      "deliverables": [
+        "inspect candidates for the missing-model.cfg A320neo package through the models command",
+        "explicitly choose exterior/interior roles and variants via the GUI chooser path",
+        "build and audit if candidate source files are complete; classify missing dependencies precisely"
+      ],
+      "acceptance": "No role or variant is silently inferred; each selected source has provenance and available BIN; the build result is recorded without rendering or altering the package."
     }
   ],
   "rolling_roadmap": [
@@ -514,5 +527,5 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M19-GUI-checkpoint-audit-and-review-hints"
   },
-  "next_stage": "M27-full-live-catalog-build-plan-remeasurement"
+  "next_stage": "M28-multivariant-a320neo-manual-selection"
 }
