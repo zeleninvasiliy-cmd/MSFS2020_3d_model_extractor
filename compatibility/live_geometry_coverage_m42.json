@@ -1,0 +1,1236 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-11-11T08:22:00Z",
+  "catalog_mode": "deep",
+  "catalog_visible": 233,
+  "geometry_buildable": 226,
+  "unique_buildable_records_with_import_report": 226,
+  "uncovered_geometry_buildable": [],
+  "uncovered_count": 0,
+  "duplicate_report_entries": 21,
+  "duplicate_aircraft_names": {
+    "Asobo_208B_GRAND_CARAVAN_EX": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_Baron_G58_Livery_01": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_CJ4": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_FA18E": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_KingAir350": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_LS8": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_Pipistrel_Livery_01": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_TBM930": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Microsoft_Wright_Flyer": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "Asobo_SR22_Livery_01": [
+      "headless_broad_import_sample_m29.json",
+      "headless_texture_stage_sample_m31.json"
+    ],
+    "microsoft_a310_300": [
+      "headless_import_sample.json",
+      "headless_model_choice_sample_m21.json"
+    ],
+    "Asobo_C152_Livery_Kenmore": [
+      "headless_live_geometry_sample_m36.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_DA40_NG_Livery_Xbox_Aviators": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_DA40_TDI_LiveryAviators": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_DA62_Livery_Kenmore": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_DR400_Livery_Kenmore": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_DV20_LiveryAviators": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_E330_Livery_MicrosoftWindows11": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_E330_Livery_Xbox_Aviators": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_FA18E_LiveryAviators": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ],
+    "Asobo_FlightDesignCT_Livery_Kenmore": [
+      "headless_live_geometry_sample_m37.json",
+      "headless_texture_sample_m38.json"
+    ]
+  },
+  "status_codes": {
+    "OK": 174,
+    "SUPPORTED_PARTIAL": 48,
+    "INVALID_MODEL_CFG": 2,
+    "MISSING_MODEL_CFG": 2
+  },
+  "coverage": [
+    {
+      "aircraft": "AS-33",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_103Solo_SmallWheels_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_208B_GRAND_CARAVAN_EX",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_208B_GRAND_CARAVAN_EX_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_208B_GRAND_CARAVAN_EX_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_208B_GRAND_CARAVAN_EX_Livery_Emerald",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_208B_GRAND_CARAVAN_EX_Livery_Global",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_208B_GRAND_CARAVAN_EX_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_208B_GRAND_CARAVAN_EX_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_Livery_Global",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_Livery_Orbit",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_Livery_Pacifica",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_Livery_S7",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_Livery_WorldTravel",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_A320_NEO_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B747_8i",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B747_8i_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B747_8i_Livery_Emerald",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B747_8i_Livery_Orbit",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B747_8i_Livery_Pacifica",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B747_8i_Livery_WorldTravel",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B747_8i_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B787_10_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B787_10_Livery_KLM",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B787_10_Livery_Orbit",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B787_10_Livery_Pacifica",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B787_10_Livery_WorldTravel",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_B787_10_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Baron_G58_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Baron_G58_Livery_01",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_Baron_G58_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Baron_G58_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Bonanza_G36",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Bonanza_G36_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Bonanza_G36_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Bonanza_G36_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Bonanza_G36_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152_Aerobat_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152_Aerobat_Livery_01",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152_Aerobat_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152_Aerobat_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C152_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_C152_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_AS1000_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_AS1000_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_AS1000_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_AS1000_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_Classic_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_Classic_Livery_01",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_Classic_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172SP_Classic_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172sp_AS1000",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172sp_AS1000_Floaters",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172sp_AS1000_Skis",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_C172sp_AS1000_TowPlane",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_CJ4",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_CJ4_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_CJ4_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_CJ4_Livery_Global",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_CJ4_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_CJ4_Livery_Orbit",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_CJ4_Livery_Pacifica",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_CJ4_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Cabri_G2",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Cap10C",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Cap10C_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Cap10C_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Cap10C_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Cap10C_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA40_NG",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA40_NG_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA40_NG_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA40_NG_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_DA40_TDI_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_DA40_TDI_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA40_TDI_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA62",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA62_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA62_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DA62_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_DA62_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DG1001E_Neo",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DG1001E_Neo_Livery_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DG1001E_Neo_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DR400",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DR400_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DR400_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DR400_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_DR400_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DV20_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_DV20_Livery_01",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DV20_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_DV20_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_E330",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_E330_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_E330_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_E330_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_E330_Livery_MicrosoftWindows11",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_E330_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_FA18E",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_FA18E_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_FA18E_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_FlightDesignCT_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Generic_Airliner_QuadEngines",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Generic_Airliner_TwinEngines",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Generic_Piston_MultiEngines",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Generic_Piston_SingleEngine",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Generic_PrivateJet",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Generic_Turbo_MultiEngines",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Generic_Turbo_SingleEngine",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Icon",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Icon_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Icon_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Icon_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Icon_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_KingAir350_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Emerald",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Global",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Orbit",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Pacifica",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_KingAir350_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_LS8",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_LS8_Livery_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_LS8_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Longitude_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_01",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Global",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Orbit",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Pacifica",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Longitude_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_NXCub",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_NXCub_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_NXCub_Livery_XBox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pipistrel_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pipistrel_Livery_01",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_Pipistrel_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pipistrel_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_S1_Reno",
+      "reason_code": "INVALID_MODEL_CFG",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_S1_Reno_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_S1_Reno_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_S2_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_S2_Rufus",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Pitts_S2_Sam",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_SR22_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_SR22_Livery_01",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_SR22_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_SR22_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_Cub",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_Cub_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_Cub_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_Cub_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_Cub_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_ShockUltra_LiveryAviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_ShockUltra_Livery_Kenmore",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_Savage_ShockUltra_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_TBM930",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "Asobo_TBM930_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_TBM930_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_TBM930_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_TBM930_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_VL3",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_VL3_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_VL3_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_VL3_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_VL3_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_XCub",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_XCub_Floats",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_XCub_LiveryAviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_XCub_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_XCub_Livery_Kenmore",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_XCub_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Asobo_XCub_Skis",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "BlackbirdSims_DHC2_Floats",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "BlackbirdSims_DHC2_Wheels",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Hughes_H4_Hercules",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Floats",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels_Livery_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_G950_Wheels_Livery_Xbox_Aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Skis",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Wheels",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Wheels_Livery_01",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Pilatus_PC6_Gauge_Wheels_Livery_02",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Spirit_of_StLouis",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Volocity",
+      "reason_code": "INVALID_MODEL_CFG",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Volocity_Livery_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Volocity_Livery_Xbox_Aviators",
+      "reason_code": "SUPPORTED_PARTIAL",
+      "report_count": 1
+    },
+    {
+      "aircraft": "Microsoft_Wright_Flyer",
+      "reason_code": "OK",
+      "report_count": 2
+    },
+    {
+      "aircraft": "cowansim-r22",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "cowansim-r66",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "digital_aeronautics_mi_2",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-PLmetal",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-aviators",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-aviatorsXBOX",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-bluestripe",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-dcdirect",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-emerald",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-oledusty",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-redyellow",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "douglas-dc3-livery-worldtravel",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "hcg-cabri-g2",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "hcg_cabri_utility",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "microsoft-aircraft-a320neo",
+      "reason_code": "MISSING_MODEL_CFG",
+      "report_count": 1
+    },
+    {
+      "aircraft": "microsoft-aircraft-bell407",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "microsoft-aircraft-g-21",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "microsoft-aircraft-jn4",
+      "reason_code": "OK",
+      "report_count": 1
+    },
+    {
+      "aircraft": "microsoft_a310_300",
+      "reason_code": "MISSING_MODEL_CFG",
+      "report_count": 2
+    }
+  ],
+  "personal_paths_included": false
+}

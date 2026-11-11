@@ -25,7 +25,7 @@
     "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release.",
     "cycle": "Alternate compatibility breadth and user workflow/GUI work; after each stage run focused and independent architecture reviews, update the roadmap, and continue with the next stage without waiting for a release milestone."
   },
-  "working_branch": "codex/live-geometry-sample-eighth-tranche",
+  "working_branch": "codex/live-catalog-reconciliation",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
     "tag_patch_releases_after_verified_changes": true,
@@ -553,6 +553,20 @@
       "acceptance": "All selected unreported records build one checkpoint and pass Blender audit; temporary outputs are removed and no aircraft sources are modified.",
       "result": "20 previously unreported records across Savage Shock Ultra, SR22, TBM 930, VL3, XCub and Douglas DC-3 created one checkpoint and passed Blender 5.2 audit. Three SR22 and one Savage Shock Ultra packages were partial and used explicit GUI model selection. DC-3 models with roughly 1,950–1,985 mesh objects also passed. Report: compatibility/headless_live_geometry_sample_m41.json.",
       "next": "M42: reconcile the reports against the live catalog, audit duplicate/near-duplicate records and remaining geometry-buildable entries, then select an appropriate texture and UI task based on measured gaps."
+    },
+    {
+      "id": "M42",
+      "name": "Live catalog reconciliation and final buildable tranche",
+      "status": "complete",
+      "deliverables": [
+        "compare exact aircraft keys in every report with live deep catalog",
+        "find and build every remaining buildable record",
+        "correct cumulative unique coverage count",
+        "move next work to blocked/unresolved source categories"
+      ],
+      "acceptance": "Deep catalog comparison returns zero uncovered geometry-buildable aircraft records; report records each final import; no temporary outputs or personal paths.",
+      "result": "Exact report-key reconciliation found 214 unique records covered before this tranche (the previous cumulative counter overstated by two duplicates). The exact 12 remaining rows were six DC-3 liveries, five Pilatus PC-6 configurations and partial Volocity. All 12 built one checkpoint and passed Blender 5.2 audit. After adding this report, the deep catalog has 226 geometry-buildable records, all 226 covered, with zero remaining buildable names uncovered. Duplicate report rows are excluded from unique coverage totals. Reports: compatibility/headless_live_geometry_sample_m42.json and compatibility/live_geometry_coverage_m42.json.",
+      "next": "M43: audit every non-buildable catalog row and determine which are fixable resolver/model-selection gaps versus shared-resource-only packages or absent/invalid source data; attempt only evidence-backed fixes."
     }
   ],
   "rolling_roadmap": [
@@ -711,6 +725,6 @@
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
     "next_stage": "M34-live-geometry-sample-third-tranche"
   },
-  "next_stage": "M42-live-catalog-reconciliation",
-  "updated_utc": "2026-11-11T08:05:00Z"
+  "next_stage": "M43-nonbuildable-catalog-audit",
+  "updated_utc": "2026-11-11T08:22:00Z"
 }

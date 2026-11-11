@@ -1,9 +1,9 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "M41-live-geometry-sample-eighth-tranche",
-  "active_stage": "M42-live-catalog-reconciliation",
-  "working_branch": "codex/live-geometry-sample-eighth-tranche",
-  "last_commit": "e84f7b9",
+  "last_completed_stage": "M42-live-catalog-reconciliation",
+  "active_stage": "M43-nonbuildable-catalog-audit",
+  "working_branch": "codex/live-catalog-reconciliation",
+  "last_commit": "7ed92f1",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -66,7 +66,11 @@
     "m40_gui_selection": "Filtering preserves the selected entry if it remains visible; otherwise clears stale selection and disables Next. Collapsed groups and both transitions covered in test_desktop.",
     "m40_regression": "205 unit tests, GUI self-test, compileall and diff check passed.",
     "m41_geometry_sample": "20/20 previously unreported records built one checkpoint and passed Blender 5.2 audit; includes SR22/Savage partials and three DC-3 livery variants; temp outputs cleaned.",
-    "m41_report": "compatibility/headless_live_geometry_sample_m41.json; path-free, all build and audit checks passed."
+    "m41_report": "compatibility/headless_live_geometry_sample_m41.json; path-free, all build and audit checks passed.",
+    "m42_reconciliation": "Live deep catalog exact-key comparison: 226/226 geometry-buildable records covered; 0 uncovered. Earlier incremental unique count was high by two; compatibility archive contains intentional repeat tests, all deduplicated in compatibility/live_geometry_coverage_m42.json.",
+    "m42_final_sample": "12/12 final uncovered entries built one checkpoint and passed Blender 5.2 audit; six DC-3, five Pilatus PC-6 and partial Volocity; temp outputs cleaned.",
+    "m42_report": "compatibility/headless_live_geometry_sample_m42.json; path-free, all 12 successful.",
+    "m42_coverage_report": "Path-free exact coverage index, catalog reason counts and duplicate-report names at compatibility/live_geometry_coverage_m42.json."
   },
   "measurements": {
     "catalog_visible_aircraft": 233,
@@ -178,14 +182,16 @@
       "temporary_outputs_cleaned": true,
       "path_free_report": "compatibility/headless_import_sample.json"
     },
-    "unique_real_import_report_records": 216
+    "unique_real_import_report_records": 226,
+    "uncovered_geometry_buildable": 0,
+    "duplicate_report_names": 21
   },
   "current_blocker": "GitHub integration denied PR creation earlier with HTTP 403. Feature branches can be pushed, but none can be merged/released until repository PR access and server-side CI are available.",
-  "next_step": "M42: compare all import reports with the live catalog, classify any remaining entries, then continue the measured backlog.",
+  "next_step": "M43: audit all non-buildable catalog records, classify source limitations versus resolver gaps and test evidence-backed recovery.",
   "next_stage": "M34-live-geometry-sample-third-tranche",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T08:05:00Z"
+  "updated_utc": "2026-11-11T08:22:00Z"
 }
