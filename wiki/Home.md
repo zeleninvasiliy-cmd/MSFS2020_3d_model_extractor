@@ -28,7 +28,6 @@ This wiki documents the current **1.3.0** release: a Windows pipeline that impor
 | [Architecture](Architecture) | processes and module boundaries |
 | [MSFS glTF Format](MSFS-glTF-Format) | supported glTF data |
 | [Building and Release](Building-and-Release) | rebuilding the Windows package |
-| [Testing](Testing) | local and CI checks |
 | [Known Issues](Known-Issues) | current limitations and known defects |
 
 MSFS sources are read-only. Real local glTF/GLB, BIN, XML and texture files are required. Protected or missing files are not reconstructed; the user performs visual acceptance in Blender.
@@ -65,7 +64,6 @@ Top-level documents: [README](../README.md), [Russian user guide](../USER_GUIDE.
 | [Architecture](Architecture) | процессы и границы модулей |
 | [MSFS glTF Format](MSFS-glTF-Format) | поддерживаемые данные glTF |
 | [Building and Release](Building-and-Release) | пересборка Windows-пакета |
-| [Testing](Testing) | локальные и CI-проверки |
 | [Known Issues](Known-Issues) | ограничения и известные дефекты |
 
 Исходники MSFS открываются только для чтения. Нужны реальные локальные glTF/GLB, BIN, XML и карты. Закрытые или отсутствующие файлы программа не восстанавливает; визуальную приёмку выполняет пользователь в Blender.
