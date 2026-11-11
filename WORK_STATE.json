@@ -3,7 +3,7 @@
   "last_completed_stage": "D-release-1.2.1",
   "active_stage": "M8-compatibility-measurement-and-release",
   "working_branch": "codex/gltf-feature-matrix",
-  "last_commit": "pending-M7-checkpoint",
+  "last_commit": "e43bb21",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
@@ -56,12 +56,12 @@
     "draco_models": 0,
     "meshopt_models": 0
   },
-  "current_blocker": "M5, M6 and M7 feature branches are pushed. GitHub PR creation is denied to the connected integration (HTTP 403); GitHub CLI is absent. Do not bypass branch protections or publish unmerged code. Release workflow and artifacts can be prepared locally, but a public release requires merged integration.",
+  "current_blocker": "Published branches: M5 codex/package-resource-graph (2581ecd), M6 codex/gui-dependency-actions (983d501), M7 codex/gltf-feature-matrix (e43bb21). PR creation was retried for M7 with base M6 and again denied by the connected GitHub integration: HTTP 403 'Resource not accessible by integration'. GitHub CLI is absent. Feature branch pushes work; no direct merge or release from unmerged code.",
   "next_step": "M8: audit the existing release pipeline and artifact contents, ensure the path-free compatibility snapshot is reproducible, and prepare release automation/docs. Do not tag or upload a release until the feature branches are integrated; continue compatibility/UI work if release automation is otherwise complete.",
   "next_stage": "M8-compatibility-measurement-and-release",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
   },
-  "updated_utc": "2026-11-11T02:23:55Z"
+  "updated_utc": "2026-11-11T02:25:23Z"
 }
