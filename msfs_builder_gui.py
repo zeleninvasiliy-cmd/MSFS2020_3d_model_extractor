@@ -94,6 +94,7 @@ class BuilderApp(tk.Tk):
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.process: subprocess.Popen[str] | None = None
         self.catalog_entries: list[dict] = []
+        self.suppressed_history_stub_count = 0
         self.inventory_entries: list[dict] = []
         self.active_entries: list[dict] = []
         self._aircraft_tree_entries: dict[str, dict] = {}
@@ -982,8 +983,12 @@ class BuilderApp(tk.Tk):
         try:
             data = json.loads(output)
             self.catalog_entries = data.get("aircraft", [])
+            self.suppressed_history_stub_count = len(data.get("suppressed_history_stubs", []))
             self.active_entries = self.catalog_entries
             self.populate_aircraft(self.active_entries)
+            if self.suppressed_history_stub_count:
+                self.append_log(f"Скрыты пустые записи fs-base-history: {self.suppressed_history_stub_count}; "
+                                "рабочий одноимённый пакет оставлен в списке.")
             self.report_index(data.get("index"))
         except json.JSONDecodeError:
             self.append_log("Не удалось разобрать JSON catalog. Проверьте журнал.")
@@ -1526,7 +1531,9 @@ class BuilderApp(tk.Tk):
         prefix = f"Показано: {shown} из {total}" if filter_text != AIRCRAFT_FILTERS[0] else f"Найдено самолётов: {total}"
         self.status_var.set(prefix + f" — полных: {counts['Полностью доступные']}, "
                             f"частичных: {counts['Частично доступные']}, "
-                            f"недоступно: {counts['Недоступные']}")
+                            f"недоступно: {counts['Недоступные']}" +
+                            (f"; скрыто history-заглушек: {self.suppressed_history_stub_count}"
+                             if self.suppressed_history_stub_count else ""))
         self._update_navigation()
 
     def on_aircraft_select(self, _event=None):
@@ -1886,6 +1893,8 @@ class BuilderApp(tk.Tk):
         try:
             data = json.loads(output)
             self.catalog_entries = data if isinstance(data, list) else data.get("aircraft", [])
+            self.suppressed_history_stub_count = (len(data.get("suppressed_history_stubs", []))
+                                                  if isinstance(data, dict) else 0)
             self.aircraft_filter_var.set(AIRCRAFT_FILTERS[0])
             self.populate_aircraft()
         except json.JSONDecodeError:

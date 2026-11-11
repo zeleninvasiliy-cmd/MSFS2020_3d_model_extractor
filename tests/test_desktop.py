@@ -245,6 +245,14 @@ class DesktopRegressionTests(unittest.TestCase):
         self.assertEqual(self.app.status_var.get(),
                          "Найдено самолётов: 3 — полных: 1, частичных: 1, недоступно: 1")
 
+    def test_catalog_status_reports_suppressed_history_stubs(self):
+        self.app.suppressed_history_stub_count = 1
+        self.app.populate_aircraft([
+            {"aircraft": "Asobo_DA62", "path": "C:/official/DA62", "can_build_geometry": True,
+             "can_build_textures": True},
+        ])
+        self.assertIn("скрыто history-заглушек: 1", self.app.status_var.get())
+
     def test_catalog_groups_liveries_and_filters_by_availability(self):
         entries = [
             {"aircraft": "Asobo_C152", "path": "C:/base/C152", "can_build_geometry": True,

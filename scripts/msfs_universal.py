@@ -152,11 +152,36 @@ def catalog(extra_roots=(), matches=(), deep=False):
                         "dependencies": [], "best_models": [], "detail": str(error)}
             item["package_root"] = str(root)
             entries.append(item)
-    name_counts = {}
+    # ``fs-base-history`` can contain empty SimObjects placeholders for an
+    # aircraft whose real model is installed in another Official package.
+    # Keep genuine same-name candidates visible, but keep these non-buildable
+    # history records in diagnostics instead of presenting them as aircraft.
+    grouped = {}
     for item in entries:
+        grouped.setdefault(item.get("aircraft", "").casefold(), []).append(item)
+    visible_entries = []
+    suppressed_history_stubs = []
+    for candidates in grouped.values():
+        buildable = [item for item in candidates if item.get("can_build_geometry")]
+        for item in candidates:
+            path_parts = {part.casefold() for part in Path(item.get("path", "")).parts}
+            is_history_stub = ("fs-base-history" in path_parts
+                               and not item.get("can_build_geometry"))
+            if is_history_stub and buildable:
+                suppressed_history_stubs.append({
+                    "aircraft": item.get("aircraft"),
+                    "path": item.get("path"),
+                    "reason_code": item.get("reason_code"),
+                    "shadowed_by": [candidate.get("path") for candidate in buildable],
+                })
+            else:
+                visible_entries.append(item)
+
+    name_counts = {}
+    for item in visible_entries:
         name = item.get("aircraft", "").casefold()
         name_counts[name] = name_counts.get(name, 0) + 1
-    for item in entries:
+    for item in visible_entries:
         count = name_counts.get(item.get("aircraft", "").casefold(), 0)
         if count > 1:
             # Keep every physical candidate selectable, but make the ambiguity
@@ -166,7 +191,9 @@ def catalog(extra_roots=(), matches=(), deep=False):
     return {"searched_roots": list(map(str, roots)),
             "index": {"packages": len(index.packages), "aircraft_names": len(index.aircraft),
                       "cached": index.reused, "scanned": index.scanned, "errors": index.errors},
-            "aircraft": sorted(entries, key=lambda item: item["aircraft"].casefold())}
+            "aircraft": sorted(visible_entries, key=lambda item: item["aircraft"].casefold()),
+            "suppressed_history_stubs": sorted(suppressed_history_stubs,
+                                                key=lambda item: item["aircraft"].casefold())}
 
 
 def locate_report_textures(report_file, extra_roots=()):

@@ -171,6 +171,39 @@ class PipelineRegressionTests(unittest.TestCase):
         self.assertTrue(all(item["duplicate_name"] for item in entries))
         self.assertEqual({item["duplicate_count"] for item in entries}, {2})
 
+    def test_catalog_suppresses_only_shadowed_history_stub(self):
+        real = self.root / "Official" / "Steam" / "asobo-aircraft-da62" / "SimObjects" / "Airplanes" / "Asobo_DA62"
+        model = real / "model"
+        model.mkdir(parents=True)
+        (model / "model.cfg").write_text("[models]\nexterior=body.gltf\n", encoding="utf-8")
+        (model / "body.gltf").write_text(json.dumps({"asset": {"version": "2.0"}, "meshes": []}),
+                                          encoding="utf-8")
+        stub = self.root / "Official" / "Steam" / "fs-base-history" / "SimObjects" / "Airplanes" / "Asobo_DA62"
+        stub.mkdir(parents=True)
+
+        with patch.object(pipeline, "installed_package_roots", return_value=[self.root]):
+            result = pipeline.catalog()
+
+        entries = [item for item in result["aircraft"] if item["aircraft"] == "Asobo_DA62"]
+        self.assertEqual([item["path"] for item in entries], [str(real)])
+        self.assertNotIn("duplicate_name", entries[0])
+        self.assertEqual(len(result["suppressed_history_stubs"]), 1)
+        suppressed = result["suppressed_history_stubs"][0]
+        self.assertEqual(suppressed["path"], str(stub))
+        self.assertEqual(suppressed["shadowed_by"], [str(real)])
+
+    def test_catalog_keeps_history_stub_when_no_buildable_peer_exists(self):
+        stub = self.root / "Official" / "Steam" / "fs-base-history" / "SimObjects" / "Airplanes" / "Legacy_Plane"
+        stub.mkdir(parents=True)
+
+        with patch.object(pipeline, "installed_package_roots", return_value=[self.root]):
+            result = pipeline.catalog()
+
+        entries = [item for item in result["aircraft"] if item["aircraft"] == "Legacy_Plane"]
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["reason_code"], "NO_MODEL_FOLDER")
+        self.assertEqual(result["suppressed_history_stubs"], [])
+
     def test_catalog_deep_reports_missing_buffers_before_project_creation(self):
         folder = self.root / "package" / "SimObjects" / "Airplanes" / "Broken_Plane"
         model = folder / "model"

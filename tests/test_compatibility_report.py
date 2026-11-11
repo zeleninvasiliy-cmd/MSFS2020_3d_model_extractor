@@ -28,6 +28,7 @@ class CompatibilityReportTests(unittest.TestCase):
         }
         report = compatibility_report.summarise(catalog, source_name="fixture.json")
         self.assertEqual(report["counts"]["aircraft"], 2)
+        self.assertEqual(report["counts"]["suppressed_history_stubs"], 0)
         self.assertEqual(report["counts"]["geometry_buildable"], 1)
         self.assertEqual(report["reason_codes"]["SUPPORTED_PARTIAL"], 1)
         self.assertEqual(report["missing_resource_kinds"], {"base_container": 1, "buffer": 1})

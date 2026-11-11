@@ -1,6 +1,16 @@
 {
   "version": "1.2.1",
   "purpose": "Long-running maintenance plan for unattended repository work",
+  "long_term_goal": {
+    "objective": "Correctly diagnose and process every aircraft in the user's installed MSFS catalog wherever the package contains usable source data; explicitly identify missing or unsupported source features rather than guessing.",
+    "priorities": ["compatibility breadth and fidelity", "intuitive GUI", "architecture and code hygiene", "bilingual documentation and repeatable releases"],
+    "cycle": "Alternate compatibility work and GUI work; after every stage run a focused architecture/code review, record newly found issues, and update this roadmap before starting the next stage."
+  },
+  "stage_workflow": {
+    "branch_prefix": "codex/",
+    "steps": ["create stage branch from main", "implement with regression fixtures", "run local checks and real-catalog measurement", "review and clean affected architecture/docs", "push branch and open PR", "wait for CI and merge without force-push", "build and publish a versioned release when stage criteria are met"],
+    "release_rule": "Use patch releases for user-visible compatible fixes and feature releases for a coherent larger capability; never label unmerged branch artifacts as a release."
+  },
   "working_branch": "main",
   "checkpoint_policy": {
     "commit_after_each_stage": true,
@@ -64,14 +74,15 @@
     {
       "id": "M2",
       "name": "Catalog identity and availability",
-      "status": "in_progress",
+      "status": "complete",
       "focus": ["duplicate aircraft names across real packages and history stubs", "status counts vs deep scan", "stable grouping and filters"],
-      "exit_criteria": ["dedup policy is explicit and tested", "catalog report explains retained alternatives", "GUI list remains stable"]
+      "exit_criteria": ["dedup policy is explicit and tested", "catalog report explains retained alternatives", "GUI list remains stable"],
+      "result": "Actual catalog found one duplicate pair: buildable Asobo_DA62 and an empty fs-base-history placeholder. The placeholder is now reported separately, while unique history-only records and other same-name packages remain visible. Actual selection list reduced from 234 to 233; one suppressed record retained with shadowed_by. 153 unit tests, GUI self-test, compileall, Blender worker checks and diff checks passed."
     },
     {
       "id": "M3",
       "name": "GUI diagnostics and recovery",
-      "status": "planned",
+      "status": "in_progress",
       "focus": ["show dependency provenance and ambiguity clearly", "validate edits before Blender starts", "audit checkpoint selection and error recovery"],
       "exit_criteria": ["actionable errors for invalid rules", "no raw traceback for expected user input", "self-test covers navigation and recovery"]
     },

@@ -1,22 +1,30 @@
 {
   "version": "1.2.1",
   "last_completed_stage": "D-release-1.2.1",
-  "active_stage": "M2-catalog-identity-and-availability",
+  "active_stage": "M3-gui-diagnostics-and-recovery",
+  "working_branch": "codex/catalog-history-stubs",
   "last_commit": "c85614e",
   "ci": {
     "status": "success",
     "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933991465"
   },
   "local_checks": {
-    "unittest": "150 passed",
+    "unittest": "153 passed",
     "gui_self_test": "passed",
     "compileall": "passed",
     "release_build": "passed",
-    "git_diff_check": "passed"
+    "git_diff_check": "passed",
+    "blender_worker_checks": "passed"
+  },
+  "measurements": {
+    "catalog_visible_aircraft": 233,
+    "suppressed_shadowed_history_stubs": 1,
+    "status_codes": {"OK": 174, "SUPPORTED_PARTIAL": 48, "COMMON_RESOURCES_ONLY": 6, "INVALID_MODEL_CFG": 2, "MISSING_MODEL_CFG": 2, "UNRESOLVED_ALIAS": 1},
+    "duplicate_names_after_policy": 0
   },
   "current_blocker": null,
-  "next_step": "Audit duplicate aircraft identities (including history stubs), catalog status accounting, and stable grouping/filter behavior. Add synthetic regressions, inspect current catalog output, then decide whether GUI or resolver policy needs a change. GitHub Wiki first-page setup is external and must not block independent maintenance.",
-  "next_stage": "M2-catalog-identity-and-availability",
+  "next_step": "Continue M3 by independently reviewing GUI validation and recovery paths, then improve the highest-impact issue through graphical controls and tests. Review the whole touched flow, update architecture/docs, and only then open a PR. GitHub Wiki first-page setup is external and must not block independent maintenance.",
+  "next_stage": "M3-gui-diagnostics-and-recovery",
   "release_artifacts": {
     "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
     "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"

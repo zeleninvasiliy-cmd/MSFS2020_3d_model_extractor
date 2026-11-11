@@ -49,6 +49,7 @@ def summarise(catalog: dict[str, Any], *, source_name: str | None = None) -> dic
             "needs_model_selection": sum(bool(item.get("needs_model_selection")) for item in aircraft),
             "with_texture_images": sum(bool(item.get("texture_images")) for item in aircraft),
             "duplicate_names": sum(bool(item.get("duplicate_name")) for item in aircraft),
+            "suppressed_history_stubs": len(_as_records(catalog.get("suppressed_history_stubs"))),
         },
         "reason_codes": dict(sorted(reason_codes.items())),
         "missing_resource_kinds": dict(sorted(missing_kinds.items())),
