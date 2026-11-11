@@ -89,6 +89,14 @@ class DesktopRegressionTests(unittest.TestCase):
         self.app.normal_decode_var.set("dxt5n")
         self.assertEqual(self.app.make_config()["normal_decode"], "dxt5n")
 
+    def test_skin_pose_controls_are_saved_from_geometry_controls(self):
+        self.project()
+        self.app.pose_position_var.set("POSE")
+        self.app.repair_skin_roots_var.set(True)
+        config = self.app.make_config()
+        self.assertEqual(config["pose_position"], "POSE")
+        self.assertTrue(config["repair_skin_roots"])
+
     def test_report_object_catalog_survives_exclusions(self):
         self.app._populate_catalog([
             {"name": "Wheel_Left", "type": "MESH", "collections": ["05_LANDING_GEAR"], "included": False},

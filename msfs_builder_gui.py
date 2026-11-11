@@ -138,8 +138,10 @@ class BuilderApp(tk.Tk):
         self.blender_var = tk.StringVar(value=self.settings.get("blender") or detect_blender())
         self.skinning_var = tk.StringVar(value="strip")
         self.draw_var = tk.StringVar(value="auto")
+        self.pose_position_var = tk.StringVar(value="REST")
         self.normal_decode_var = tk.StringVar(value="auto")
         self.filter_runtime_var = tk.BooleanVar(value=True)
+        self.repair_skin_roots_var = tk.BooleanVar(value=False)
         self.all_liveries_var = tk.BooleanVar(value=False)
         self.exclude_var = tk.StringVar()
         self.extra_texture_var = tk.StringVar()
@@ -207,6 +209,8 @@ class BuilderApp(tk.Tk):
             self.draw_var,
             self.normal_decode_var,
             self.filter_runtime_var,
+            self.pose_position_var,
+            self.repair_skin_roots_var,
             self.all_liveries_var,
         ):
             variable.trace_add("write", lambda *_args: self._on_setting_changed())
@@ -395,8 +399,15 @@ class BuilderApp(tk.Tk):
         ttk.Label(params, text="Имя варианта:").grid(row=0, column=4, sticky="w", padx=(18, 8))
         ttk.Label(params, textvariable=self.build_variant_var, foreground="#555").grid(row=0, column=5, sticky="w")
         ttk.Checkbutton(params, text="Удалять runtime/collision/occluder", variable=self.filter_runtime_var).grid(row=1, column=0, columnspan=2, sticky="w", pady=(8, 0))
-        ttk.Label(params, text="Draw mode влияет на чтение draw ranges при построении geometry.", foreground="#555").grid(row=1, column=2, columnspan=4, sticky="w", pady=(8, 0))
-        ttk.Label(params, text="Параметры применяются только к следующей сборке; результаты сохраняются отдельными файлами.", foreground="#555").grid(row=2, column=0, columnspan=6, sticky="w", pady=(8, 0))
+        ttk.Label(params, text="Поза: ").grid(row=1, column=2, sticky="w", padx=(18, 4), pady=(8, 0))
+        self.pose_combo = ttk.Combobox(params, textvariable=self.pose_position_var,
+                                       values=("REST", "POSE"), state="readonly", width=10)
+        self.pose_combo.grid(row=1, column=3, sticky="w", pady=(8, 0))
+        ttk.Checkbutton(params, text="Восстанавливать skeleton roots", variable=self.repair_skin_roots_var).grid(
+            row=2, column=0, columnspan=3, sticky="w", pady=(8, 0))
+        ttk.Label(params, text="Draw mode влияет на draw ranges; поза и skeleton roots применяются в bake/hybrid.",
+                  foreground="#555").grid(row=2, column=3, columnspan=3, sticky="w", pady=(8, 0))
+        ttk.Label(params, text="Параметры применяются только к следующей сборке; результаты сохраняются отдельными файлами.", foreground="#555").grid(row=3, column=0, columnspan=6, sticky="w", pady=(8, 0))
 
         object_box = ttk.LabelFrame(tab, text="Объекты и группы (снимите галочку, чтобы исключить из geometry)", padding=8)
         object_box.grid(row=3, column=0, sticky="nsew", pady=(0, 8))
@@ -1588,6 +1599,8 @@ class BuilderApp(tk.Tk):
             "build_variant": build_variant,
             "skinning": self.skinning_var.get(),
             "draw_mode": self.draw_var.get(),
+            "pose_position": self.pose_position_var.get(),
+            "repair_skin_roots": bool(self.repair_skin_roots_var.get()),
             "normal_decode": self.normal_decode_var.get(),
             "filter_runtime": bool(self.filter_runtime_var.get()),
             "include_all_liveries": bool(self.all_liveries_var.get()),
@@ -1827,6 +1840,8 @@ class BuilderApp(tk.Tk):
             self.livery_var.set(data.get("livery", "base"))
             self.skinning_var.set(data.get("skinning", "strip"))
             self.draw_var.set(data.get("draw_mode", "auto"))
+            self.pose_position_var.set(data.get("pose_position", "REST"))
+            self.repair_skin_roots_var.set(data.get("repair_skin_roots", False))
             self.normal_decode_var.set(data.get("normal_decode", "auto"))
             self.build_variant_var.set(data.get("build_variant", f"{self.skinning_var.get()}_{self.draw_var.get()}"))
             self.filter_runtime_var.set(data.get("filter_runtime", True))
