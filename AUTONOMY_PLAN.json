@@ -33,22 +33,23 @@
     {
       "id": "B",
       "name": "Resolver and format compatibility",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": ["safe package inheritance", "clear unsupported-format diagnostics", "no silent geometry guesses"],
       "result": "Deep catalog diagnostics are available in CLI and GUI; GLB is accepted by build plans; draw_mode=msfs incompatibility is rejected before Blender. B1-B4 transform/checkpoint fixes were verified with unit and headless Blender checks. Remaining B work is resolver edge-case hardening."
     },
     {
       "id": "C",
       "name": "GUI workflow and editors",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": ["project-gated workflow", "graphical rules", "recoverable checkpoints", "clear errors"],
       "result": "Added graphical controls for deep catalog diagnosis, normal_decode, converted_normal_dir, pose_position and repair_skin_roots; unified custom/system catalog callbacks. Existing rule editors and checkpoint workflow remain covered by regression tests."
     },
     {
       "id": "D",
       "name": "Release and portability",
-      "status": "planned",
-      "deliverables": ["repeatable Setup/Portable build", "checksums", "release verification", "bilingual user package"]
+      "status": "complete",
+      "deliverables": ["repeatable Setup/Portable build", "checksums", "release verification", "bilingual user package"],
+      "result": "Built and smoke-tested 1.2.1 Setup and Portable artifacts; docs and licenses are included and SHA256SUMS.txt was regenerated."
     }
   ],
   "blocked_policy": {

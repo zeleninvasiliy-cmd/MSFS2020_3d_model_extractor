@@ -1,10 +1,10 @@
 {
   "version": "1.2.1",
-  "last_completed_stage": "A-compatibility-audit",
-  "last_commit": "55ff52e",
+  "last_completed_stage": "D-release-1.2.1",
+  "last_commit": "4f27521",
   "ci": {
     "status": "success",
-    "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42926784941"
+    "run_url": "https://github.com/zeleninvasiliy-cmd/MSFS2020_3d_model_extractor/actions/runs/42933623935"
   },
   "local_checks": {
     "unittest": "149 passed",
@@ -13,7 +13,11 @@
     "release_build": "passed"
   },
   "current_blocker": "GitHub Wiki repository is enabled but has not been initialized with its first page.",
-  "next_step": "Continue stage C: audit project load/save and graphical editor edge cases, then prepare a verified 1.2.x release checkpoint.",
-  "next_stage": "C-gui-workflow-and-editors",
-  "updated_utc": "2026-11-11T00:45:00Z"
+  "next_step": "Continue post-release compatibility audit: prioritize partial/livery resolver edge cases and repeat full checks after each change. GitHub Wiki initialization remains the only external blocker.",
+  "next_stage": "post-release-compatibility-maintenance",
+  "release_artifacts": {
+    "setup_sha256": "334608bdfbc64571c0f0db88b50e046f96d65e8632bd2446421363930b1c6408",
+    "portable_sha256": "4fe4b53052f1334c7afa815f8ec0efbea89236900c51f4da285176a6183fac95"
+  },
+  "updated_utc": "2026-11-11T00:50:00Z"
 }
