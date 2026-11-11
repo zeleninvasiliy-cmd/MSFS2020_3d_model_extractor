@@ -1,34 +1,5 @@
 # Package Diagnosis / Диагностика пакета
 
-## English version
-
-Diagnosis runs before Blender and answers “why can this aircraft not be built”. The GUI and CLI use the same resolver, so reason codes are identical in both interfaces.
-
-### Codes
-
-| Code | Meaning | Action |
-|---|---|---|
-| `OK` | complete composition found | build it |
-| `SUPPORTED_PARTIAL` | only some roles or LODs are available | confirm the composition in the wizard |
-| `COMMON_RESOURCES_ONLY` | only shared resources exist | locate the model package |
-| `LIVERY_ONLY` | only a livery exists | add the base aircraft |
-| `MISSING_MODEL_CFG` | `model.cfg` is absent | choose glTF files manually |
-| `INVALID_MODEL_CFG` | configuration is invalid | check the `[models]` section |
-| `MISSING_BUFFER` | the BIN buffer is absent | restore the source package |
-| `UNRESOLVED_ALIAS` | `base_container` was not found | add the base package root |
-| `UNSUPPORTED_GLTF_FEATURE` | the format is unsupported | choose another LOD or defer the package |
-
-### Fast and deep modes
-
-Without `--deep`, `inventory` checks structure, configuration and declared file presence. `inventory --deep` reads JSON glTF/GLB, validates buffers and primitives, and reports unsupported extensions. Deep mode is slower but provides the exact pre-Blender reason.
-
-### Partial builds
-
-For `SUPPORTED_PARTIAL`, the `models` command and GUI wizard display exterior and interior roles, every discovered LOD, vertex and triangle counts, role source and resource origin. Only roles declared by configuration are selected by default. A filename-based candidate is included only after explicit confirmation.
-
-### Package index
-
-The `index` command builds a cached index of installed packages and resolves livery VFS links to base aircraft. The GUI shows `base_container`, whether the base is installed and any ambiguous candidates. An inaccessible package does not stop the rest of the scan.
 
 ---
 

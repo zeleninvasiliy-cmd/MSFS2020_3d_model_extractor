@@ -1,39 +1,5 @@
 # MSFS Model Builder — wiki
 
-## English version
-
-This wiki documents the current **1.2.0** release: a Windows pipeline that imports available static MSFS 2020 geometry into Blender. It imports geometry and PBR textures, organizes objects into collections and saves separate `.blend` variants. Animations are not imported.
-
-### Start here
-
-| Page | Purpose |
-|---|---|
-| [Getting Started](Getting-Started) | requirements, installation and the first project |
-| [GUI Workflow](GUI-Workflow) | tabs, buttons and the workflow |
-| [Package Diagnosis](Package-Diagnosis) | availability reasons and partial packages |
-| [Package Index](Package-Index) | livery inheritance and resource origin |
-| [Model Selection](Model-Selection) | exterior/interior and LOD selection |
-| [Rule Editors](Rule-Editors) | split, mirror, placement, collections and maps |
-| [Troubleshooting](Troubleshooting) | common errors and safe actions |
-
-### References
-
-| Page | Purpose |
-|---|---|
-| [CLI Reference](CLI-Reference) | CLI commands and arguments |
-| [Configuration Reference](Configuration-Reference) | JSON configuration and validation |
-| [Build Modes](Build-Modes) | geometry and texture modes |
-| [Textures and Materials](Textures-and-Materials) | maps, DDS and materials |
-| [Object Organization](Object-Organization) | collections, exclusions and splitting |
-| [Architecture](Architecture) | processes and module boundaries |
-| [MSFS glTF Format](MSFS-glTF-Format) | supported glTF data |
-| [Building and Release](Building-and-Release) | rebuilding the Windows package |
-| [Testing](Testing) | local and CI checks |
-| [Known Issues](Known-Issues) | current limitations and known defects |
-
-MSFS sources are read-only. Real local glTF/GLB, BIN, XML and texture files are required. Protected or missing files are not reconstructed; the user performs visual acceptance in Blender.
-
-Top-level documents: [README](../README.md), [Russian user guide](../USER_GUIDE.md), [English user guide](../USER_GUIDE_EN.md), [license](../LICENSE), and [license notice](../LICENSE_NOTICE.md).
 
 ---
 
