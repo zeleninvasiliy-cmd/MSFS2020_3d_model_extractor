@@ -376,6 +376,17 @@ class PlanDiagnosisTests(unittest.TestCase):
         plan = pipeline.make_plan(self.config(folder, models=[{"path": str(glb), "role": "exterior"}]), "geometry")
         self.assertEqual(Path(plan["models"][0]["path"]), glb.resolve())
 
+    def test_msfs_draw_mode_rejects_plain_gltf_before_blender(self):
+        folder = complete_aircraft(self.root / "src")
+        source = folder / "model" / "ext_LOD00.gltf"
+        source.write_text(json.dumps({
+            "asset": {"version": "2.0"},
+            "meshes": [{"name": "body", "primitives": [{"attributes": {"POSITION": 0}}]}]
+        }), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "primitive 0.*draw_mode=auto"):
+            pipeline.make_plan(self.config(folder, draw_mode="msfs",
+                                          models=[{"path": str(source), "role": "exterior"}]), "geometry")
+
     def test_common_only_package_is_rejected_with_reason(self):
         folder = aircraft(self.root / "src", name="Test_Common")
         model = folder / "model"

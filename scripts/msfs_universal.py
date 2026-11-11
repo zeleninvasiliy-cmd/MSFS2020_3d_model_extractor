@@ -17,8 +17,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from package_resolver import (GENERATED_AIRCRAFT_DIRS, aircraft_folders, by_case, directories,
                               find_aircraft, installed_package_roots, model_choices, model_from_cfg,
-                              model_variants, reason_text, rebase, resolve, resolve_aircraft, sections,
-                              skin_joints)
+                              model_variants, read_document, reason_text, rebase, resolve, resolve_aircraft,
+                              sections, skin_joints)
 from package_index import PackageIndex, default_cache_path
 
 
@@ -435,6 +435,30 @@ def selection_diagnosis(aircraft):
     return "\n".join(lines)
 
 
+def validate_draw_mode_models(models, draw_mode):
+    """Reject a plain glTF early when the user explicitly selected MSFS draw ranges.
+
+    The worker still performs the authoritative check after import.  This
+    preflight only reads JSON/GLB metadata and avoids launching Blender for a
+    deterministic configuration error.
+    """
+    if draw_mode != "msfs":
+        return
+    for item in models:
+        path = Path(item["path"])
+        try:
+            document = read_document(path)
+        except (OSError, ValueError):
+            continue  # the normal resolver/worker reports unreadable buffers
+        for mesh_index, mesh in enumerate(document.get("meshes") or []):
+            mesh_name = mesh.get("name", f"mesh_{mesh_index}") if isinstance(mesh, dict) else f"mesh_{mesh_index}"
+            for primitive_index, primitive in enumerate((mesh or {}).get("primitives") or []):
+                if "ASOBO_primitive" not in (primitive.get("extras") or {}):
+                    raise ValueError(f"{path}: mesh '{mesh_name}', primitive {primitive_index} не содержит "
+                                     "extras.ASOBO_primitive. Это обычный glTF, а не упакованный MSFS draw range. "
+                                     "Используйте draw_mode=auto — он выбирает чтение по содержимому файла.")
+
+
 def make_plan(config_file, stage=None):
     config = json.loads(config_file.read_text(encoding="utf-8-sig"))
     validate_config(config)
@@ -485,6 +509,7 @@ def make_plan(config_file, stage=None):
             raise ValueError("Список models пуст.")
     except ValueError as error:
         raise ValueError(f"{error}\n{selection_diagnosis(aircraft)}") from error
+    validate_draw_mode_models(models, draw)
 
     livery = config.get("livery")
     if livery is None:
