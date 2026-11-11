@@ -669,7 +669,7 @@
     {
       "id": "M51",
       "name": "Final partial livery texture sample",
-      "status": "in_progress",
+      "status": "complete",
       "deliverables": [
         "build texture checkpoints for the final three partial records absent from previous reports",
         "audit each final checkpoint in Blender",
@@ -677,7 +677,21 @@
         "record remaining map/source gaps and an exact coverage index"
       ],
       "acceptance": "All three records have a classified texture result and passing final audit or a reproducible blocker; unique report coverage is compared against the deep catalog; no paths in published report.",
-      "next": "Move from partial-package coverage to broad texture assurance on buildable complete entries; prioritize any new failures discovered in the final reconciliation."
+      "next": "M52: start broad texture-stage coverage for the 174 fully available catalog entries. Reconcile prior texture reports first, then test ten previously unsampled records per tranche.",
+      "result": "The final three partial records (SR22 Aviators and two Volocity Aviators liveries) created geometry and texture checkpoints and passed final Blender 5.2 audits. Both Volocity reports completed textures (exit 0); SR22 had 205 missing unique maps (expected partial exit 2). Deep-catalog reconciliation found all 48/48 `SUPPORTED_PARTIAL` geometry-buildable aircraft in texture-stage reports, with zero partial records left unsampled. Reports: compatibility/headless_texture_partial_sample_m51.json and compatibility/partial_texture_coverage_m51.json. Temporary outputs removed."
+    },
+    {
+      "id": "M52",
+      "name": "Full catalog texture coverage, first tranche",
+      "status": "in_progress",
+      "deliverables": [
+        "identify fully available buildable records absent from all prior texture reports",
+        "sample ten diverse aircraft through normal geometry and texture CLI stages",
+        "audit every texture checkpoint in Blender",
+        "start exact coverage index for the 174 OK catalog entries"
+      ],
+      "acceptance": "All ten selected records produce texture checkpoints and pass final audit or have a reproducible blocker; report is path-free and deduplicated by aircraft record.",
+      "next": "Repeat ten-record texture tranches until all 174 OK catalog entries are represented, reconciling after each batch; then address any package-specific material failures."
     }
   ],
   "rolling_roadmap": [
@@ -834,8 +848,8 @@
     ],
     "network_loss": "keep local commit and resume from origin/main after reconnecting",
     "usage_limit": "leave a clean commit, test result and next_step before stopping",
-    "next_stage": "M51-final-partial-livery-texture-sample"
+    "next_stage": "M52-full-catalog-texture-coverage-first-tranche"
   },
-  "next_stage": "M51-final-partial-livery-texture-sample",
-  "updated_utc": "2026-11-11T09:12:00Z"
+  "next_stage": "M52-full-catalog-texture-coverage-first-tranche",
+  "updated_utc": "2026-11-11T09:23:00Z"
 }
